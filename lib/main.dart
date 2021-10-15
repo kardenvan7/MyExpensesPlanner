@@ -27,6 +27,11 @@ class MyExpensesPlanner extends StatelessWidget {
       routes: {
         MainScreen.routeName: (BuildContext context) => MainScreen(),
       },
+      theme: ThemeData(
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: Colors.purple,
+            ),
+      ),
     );
   }
 }

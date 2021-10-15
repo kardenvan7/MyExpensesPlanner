@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/models/transaction.dart';
 
@@ -13,10 +14,11 @@ class TransactionsListItem extends StatelessWidget {
       leading: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(transaction.amount.toString()),
+          Text('${transaction.amount} р.'),
         ],
       ),
       title: Text(transaction.title),
+      subtitle: Text(DateFormat('dd.MM.yyyy').format(transaction.date)),
     );
   }
 }

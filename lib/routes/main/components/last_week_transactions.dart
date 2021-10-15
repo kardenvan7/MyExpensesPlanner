@@ -31,6 +31,7 @@ class LastWeekTransactions extends StatelessWidget {
     final Size size = MediaQuery.of(context).size;
 
     return Container(
+        clipBehavior: Clip.hardEdge,
         width: size.width,
         height: size.height,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
@@ -41,7 +42,8 @@ class LastWeekTransactions extends StatelessWidget {
           ),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List<Widget>.generate(
             7,
             (int index) {
@@ -85,15 +87,18 @@ class OneDayTransactionsColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: (MediaQuery.of(context).size.width - 15) / 8,
       child: Column(
         children: [
           Text(title),
           Expanded(
             child: Container(
-              width: 10,
+              alignment: Alignment.bottomCenter,
+              clipBehavior: Clip.hardEdge,
+              width: 16,
               margin: EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: Colors.black,
                 ),
@@ -102,14 +107,27 @@ class OneDayTransactionsColumn extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 heightFactor: maxAmount != 0 ? amount / maxAmount : 0,
                 child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.purple,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8),
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-          Text('$amount'),
+          FittedBox(
+            fit: BoxFit.fill,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                '$amount 12313',
+                softWrap: true,
+              ),
+            ),
+          ),
         ],
       ),
     );
