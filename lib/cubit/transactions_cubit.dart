@@ -52,6 +52,27 @@ class TransactionsCubit extends Cubit<TransactionsState> {
     );
   }
 
+  FutureOr<void> editTransaction({
+    required String id,
+    String? newTitle,
+    double? newAmount,
+    DateTime? newDateTime,
+  }) {
+    final int index = _transactions.indexWhere((element) => element.id == id);
+
+    _transactions[index].edit(
+      newTitle: newTitle,
+      newAmount: newAmount,
+      newDateTime: newDateTime,
+    );
+
+    emit(
+      TransactionsState(
+        type: TransactionsStateType.loaded,
+      ),
+    );
+  }
+
   FutureOr<void> deleteTransaction(String id) async {
     await Future.microtask(
       () => _transactions.removeWhere((transaction) => transaction.id == id),

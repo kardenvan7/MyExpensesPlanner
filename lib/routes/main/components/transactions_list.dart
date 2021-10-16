@@ -22,6 +22,13 @@ class TransactionsList extends StatelessWidget {
         element.date.month,
         element.date.day,
       ),
+      groupHeaderBuilder: (Transaction transaction) {
+        return Chip(
+          label: Text(
+            DateFormat('dd.MM.yyyy').format(transaction.date),
+          ), //TODO: change to "January 13, 2021/13 января 2021"
+        );
+      },
       itemBuilder: (BuildContext context, Transaction transaction) {
         return Slidable(
           child: Card(
@@ -36,7 +43,13 @@ class TransactionsList extends StatelessWidget {
             IconSlideAction(
               color: Colors.orangeAccent,
               icon: Icons.edit,
-              onTap: () async {},
+              onTap: () async {
+                Navigator.pushNamed(
+                  context,
+                  '/edit_transaction',
+                  arguments: transaction,
+                ); // TODO: заменить путь
+              },
             ),
             IconSlideAction(
               color: Colors.red,
@@ -49,13 +62,6 @@ class TransactionsList extends StatelessWidget {
               },
             ),
           ],
-        );
-      },
-      groupHeaderBuilder: (Transaction transaction) {
-        return Chip(
-          label: Text(
-            DateFormat('dd.MM.yyyy').format(transaction.date),
-          ), //TODO: change to "January 13, 2021/13 января 2021"
         );
       },
     );

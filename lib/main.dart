@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/cubit/transactions_cubit.dart';
 import 'package:my_expenses_planner/languages/config.dart';
+import 'package:my_expenses_planner/models/transaction.dart';
 import 'package:my_expenses_planner/providers/transactions/mock_transactions_provider.dart';
-import 'package:my_expenses_planner/routes/add_transaction/add_transaction_screen.dart';
+import 'package:my_expenses_planner/routes/edit_transaction/edit_transaction_screen.dart';
 import 'package:my_expenses_planner/routes/main/main_screen.dart';
 
 void main() async {
@@ -34,11 +35,7 @@ class MyExpensesPlanner extends StatelessWidget {
         supportedLocales: context.supportedLocales,
         locale: context.locale,
         home: const MainScreen(),
-        routes: {
-          MainScreen.routeName: (BuildContext context) => const MainScreen(),
-          AddTransactionScreen.routeName: (BuildContext context) =>
-              const AddTransactionScreen(),
-        },
+        onGenerateRoute: _onGenerateRoute,
         theme: ThemeData(
           colorScheme: Theme.of(context).colorScheme.copyWith(
                 primary: Colors.purple,
@@ -54,5 +51,24 @@ class MyExpensesPlanner extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Route _onGenerateRoute(RouteSettings settings) {
+  switch (settings.name) {
+    case MainScreen.routeName:
+      return MaterialPageRoute(
+        builder: (BuildContext context) => const MainScreen(),
+      );
+
+    case EditTransactionScreen.routeName:
+      return MaterialPageRoute(
+        builder: (BuildContext context) => EditTransactionScreen(
+          transaction: settings.arguments as Transaction?,
+        ),
+      );
+
+    default:
+      throw Exception();
   }
 }

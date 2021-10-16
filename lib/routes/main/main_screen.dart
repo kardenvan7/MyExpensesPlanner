@@ -13,8 +13,6 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: const MainScreenAppBar(),
       body: SafeArea(
@@ -26,8 +24,8 @@ class MainScreen extends StatelessWidget {
             switch (state.type) {
               case TransactionsStateType.initial:
                 SchedulerBinding.instance!.addPostFrameCallback(
-                  (timeStamp) async {
-                    await cubit.fetchLastTransactions();
+                  (timeStamp) {
+                    cubit.fetchLastTransactions();
                   },
                 );
 
@@ -39,7 +37,6 @@ class MainScreen extends StatelessWidget {
 
               case TransactionsStateType.loaded:
                 return Container(
-                  height: size.height - kToolbarHeight,
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   margin: const EdgeInsets.only(top: 15),
                   child: Column(

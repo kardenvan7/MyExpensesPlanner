@@ -4,33 +4,40 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/cubit/transactions_cubit.dart';
 import 'package:my_expenses_planner/models/transaction.dart';
 
-class AddTransactionScreen extends StatefulWidget {
-  const AddTransactionScreen({Key? key}) : super(key: key);
+class EditTransactionScreen extends StatefulWidget {
+  const EditTransactionScreen({this.transaction, Key? key}) : super(key: key);
 
-  static const String routeName = '/add_transaction';
+  static const String routeName = '/edit_transaction';
   static final _formKey = GlobalKey<FormState>();
 
+  final Transaction? transaction;
+
   @override
-  State<AddTransactionScreen> createState() => _AddTransactionScreenState();
+  State<EditTransactionScreen> createState() => _EditTransactionScreenState();
 }
 
-class _AddTransactionScreenState extends State<AddTransactionScreen> {
-  DateTime? _pickedDate;
+class _EditTransactionScreenState extends State<EditTransactionScreen> {
+  bool get isAdding => widget.transaction == null;
 
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
+  late final TextEditingController _titleController =
+      TextEditingController(text: widget.transaction?.title ?? '');
+  late final TextEditingController _amountController =
+      TextEditingController(text: widget.transaction?.amount.toString() ?? '');
+  late DateTime? _pickedDate = widget.transaction?.date;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('add_transaction_title').tr(),
+        title: Text(
+          isAdding ? 'add_transaction_title' : 'edit_transaction_title',
+        ).tr(),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         margin: const EdgeInsets.only(top: 10),
         child: Form(
-          key: AddTransactionScreen._formKey,
+          key: EditTransactionScreen._formKey,
           child: Column(
             children: [
               TextFormField(
@@ -86,7 +93,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   onPressed: () async {
                     final DateTime? _date = await showDatePicker(
                       context: context,
-                      initialDate: DateTime.now(),
+                      initialDate: widget.transaction?.date ?? DateTime.now(),
                       firstDate: DateTime.now().subtract(
                         const Duration(
                           days: 365,
@@ -108,20 +115,35 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: ElevatedButton(
                   onPressed: () async {
-                    if (AddTransactionScreen._formKey.currentState!
+                    if (EditTransactionScreen._formKey.currentState!
                             .validate() &&
                         _pickedDate != null) {
-                      final TransactionsCubit transactionsCubit =
-                          BlocProvider.of<TransactionsCubit>(context);
+                      final String title = _titleController.text;
+                      final double amount =
+                          double.parse(_amountController.text);
 
-                      final Transaction newTransaction = Transaction(
-                        id: DateTime.now().microsecondsSinceEpoch.toString(),
-                        title: _titleController.text,
-                        amount: double.parse(_amountController.text),
-                        date: _pickedDate!,
-                      );
+                      if (isAdding) {
+                        final TransactionsCubit transactionsCubit =
+                            BlocProvider.of<TransactionsCubit>(context);
 
-                      await transactionsCubit.addTransaction(newTransaction);
+                        final Transaction newTransaction = Transaction(
+                          id: DateTime.now().microsecondsSinceEpoch.toString(),
+                          title: title,
+                          amount: amount,
+                          date: _pickedDate!,
+                        );
+
+                        await transactionsCubit.addTransaction(newTransaction);
+                      } else {
+                        await BlocProvider.of<TransactionsCubit>(context)
+                            .editTransaction(
+                          id: widget.transaction!.id,
+                          newDateTime: _pickedDate,
+                          newTitle: title,
+                          newAmount: amount,
+                        );
+                      }
+
                       Navigator.pop(context);
                     }
                   },
