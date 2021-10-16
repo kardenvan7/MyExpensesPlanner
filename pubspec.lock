@@ -57,6 +57,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
+  convert:
+    dependency: transitive
+    description:
+      name: convert
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -64,6 +71,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  drift:
+    dependency: transitive
+    description:
+      name: drift
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   easy_localization:
     dependency: "direct main"
     description:
@@ -123,6 +137,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_slidable:
+    dependency: "direct main"
+    description:
+      name: flutter_slidable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -175,6 +196,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
+  moor:
+    dependency: transitive
+    description:
+      name: moor
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.6.1"
+  moor_flutter:
+    dependency: "direct main"
+    description:
+      name: moor_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.0"
   nested:
     dependency: transitive
     description:
@@ -292,6 +327,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.1"
+  sqflite:
+    dependency: transitive
+    description:
+      name: sqflite
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0+4"
+  sqflite_common:
+    dependency: transitive
+    description:
+      name: sqflite_common
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1+1"
+  sqlite3:
+    dependency: transitive
+    description:
+      name: sqlite3
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   stack_trace:
     dependency: transitive
     description:
@@ -313,6 +369,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   term_glyph:
     dependency: transitive
     description:
