@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/extensions/datetime_extensions.dart';
 import 'package:my_expenses_planner/models/transaction.dart';
@@ -40,8 +42,8 @@ class TransactionsCubit extends Cubit<TransactionsState> {
     );
   }
 
-  Future<void> addTransaction(Transaction transaction) async {
-    await Future.microtask(() => _transactions.add(transaction));
+  FutureOr<void> addTransaction(Transaction transaction) async {
+    _transactions.add(transaction);
 
     emit(
       TransactionsState(
@@ -50,9 +52,10 @@ class TransactionsCubit extends Cubit<TransactionsState> {
     );
   }
 
-  Future<void> deleteTransaction(String id) async {
+  FutureOr<void> deleteTransaction(String id) async {
     await Future.microtask(
-        () => _transactions.removeWhere((transaction) => transaction.id == id));
+      () => _transactions.removeWhere((transaction) => transaction.id == id),
+    );
 
     emit(
       TransactionsState(
