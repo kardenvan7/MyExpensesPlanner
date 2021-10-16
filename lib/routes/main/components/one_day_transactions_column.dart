@@ -13,10 +13,9 @@ class OneDayTransactionsColumn extends StatelessWidget {
   final String title;
   final double maxAmount;
 
-  int get amount {
-    return transactions
-        .fold(0, (previousValue, element) => element.amount)
-        .toInt();
+  double get amount {
+    return transactions.fold(
+        0, (previousValue, element) => element.amount + previousValue);
   }
 
   @override
@@ -60,7 +59,7 @@ class OneDayTransactionsColumn extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Text(
-                '$amount',
+                amount.toStringAsFixed(1),
                 softWrap: true,
               ),
             ),

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:my_expenses_planner/models/transaction.dart';
 import 'package:my_expenses_planner/providers/transactions/transactions_provider.dart';
 
@@ -10,11 +12,12 @@ class MockTransactionsProvider implements ITransactionsProvider {
     return List.generate(
       limit,
       (index) => Transaction(
+        id: DateTime.now().microsecondsSinceEpoch.toString(),
         amount: index * 2,
         title: 'Транзакция $index',
         date: DateTime.now().subtract(
           Duration(
-            days: index,
+            days: Random().nextInt(1000),
           ),
         ),
       ),
@@ -28,6 +31,7 @@ class MockTransactionsProvider implements ITransactionsProvider {
     return List.generate(
       7,
       (index) => Transaction(
+        id: DateTime.now().microsecondsSinceEpoch.toString(),
         amount: index * 50,
         title: 'Транзакция $index',
         date: DateTime.now().subtract(

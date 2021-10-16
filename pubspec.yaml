@@ -32,6 +32,7 @@ dependencies:
   easy_localization: ^3.0.0
   flutter_bloc: ^7.3.0
   intl: ^0.17.0
+  grouped_list: ^4.1.0
 
 
 

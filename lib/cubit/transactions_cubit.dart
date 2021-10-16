@@ -8,23 +8,55 @@ class TransactionsCubit extends Cubit<TransactionsState> {
       : super(
           TransactionsState(
             type: TransactionsStateType.initial,
-            transactions: [],
           ),
         );
 
   final ITransactionsProvider transactionsProvider;
-  late List<Transaction> transactions;
+  final List<Transaction> _transactions = [];
 
-  double get fullAmount => transactions.fold(
+  List<Transaction> get transactions {
+    return [..._transactions];
+  }
+
+  List<Transaction> get sortedByDateTransactions {
+    final List<Transaction> sortedTransactions = transactions;
+
+    sortedTransactions
+        .sort((current, next) => current.date.compareTo(next.date));
+
+    return sortedTransactions.reversed.toList();
+  }
+
+  double get fullAmount => _transactions.fold(
       0, (previousValue, element) => element.amount + previousValue);
 
   Future<void> fetchLastTransactions() async {
-    transactions = await transactionsProvider.getLastTransactions();
+    _transactions.addAll(await transactionsProvider.getLastTransactions());
 
     emit(
       TransactionsState(
         type: TransactionsStateType.loaded,
-        transactions: transactions,
+      ),
+    );
+  }
+
+  Future<void> addTransaction(Transaction transaction) async {
+    await Future.microtask(() => _transactions.add(transaction));
+
+    emit(
+      TransactionsState(
+        type: TransactionsStateType.loaded,
+      ),
+    );
+  }
+
+  Future<void> deleteTransaction(String id) async {
+    await Future.microtask(
+        () => _transactions.removeWhere((transaction) => transaction.id == id));
+
+    emit(
+      TransactionsState(
+        type: TransactionsStateType.loaded,
       ),
     );
   }
@@ -37,17 +69,16 @@ class TransactionsCubit extends Cubit<TransactionsState> {
       now.day,
     ).subtract(const Duration(days: 6));
 
-    return transactions.where((element) {
+    return _transactions.where((element) {
       return element.date > weekBefore;
     }).toList();
   }
 }
 
 class TransactionsState {
-  final List<Transaction> transactions;
   final TransactionsStateType type;
 
-  TransactionsState({required this.type, required this.transactions});
+  TransactionsState({required this.type});
 }
 
 enum TransactionsStateType { initial, loaded }

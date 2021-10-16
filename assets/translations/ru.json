@@ -1,3 +1,6 @@
 {
-  "main_appbar_title": "Ваши расходы"
+  "main_appbar_title": "Ваши расходы",
+  "add_transaction_title": "Добавить транзакцию",
+  "title_input_label": "Название",
+  "amount_input_label": "Сумма"
 }

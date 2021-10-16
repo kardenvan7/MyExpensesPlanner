@@ -1,3 +1,6 @@
 {
-  "main_appbar_title": "Your Expenses"
+  "main_appbar_title": "Your Expenses",
+  "add_transaction_title": "Add Transaction",
+  "title_input_label": "Title",
+  "amount_input_label": "Amount"
 }
