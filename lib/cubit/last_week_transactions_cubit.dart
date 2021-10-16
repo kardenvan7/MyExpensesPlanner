@@ -35,7 +35,7 @@ class TransactionsCubit extends Cubit<TransactionsState> {
       now.year,
       now.month,
       now.day,
-    ).subtract(const Duration(days: 7));
+    ).subtract(const Duration(days: 6));
 
     return transactions.where((element) {
       return element.date > weekBefore;
