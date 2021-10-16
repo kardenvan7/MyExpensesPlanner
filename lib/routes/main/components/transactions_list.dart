@@ -43,7 +43,9 @@ class TransactionsList extends StatelessWidget {
       },
       groupHeaderBuilder: (Transaction transaction) {
         return Chip(
-          label: Text(DateFormat('dd.MM.yyyy').format(transaction.date)),
+          label: Text(
+            DateFormat('dd.MM.yyyy').format(transaction.date),
+          ), //TODO: change to "January 13, 2021/13 января 2021"
         );
       },
     );
@@ -58,7 +60,9 @@ class TransactionsList extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Are you sure you want to delete transaction?'),
+          title: const Text(
+            'Are you sure you want to delete transaction?',
+          ), // TODO: localization
           actions: [
             TextButton(
               onPressed: () {
@@ -67,13 +71,13 @@ class TransactionsList extends StatelessWidget {
 
                 Navigator.of(context).pop();
               },
-              child: Text('Yes'),
+              child: const Text('Yes'), // TODO: localization
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('No'),
+              child: const Text('No'), // TODO: localization
             ),
           ],
         );

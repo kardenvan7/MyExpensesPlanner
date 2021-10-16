@@ -42,7 +42,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
                 validator: (String? value) {
                   if (value == null || value == '') {
-                    return 'Field must be filled';
+                    return 'Field must be filled'; // TODO: localization
                   }
                 },
               ),
@@ -59,11 +59,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
                 validator: (String? value) {
                   if (value == null || value == '') {
-                    return 'Field must be filled';
+                    return 'Field must be filled'; // TODO: localization
                   }
 
                   if (double.tryParse(value) == null) {
-                    return 'Wrong format';
+                    return 'Wrong format'; // TODO: localization
                   }
                 },
               ),
@@ -75,11 +75,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 title: Text(
                   _pickedDate != null
                       ? DateFormat('dd.MM.yyyy').format(_pickedDate!)
-                      : 'No date chosen',
+                      : 'No date chosen', // TODO: localization
                 ),
                 trailing: ElevatedButton(
                   child: Text(
-                    _pickedDate == null ? 'Choose a date' : 'Change date',
+                    _pickedDate == null
+                        ? 'Choose a date'
+                        : 'Change date', // TODO: localization
                   ),
                   onPressed: () async {
                     final DateTime? _date = await showDatePicker(
@@ -123,7 +125,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       Navigator.pop(context);
                     }
                   },
-                  child: const Text('Submit'),
+                  child: const Text('Submit'), // TODO: localization
                 ),
               ),
             ],
