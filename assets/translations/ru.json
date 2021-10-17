@@ -3,5 +3,8 @@
   "add_transaction_title": "Добавить транзакцию",
   "edit_transaction_title": "Изменить транзакцию",
   "title_input_label": "Название",
-  "amount_input_label": "Сумма"
+  "amount_input_label": "Сумма",
+  "yes": "Да",
+  "no": "Нет",
+  "deleteTransactionConfirmationQuestion": "Вы уверены, что хотите удалить транзакцию?"
 }

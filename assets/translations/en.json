@@ -3,5 +3,8 @@
   "add_transaction_title": "Add Transaction",
   "edit_transaction_title": "Edit Transaction",
   "title_input_label": "Title",
-  "amount_input_label": "Amount"
+  "amount_input_label": "Amount",
+  "yes": "Yes",
+  "no": "No",
+  "deleteTransactionConfirmationQuestion": "Are you sure you want to delete the transaction?"
 }

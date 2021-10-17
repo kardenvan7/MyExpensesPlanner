@@ -12,7 +12,7 @@ class MockTransactionsProvider implements ITransactionsProvider {
     return List.generate(
       limit,
       (index) => Transaction(
-        id: DateTime.now().microsecondsSinceEpoch.toString(),
+        txId: DateTime.now().microsecondsSinceEpoch.toString(),
         amount: index * 2,
         title: 'Транзакция $index',
         date: DateTime.now().subtract(
@@ -25,21 +25,23 @@ class MockTransactionsProvider implements ITransactionsProvider {
   }
 
   @override
-  Future<List<Transaction>> getTransactionsSince({
-    required DateTime date,
-  }) async {
-    return List.generate(
-      7,
-      (index) => Transaction(
-        id: DateTime.now().microsecondsSinceEpoch.toString(),
-        amount: index * 50,
-        title: 'Транзакция $index',
-        date: DateTime.now().subtract(
-          Duration(
-            days: index,
-          ),
-        ),
-      ),
-    );
+  Future<void> save({required Transaction transaction}) {
+    // TODO: implement save
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> edit({
+    required String txId,
+    required Transaction newTransaction,
+  }) {
+    // TODO: implement edit
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> delete({required String txId}) {
+    // TODO: implement delete
+    throw UnimplementedError();
   }
 }

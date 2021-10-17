@@ -122,29 +122,28 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                       final double amount =
                           double.parse(_amountController.text);
 
-                      if (isAdding) {
-                        final TransactionsCubit transactionsCubit =
-                            BlocProvider.of<TransactionsCubit>(context);
+                      final TransactionsCubit transactionsCubit =
+                          BlocProvider.of<TransactionsCubit>(context);
 
+                      if (isAdding) {
                         final Transaction newTransaction = Transaction(
-                          id: DateTime.now().microsecondsSinceEpoch.toString(),
+                          txId:
+                              DateTime.now().microsecondsSinceEpoch.toString(),
                           title: title,
                           amount: amount,
                           date: _pickedDate!,
                         );
 
-                        await transactionsCubit.addTransaction(newTransaction);
+                        await _addTransaction(
+                            context: context, transaction: newTransaction);
                       } else {
-                        await BlocProvider.of<TransactionsCubit>(context)
-                            .editTransaction(
-                          id: widget.transaction!.id,
-                          newDateTime: _pickedDate,
+                        await _editTransaction(
+                          id: widget.transaction!.txId,
+                          newDate: _pickedDate!,
                           newTitle: title,
                           newAmount: amount,
                         );
                       }
-
-                      Navigator.pop(context);
                     }
                   },
                   child: const Text('Submit'), // TODO: localization
@@ -155,5 +154,58 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _addTransaction({
+    required BuildContext context,
+    required Transaction transaction,
+  }) async {
+    try {
+      final TransactionsCubit transactionsCubit =
+          BlocProvider.of<TransactionsCubit>(context);
+
+      await transactionsCubit.addTransaction(
+        transaction,
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'An error has occurred during adding transaction', // TODO: localization
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _editTransaction({
+    required String id,
+    required String newTitle,
+    required double newAmount,
+    required DateTime newDate,
+  }) async {
+    try {
+      final TransactionsCubit transactionsCubit =
+          BlocProvider.of<TransactionsCubit>(context);
+
+      await transactionsCubit.editTransaction(
+        txId: widget.transaction!.txId,
+        newDate: newDate,
+        newTitle: newTitle,
+        newAmount: newAmount,
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'An error has occurred during editing transaction',
+          ),
+        ),
+      );
+    }
   }
 }

@@ -43,6 +43,8 @@ class TransactionsCubit extends Cubit<TransactionsState> {
   }
 
   FutureOr<void> addTransaction(Transaction transaction) async {
+    await transactionsProvider.save(transaction: transaction);
+
     _transactions.add(transaction);
 
     emit(
@@ -53,17 +55,29 @@ class TransactionsCubit extends Cubit<TransactionsState> {
   }
 
   FutureOr<void> editTransaction({
-    required String id,
+    required String txId,
     String? newTitle,
     double? newAmount,
-    DateTime? newDateTime,
-  }) {
-    final int index = _transactions.indexWhere((element) => element.id == id);
+    DateTime? newDate,
+  }) async {
+    final int index =
+        _transactions.indexWhere((element) => element.txId == txId);
+    final Transaction newTransaction = Transaction(
+      txId: txId,
+      amount: newAmount ?? _transactions[index].amount,
+      title: newTitle ?? _transactions[index].title,
+      date: newDate ?? _transactions[index].date,
+    );
+
+    await transactionsProvider.edit(
+      txId: txId,
+      newTransaction: newTransaction,
+    );
 
     _transactions[index].edit(
       newTitle: newTitle,
       newAmount: newAmount,
-      newDateTime: newDateTime,
+      newDateTime: newDate,
     );
 
     emit(
@@ -73,10 +87,10 @@ class TransactionsCubit extends Cubit<TransactionsState> {
     );
   }
 
-  FutureOr<void> deleteTransaction(String id) async {
-    await Future.microtask(
-      () => _transactions.removeWhere((transaction) => transaction.id == id),
-    );
+  FutureOr<void> deleteTransaction(String txId) async {
+    await transactionsProvider.delete(txId: txId);
+
+    _transactions.removeWhere((transaction) => transaction.txId == txId);
 
     emit(
       TransactionsState(

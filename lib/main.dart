@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/cubit/transactions_cubit.dart';
 import 'package:my_expenses_planner/languages/config.dart';
+import 'package:my_expenses_planner/local_db/sqflite_local_db.dart';
 import 'package:my_expenses_planner/models/transaction.dart';
-import 'package:my_expenses_planner/providers/transactions/mock_transactions_provider.dart';
+import 'package:my_expenses_planner/providers/transactions/sqflite_transactions_provider.dart';
 import 'package:my_expenses_planner/routes/edit_transaction/edit_transaction_screen.dart';
 import 'package:my_expenses_planner/routes/main/main_screen.dart';
 
@@ -13,6 +14,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  await SqfliteDatabaseProvider().initDatabase();
 
   runApp(
     const ConfiguredEasyLocalization(
@@ -28,7 +31,7 @@ class MyExpensesPlanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<TransactionsCubit>(
       create: (BuildContext context) => TransactionsCubit(
-        transactionsProvider: MockTransactionsProvider(),
+        transactionsProvider: SqfliteTransactionsProvider(),
       ), // TODO: getIt
       child: MaterialApp(
         localizationsDelegates: context.localizationDelegates,
