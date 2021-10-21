@@ -20,7 +20,7 @@ class OneDayTransactionsColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: (MediaQuery.of(context).size.width - 15) / 8,
       child: Column(
         children: [
@@ -30,7 +30,7 @@ class OneDayTransactionsColumn extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               clipBehavior: Clip.hardEdge,
               width: 16,
-              margin: EdgeInsets.symmetric(vertical: 8),
+              margin: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(

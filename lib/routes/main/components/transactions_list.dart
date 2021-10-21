@@ -35,10 +35,10 @@ class TransactionsList extends StatelessWidget {
             },
           )
         : Container(
-            margin: EdgeInsets.only(bottom: kToolbarHeight),
+            margin: const EdgeInsets.only(bottom: kToolbarHeight),
             child: Center(
               child: Text(
-                'You have no transactions yet.\n\nGo ahead and add some by pressing "+" button in the top right corner of the screen',
+                'You have no transactions yet.\n\nGo ahead and add some by pressing "+" button in the top right corner of the screen', // TODO: localization
                 textAlign: TextAlign.center,
               ),
             ),

@@ -122,9 +122,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                       final double amount =
                           double.parse(_amountController.text);
 
-                      final TransactionsCubit transactionsCubit =
-                          BlocProvider.of<TransactionsCubit>(context);
-
                       if (isAdding) {
                         final Transaction newTransaction = Transaction(
                           txId:
@@ -202,7 +199,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'An error has occurred during editing transaction',
+            'An error has occurred during editing transaction', // TODO: localization
           ),
         ),
       );
