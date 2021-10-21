@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/cubit/transactions_cubit.dart';
 import 'package:my_expenses_planner/models/transaction.dart';
+import 'package:my_expenses_planner/routes/edit_transaction/components/amount_input.dart';
+import 'package:my_expenses_planner/routes/edit_transaction/components/date_input.dart';
+import 'package:my_expenses_planner/routes/edit_transaction/components/title_input.dart';
 
 class EditTransactionScreen extends StatefulWidget {
   const EditTransactionScreen({this.transaction, Key? key}) : super(key: key);
@@ -17,13 +20,15 @@ class EditTransactionScreen extends StatefulWidget {
 }
 
 class _EditTransactionScreenState extends State<EditTransactionScreen> {
-  bool get isAdding => widget.transaction == null;
-
   late final TextEditingController _titleController =
       TextEditingController(text: widget.transaction?.title ?? '');
   late final TextEditingController _amountController =
       TextEditingController(text: widget.transaction?.amount.toString() ?? '');
-  late DateTime? _pickedDate = widget.transaction?.date;
+  late DateTime _pickedDate = widget.transaction?.date ?? DateTime.now();
+
+  bool get _isFormValid =>
+      EditTransactionScreen._formKey.currentState!.validate();
+  bool get isAdding => widget.transaction == null;
 
   @override
   Widget build(BuildContext context) {
@@ -40,109 +45,22 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
           key: EditTransactionScreen._formKey,
           child: Column(
             children: [
-              TextFormField(
-                controller: _titleController,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  label: const Text('title_input_label').tr(),
-                  border: const OutlineInputBorder(),
-                ),
-                validator: (String? value) {
-                  if (value == null || value == '') {
-                    return 'Field must be filled'; // TODO: localization
-                  }
-                },
-              ),
+              TitleInput(controller: _titleController),
               const SizedBox(
                 height: 10,
               ),
-              TextFormField(
-                controller: _amountController,
-                textInputAction: TextInputAction.done,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  label: const Text('amount_input_label').tr(),
-                  border: const OutlineInputBorder(),
-                ),
-                validator: (String? value) {
-                  if (value == null || value == '') {
-                    return 'Field must be filled'; // TODO: localization
-                  }
-
-                  if (double.tryParse(value) == null) {
-                    return 'Wrong format'; // TODO: localization
-                  }
+              AmountInput(controller: _amountController),
+              DateInput(
+                initialDate: widget.transaction?.date,
+                onDatePicked: (DateTime date) {
+                  _pickedDate = date;
                 },
-              ),
-              ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 5,
-                ),
-                title: Text(
-                  _pickedDate != null
-                      ? DateFormat('dd.MM.yyyy').format(_pickedDate!)
-                      : 'No date chosen', // TODO: localization
-                ),
-                trailing: ElevatedButton(
-                  child: Text(
-                    _pickedDate == null
-                        ? 'Choose a date'
-                        : 'Change date', // TODO: localization
-                  ),
-                  onPressed: () async {
-                    final DateTime? _date = await showDatePicker(
-                      context: context,
-                      initialDate: widget.transaction?.date ?? DateTime.now(),
-                      firstDate: DateTime.now().subtract(
-                        const Duration(
-                          days: 365,
-                        ),
-                      ),
-                      lastDate: DateTime.now(),
-                    );
-
-                    if (_date != null) {
-                      setState(() {
-                        _pickedDate = _date;
-                      });
-                    }
-                  },
-                ),
               ),
               Container(
                 alignment: Alignment.bottomRight,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: ElevatedButton(
-                  onPressed: () async {
-                    if (EditTransactionScreen._formKey.currentState!
-                            .validate() &&
-                        _pickedDate != null) {
-                      final String title = _titleController.text;
-                      final double amount =
-                          double.parse(_amountController.text);
-
-                      if (isAdding) {
-                        final Transaction newTransaction = Transaction(
-                          txId:
-                              DateTime.now().microsecondsSinceEpoch.toString(),
-                          title: title,
-                          amount: amount,
-                          date: _pickedDate!,
-                        );
-
-                        await _addTransaction(
-                            context: context, transaction: newTransaction);
-                      } else {
-                        await _editTransaction(
-                          id: widget.transaction!.txId,
-                          newDate: _pickedDate!,
-                          newTitle: title,
-                          newAmount: amount,
-                        );
-                      }
-                    }
-                  },
+                  onPressed: _onSubmit,
                   child: const Text('Submit'), // TODO: localization
                 ),
               ),
@@ -151,6 +69,34 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
         ),
       ),
     );
+  }
+
+  void _onSubmit() {
+    if (_isFormValid) {
+      final String title = _titleController.text;
+      final double amount = double.parse(_amountController.text);
+
+      if (isAdding) {
+        final Transaction newTransaction = Transaction(
+          txId: DateTime.now().microsecondsSinceEpoch.toString(),
+          title: title,
+          amount: amount,
+          date: _pickedDate,
+        );
+
+        _addTransaction(
+          context: context,
+          transaction: newTransaction,
+        );
+      } else {
+        _editTransaction(
+          id: widget.transaction!.txId,
+          newDate: _pickedDate,
+          newTitle: title,
+          newAmount: amount,
+        );
+      }
+    }
   }
 
   Future<void> _addTransaction({
@@ -204,5 +150,12 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _titleController.dispose();
+    super.dispose();
   }
 }

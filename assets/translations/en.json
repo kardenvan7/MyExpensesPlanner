@@ -6,5 +6,5 @@
   "amount_input_label": "Amount",
   "yes": "Yes",
   "no": "No",
-  "deleteTransactionConfirmationQuestion": "Are you sure you want to delete the transaction?"
+  "deleteTransactionConfirmationQuestion": "Are you sure you want to delete the transaction? This action can not be undone"
 }

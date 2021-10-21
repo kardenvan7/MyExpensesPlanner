@@ -62,32 +62,40 @@ class TransactionsListItem extends StatelessWidget {
           ).tr(),
           actions: [
             TextButton(
-              onPressed: () async {
-                try {
-                  await BlocProvider.of<TransactionsCubit>(context)
-                      .deleteTransaction(transaction.txId);
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Failed to delete transaction',
-                      ),
-                    ), // TODO: localization
-                  );
-                }
-                Navigator.of(context).pop();
+              onPressed: () {
+                _onDeleteDenied(context);
               },
-              child: const Text('yes').tr(),
+              child: const Text('no').tr(),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                _onDeleteConfirmed(context);
               },
-              child: const Text('no').tr(),
+              child: const Text('yes').tr(),
             ),
           ],
         );
       },
     );
+  }
+
+  void _onDeleteConfirmed(BuildContext context) {
+    try {
+      BlocProvider.of<TransactionsCubit>(context)
+          .deleteTransaction(transaction.txId);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Failed to delete transaction',
+          ),
+        ), // TODO: localization
+      );
+    }
+    Navigator.of(context).pop();
+  }
+
+  void _onDeleteDenied(BuildContext context) {
+    Navigator.of(context).pop();
   }
 }

@@ -6,5 +6,5 @@
   "amount_input_label": "Сумма",
   "yes": "Да",
   "no": "Нет",
-  "deleteTransactionConfirmationQuestion": "Вы уверены, что хотите удалить транзакцию?"
+  "deleteTransactionConfirmationQuestion": "Вы уверены, что хотите удалить транзакцию? Это действие нельзя будет отменить"
 }
