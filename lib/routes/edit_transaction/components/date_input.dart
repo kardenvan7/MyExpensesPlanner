@@ -18,9 +18,10 @@ class _DateInputState extends State<DateInput> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 5,
+      contentPadding: const EdgeInsets.only(
+        top: 5,
+        bottom: 5,
+        left: 12,
       ),
       title: Text(
         DateFormat('dd.MM.yyyy').format(_pickedDate),

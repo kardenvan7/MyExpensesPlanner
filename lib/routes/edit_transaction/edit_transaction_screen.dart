@@ -58,7 +58,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
               ),
               Container(
                 alignment: Alignment.bottomRight,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: ElevatedButton(
                   onPressed: _onSubmit,
                   child: const Text('Submit'), // TODO: localization
