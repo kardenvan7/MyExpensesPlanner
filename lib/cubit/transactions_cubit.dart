@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/extensions/datetime_extensions.dart';
 import 'package:my_expenses_planner/models/transaction.dart';
+import 'package:my_expenses_planner/models/transaction_category.dart';
 import 'package:my_expenses_planner/providers/transactions/transactions_provider.dart';
 
 class TransactionsCubit extends Cubit<TransactionsState> {
@@ -29,6 +30,19 @@ class TransactionsCubit extends Cubit<TransactionsState> {
     return sortedTransactions.reversed.toList();
   }
 
+  List<Transaction> get lastWeekTransactions {
+    final DateTime now = DateTime.now();
+    final DateTime weekBefore = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(const Duration(days: 6));
+
+    return _transactions.where((element) {
+      return element.date > weekBefore;
+    }).toList();
+  }
+
   double get fullAmount => _transactions.fold(
       0, (previousValue, element) => element.amount + previousValue);
 
@@ -43,14 +57,16 @@ class TransactionsCubit extends Cubit<TransactionsState> {
   }
 
   FutureOr<void> addTransaction(Transaction transaction) async {
-    await transactionsProvider.save(transaction: transaction);
+    transactionsProvider.save(transaction: transaction).then(
+      (value) {
+        _transactions.add(transaction);
 
-    _transactions.add(transaction);
-
-    emit(
-      TransactionsState(
-        type: TransactionsStateType.loaded,
-      ),
+        emit(
+          TransactionsState(
+            type: TransactionsStateType.loaded,
+          ),
+        );
+      },
     );
   }
 
@@ -59,57 +75,54 @@ class TransactionsCubit extends Cubit<TransactionsState> {
     String? newTitle,
     double? newAmount,
     DateTime? newDate,
+    TransactionCategory? newCategory,
   }) async {
     final int index =
-        _transactions.indexWhere((element) => element.txId == txId);
+        _transactions.indexWhere((element) => element.uuid == txId);
+
     final Transaction newTransaction = Transaction(
-      txId: txId,
+      uuid: txId,
       amount: newAmount ?? _transactions[index].amount,
       title: newTitle ?? _transactions[index].title,
       date: newDate ?? _transactions[index].date,
+      category: newCategory ?? _transactions[index].category,
     );
 
-    await transactionsProvider.edit(
-      txId: txId,
+    transactionsProvider
+        .edit(
+      transactionId: txId,
       newTransaction: newTransaction,
-    );
+    )
+        .then(
+      (value) {
+        _transactions[index].edit(
+          newTitle: newTitle,
+          newAmount: newAmount,
+          newDateTime: newDate,
+          newCategory: newCategory,
+        );
 
-    _transactions[index].edit(
-      newTitle: newTitle,
-      newAmount: newAmount,
-      newDateTime: newDate,
-    );
-
-    emit(
-      TransactionsState(
-        type: TransactionsStateType.loaded,
-      ),
+        emit(
+          TransactionsState(
+            type: TransactionsStateType.loaded,
+          ),
+        );
+      },
     );
   }
 
   FutureOr<void> deleteTransaction(String txId) async {
-    await transactionsProvider.delete(txId: txId);
+    transactionsProvider.delete(transactionId: txId).then(
+      (value) {
+        _transactions.removeWhere((transaction) => transaction.uuid == txId);
 
-    _transactions.removeWhere((transaction) => transaction.txId == txId);
-
-    emit(
-      TransactionsState(
-        type: TransactionsStateType.loaded,
-      ),
+        emit(
+          TransactionsState(
+            type: TransactionsStateType.loaded,
+          ),
+        );
+      },
     );
-  }
-
-  List<Transaction> get lastWeekTransactions {
-    final DateTime now = DateTime.now();
-    final DateTime weekBefore = DateTime(
-      now.year,
-      now.month,
-      now.day,
-    ).subtract(const Duration(days: 6));
-
-    return _transactions.where((element) {
-      return element.date > weekBefore;
-    }).toList();
   }
 }
 

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/cubit/transactions_cubit.dart';
 import 'package:my_expenses_planner/models/transaction.dart';
+import 'package:my_expenses_planner/models/transaction_category.dart';
 import 'package:my_expenses_planner/routes/edit_transaction/components/amount_input.dart';
+import 'package:my_expenses_planner/routes/edit_transaction/components/categories_dropdown_field.dart';
 import 'package:my_expenses_planner/routes/edit_transaction/components/date_input.dart';
 import 'package:my_expenses_planner/routes/edit_transaction/components/title_input.dart';
 
@@ -11,7 +13,7 @@ class EditTransactionScreen extends StatefulWidget {
   const EditTransactionScreen({this.transaction, Key? key}) : super(key: key);
 
   static const String routeName = '/edit_transaction';
-  static final _formKey = GlobalKey<FormState>();
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final Transaction? transaction;
 
@@ -25,6 +27,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
   late final TextEditingController _amountController =
       TextEditingController(text: widget.transaction?.amount.toString() ?? '');
   late DateTime _pickedDate = widget.transaction?.date ?? DateTime.now();
+  late TransactionCategory? _pickedCategory = widget.transaction?.category;
 
   bool get _isFormValid =>
       EditTransactionScreen._formKey.currentState!.validate();
@@ -37,6 +40,12 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
         title: Text(
           isAdding ? 'add_transaction_title' : 'edit_transaction_title',
         ).tr(),
+        actions: [
+          IconButton(
+            onPressed: _onSubmit,
+            icon: Icon(Icons.save),
+          ),
+        ],
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -56,18 +65,19 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                   _pickedDate = date;
                 },
               ),
-              Container(
-                alignment: Alignment.bottomRight,
-                child: ElevatedButton(
-                  onPressed: _onSubmit,
-                  child: const Text('Submit'), // TODO: localization
-                ),
+              CategoriesDropdownField(
+                onCategoryPick: _onCategoryPick,
+                initialCategory: widget.transaction?.category,
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _onCategoryPick(TransactionCategory? category) {
+    _pickedCategory = category;
   }
 
   void _onSubmit() {
@@ -77,10 +87,11 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
 
       if (isAdding) {
         final Transaction newTransaction = Transaction(
-          txId: DateTime.now().microsecondsSinceEpoch.toString(),
+          uuid: DateTime.now().microsecondsSinceEpoch.toString(),
           title: title,
           amount: amount,
           date: _pickedDate,
+          category: _pickedCategory,
         );
 
         _addTransaction(
@@ -89,7 +100,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
         );
       } else {
         _editTransaction(
-          id: widget.transaction!.txId,
+          id: widget.transaction!.uuid,
           newDate: _pickedDate,
           newTitle: title,
           newAmount: amount,
@@ -133,7 +144,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
           BlocProvider.of<TransactionsCubit>(context);
 
       await transactionsCubit.editTransaction(
-        txId: widget.transaction!.txId,
+        txId: widget.transaction!.uuid,
         newDate: newDate,
         newTitle: newTitle,
         newAmount: newAmount,

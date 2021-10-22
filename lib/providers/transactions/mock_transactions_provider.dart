@@ -12,7 +12,7 @@ class MockTransactionsProvider implements ITransactionsProvider {
     return List.generate(
       limit,
       (index) => Transaction(
-        txId: DateTime.now().microsecondsSinceEpoch.toString(),
+        uuid: DateTime.now().microsecondsSinceEpoch.toString(),
         amount: index * 2,
         title: 'Транзакция $index',
         date: DateTime.now().subtract(
@@ -32,7 +32,7 @@ class MockTransactionsProvider implements ITransactionsProvider {
 
   @override
   Future<void> edit({
-    required String txId,
+    required String transactionId,
     required Transaction newTransaction,
   }) {
     // TODO: implement edit
@@ -40,7 +40,7 @@ class MockTransactionsProvider implements ITransactionsProvider {
   }
 
   @override
-  Future<void> delete({required String txId}) {
+  Future<void> delete({required String transactionId}) {
     // TODO: implement delete
     throw UnimplementedError();
   }

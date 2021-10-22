@@ -17,6 +17,27 @@ class TransactionsListItem extends StatelessWidget {
     return Slidable(
       child: Card(
         child: ListTile(
+          leading: transaction.category != null
+              ? Container(
+                  width: 30,
+                  height: 30,
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: transaction.category!.color,
+                        ),
+                      ),
+                      Align(
+                        child: Text(transaction.category!.name),
+                      )
+                    ],
+                  ),
+                )
+              : Container(),
           title: Text(transaction.title),
           trailing: Text(transaction.amount.toStringAsFixed(2)),
         ),
@@ -82,7 +103,7 @@ class TransactionsListItem extends StatelessWidget {
   void _onDeleteConfirmed(BuildContext context) {
     try {
       BlocProvider.of<TransactionsCubit>(context)
-          .deleteTransaction(transaction.txId);
+          .deleteTransaction(transaction.uuid);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

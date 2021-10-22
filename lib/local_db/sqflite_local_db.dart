@@ -25,12 +25,23 @@ class SqfliteDatabaseProvider {
       version: _version,
       onCreate: (Database db, int version) async {
         await db.execute(
-          'CREATE TABLE transactions ('
+          'CREATE TABLE $transactionsTableName ('
           'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-          '${TransactionsTableColumns.txId.code} TEXT, '
+          '${TransactionsTableColumns.uuid.code} TEXT, '
           '${TransactionsTableColumns.title.code} TEXT, '
           '${TransactionsTableColumns.amount.code} REAL, '
-          '${TransactionsTableColumns.date.code} INT'
+          '${TransactionsTableColumns.date.code} INT, '
+          '${TransactionsTableColumns.categoryUuid.code} TEXT, '
+          'FOREIGN KEY(${TransactionsTableColumns.categoryUuid.code}) REFERENCES $categoriesTableName(${CategoriesTableColumns.uuid.code})'
+          ');',
+        );
+
+        await db.execute(
+          'CREATE TABLE $categoriesTableName ('
+          'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+          '${CategoriesTableColumns.uuid.code} TEXT, '
+          '${CategoriesTableColumns.name.code} TEXT, '
+          '${CategoriesTableColumns.color.code} TEXT'
           ')',
         );
       },
@@ -46,19 +57,38 @@ class SqfliteDatabaseProvider {
   }
 }
 
-enum TransactionsTableColumns { txId, title, amount, date }
+const String transactionsTableName = 'transactions';
+const String categoriesTableName = 'categories';
 
-extension ColumnsCodes on TransactionsTableColumns {
+enum TransactionsTableColumns { uuid, title, amount, date, categoryUuid }
+enum CategoriesTableColumns { uuid, name, color }
+
+extension TransactionCategoryColumnsCodes on CategoriesTableColumns {
   String get code {
     switch (this) {
-      case TransactionsTableColumns.txId:
-        return 'tx_id';
+      case CategoriesTableColumns.uuid:
+        return 'uuid';
+      case CategoriesTableColumns.name:
+        return 'name';
+      case CategoriesTableColumns.color:
+        return 'color';
+    }
+  }
+}
+
+extension TransactionsTableColumnsCodes on TransactionsTableColumns {
+  String get code {
+    switch (this) {
+      case TransactionsTableColumns.uuid:
+        return 'uuid';
       case TransactionsTableColumns.title:
         return 'title';
       case TransactionsTableColumns.amount:
         return 'amount';
       case TransactionsTableColumns.date:
         return 'date';
+      case TransactionsTableColumns.categoryUuid:
+        return 'category_uuid';
     }
   }
 }

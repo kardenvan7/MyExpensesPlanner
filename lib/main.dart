@@ -2,11 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_expenses_planner/cubit/categories_cubit.dart';
 import 'package:my_expenses_planner/cubit/transactions_cubit.dart';
 import 'package:my_expenses_planner/languages/config.dart';
 import 'package:my_expenses_planner/local_db/sqflite_local_db.dart';
 import 'package:my_expenses_planner/models/transaction.dart';
+import 'package:my_expenses_planner/models/transaction_category.dart';
 import 'package:my_expenses_planner/providers/transactions/sqflite_transactions_provider.dart';
+import 'package:my_expenses_planner/routes/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/routes/edit_transaction/edit_transaction_screen.dart';
 import 'package:my_expenses_planner/routes/main/main_screen.dart';
 
@@ -40,6 +43,13 @@ class MyExpensesPlanner extends StatelessWidget {
         home: const MainScreen(),
         onGenerateRoute: _onGenerateRoute,
         theme: ThemeData(
+          textTheme: TextTheme(
+            headline3: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
           colorScheme: Theme.of(context).colorScheme.copyWith(
                 primary: Colors.purple,
                 secondary: Colors.orangeAccent,
@@ -68,6 +78,18 @@ Route _onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (BuildContext context) => EditTransactionScreen(
           transaction: settings.arguments as Transaction?,
+        ),
+      );
+
+    case EditCategoryScreen.routeName:
+      final CategoriesCubit cubit = (settings.arguments as Map)['cubit'];
+      final TransactionCategory? category =
+          (settings.arguments as Map)['category'];
+
+      return MaterialPageRoute(
+        builder: (BuildContext context) => EditCategoryScreen(
+          cubit: cubit,
+          category: category,
         ),
       );
 

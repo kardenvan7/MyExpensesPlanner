@@ -9,9 +9,9 @@ abstract class ITransactionsProvider {
   Future<void> save({required Transaction transaction});
 
   Future<void> edit({
-    required String txId,
+    required String transactionId,
     required Transaction newTransaction,
   });
 
-  Future<void> delete({required String txId});
+  Future<void> delete({required String transactionId});
 }
