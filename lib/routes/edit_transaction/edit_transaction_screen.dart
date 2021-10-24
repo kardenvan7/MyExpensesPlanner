@@ -67,7 +67,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
               ),
               CategoriesDropdownField(
                 onCategoryPick: _onCategoryPick,
-                initialCategory: widget.transaction?.category,
+                initialCategory: _pickedCategory,
               ),
             ],
           ),
@@ -77,7 +77,9 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
   }
 
   void _onCategoryPick(TransactionCategory? category) {
-    _pickedCategory = category;
+    setState(() {
+      _pickedCategory = category;
+    });
   }
 
   void _onSubmit() {

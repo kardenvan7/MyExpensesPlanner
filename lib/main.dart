@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_expenses_planner/cubit/categories_cubit.dart';
 import 'package:my_expenses_planner/cubit/transactions_cubit.dart';
 import 'package:my_expenses_planner/languages/config.dart';
 import 'package:my_expenses_planner/local_db/sqflite_local_db.dart';
@@ -82,13 +81,11 @@ Route _onGenerateRoute(RouteSettings settings) {
       );
 
     case EditCategoryScreen.routeName:
-      final CategoriesCubit cubit = (settings.arguments as Map)['cubit'];
       final TransactionCategory? category =
-          (settings.arguments as Map)['category'];
+          settings.arguments as TransactionCategory?;
 
       return MaterialPageRoute(
         builder: (BuildContext context) => EditCategoryScreen(
-          cubit: cubit,
           category: category,
         ),
       );

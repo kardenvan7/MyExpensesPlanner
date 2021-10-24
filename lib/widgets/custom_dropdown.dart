@@ -4,11 +4,11 @@ class CustomDropdown<T> extends StatefulWidget {
   const CustomDropdown({
     required this.items,
     required this.onValueChanged,
-    this.initialValue,
+    required this.initialValue,
     Key? key,
   }) : super(key: key);
 
-  final T? initialValue;
+  final T initialValue;
   final void Function(T value) onValueChanged;
   final List<CustomDropdownItem<T>> items;
 
@@ -16,20 +16,21 @@ class CustomDropdown<T> extends StatefulWidget {
   _CustomDropdownState createState() => _CustomDropdownState<T>();
 }
 
-class _CustomDropdownState<T> extends State<CustomDropdown> {
+class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   bool _isOpened = false;
-  late final List<CustomDropdownItem<T>> _itemsList =
-      widget.items as List<CustomDropdownItem<T>>;
 
-  late CustomDropdownItem<T> _pickedItem = _getItemByValue(widget.initialValue);
-  T get _pickedValue => _pickedItem.value;
+  late final void Function(T value) _onValueChanged = widget.onValueChanged;
+  late T _pickedValue = widget.initialValue;
 
   @override
   Widget build(BuildContext context) {
+    final CustomDropdownItem<T> _pickedItem =
+        _getItemByValue(widget.initialValue);
+
     return Column(
       children: [
         Container(
-          width: 300,
+          width: MediaQuery.of(context).size.width * 0.75,
           height: 65,
           padding: const EdgeInsets.symmetric(
             horizontal: 12,
@@ -42,7 +43,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown> {
             ),
             borderRadius: !_isOpened
                 ? BorderRadius.circular(5)
-                : BorderRadius.only(
+                : const BorderRadius.only(
                     topLeft: Radius.circular(5),
                     topRight: Radius.circular(5),
                   ),
@@ -50,6 +51,10 @@ class _CustomDropdownState<T> extends State<CustomDropdown> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              if (_pickedItem.leading != null) _pickedItem.leading!,
+              const SizedBox(
+                width: 15,
+              ),
               _pickedItem.title,
               Expanded(
                 child: Container(
@@ -73,8 +78,9 @@ class _CustomDropdownState<T> extends State<CustomDropdown> {
         ),
         if (_isOpened)
           Container(
-            width: 300,
-            decoration: BoxDecoration(
+            constraints: const BoxConstraints(maxHeight: 200),
+            width: MediaQuery.of(context).size.width * 0.75,
+            decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(
                   color: Colors.black38,
@@ -94,15 +100,15 @@ class _CustomDropdownState<T> extends State<CustomDropdown> {
                   child: widget.items[index],
                   onTap: () {
                     setState(() {
-                      _pickedItem = _itemsList[index];
+                      _pickedValue = widget.items[index].value;
                       _isOpened = false;
-                      widget.onValueChanged(_pickedValue);
+                      _onValueChanged(_pickedValue);
                     });
                   },
                 );
               },
               separatorBuilder: (BuildContext context, int index) {
-                return Divider(
+                return const Divider(
                   height: 0,
                 );
               },
@@ -114,7 +120,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown> {
   }
 
   CustomDropdownItem<T> _getItemByValue(T value) {
-    return _itemsList.firstWhere((element) => element.value == value);
+    return widget.items.firstWhere((element) => element.value == value);
   }
 }
 

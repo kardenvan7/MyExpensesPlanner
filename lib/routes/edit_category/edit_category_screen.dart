@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:my_expenses_planner/cubit/categories_cubit.dart';
 import 'package:my_expenses_planner/extensions/color_extensions.dart';
@@ -9,10 +10,11 @@ class EditCategoryScreen extends StatefulWidget {
   static const String routeName = '/edit_category';
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  const EditCategoryScreen({required this.cubit, this.category, Key? key})
-      : super(key: key);
+  const EditCategoryScreen({
+    this.category,
+    Key? key,
+  }) : super(key: key);
 
-  final CategoriesCubit cubit;
   final TransactionCategory? category;
 
   @override
@@ -64,11 +66,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                   child: ColorPicker(
                     hexInputController: _colorController,
                     pickerColor: _pickedColor,
-                    onColorChanged: (Color _chosenColor) {
-                      // setState(() {
-                      //   _pickedColor = _chosenColor;
-                      // });
-                    },
+                    onColorChanged: (Color _chosenColor) {},
                   ),
                 ),
                 Row(
@@ -93,12 +91,20 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
   void _onSubmit(BuildContext context) {
     if (isFormValid) {
       final TransactionCategory newCategory = TransactionCategory(
-        uuid: DateTime.now().microsecondsSinceEpoch.toString(),
+        uuid: widget.category?.uuid ??
+            DateTime.now().microsecondsSinceEpoch.toString(),
         color: HexColor.fromHex(_colorController.text),
         name: _titleController.text,
       );
 
-      widget.cubit.addCategory(newCategory);
+      final CategoriesCubit cubit = BlocProvider.of<CategoriesCubit>(context);
+
+      if (widget.category == null) {
+        cubit.addCategory(newCategory);
+      } else {
+        cubit.editCategory(widget.category!.uuid, newCategory);
+      }
+
       Navigator.pop(context);
     }
   }

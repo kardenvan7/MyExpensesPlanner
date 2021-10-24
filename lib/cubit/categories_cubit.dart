@@ -20,9 +20,45 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     );
   }
 
+  void refresh() {
+    emit(
+      CategoriesState(
+        type: CategoriesStateType.loaded,
+        categories: categoriesList,
+      ),
+    );
+  }
+
   Future<void> addCategory(TransactionCategory category) async {
     await provider.save(category);
+    add(category);
+  }
+
+  void add(TransactionCategory category) {
     categoriesList.add(category);
+
+    emit(
+      CategoriesState(
+        type: CategoriesStateType.loaded,
+        categories: categoriesList,
+      ),
+    );
+  }
+
+  Future<void> editCategory(
+    String uuid,
+    TransactionCategory newCategory,
+  ) async {
+    await provider.update(uuid, newCategory);
+    update(uuid, newCategory);
+  }
+
+  void update(String uuid, TransactionCategory newCategory) {
+    final int index = categoriesList.indexWhere(
+      (element) => element.uuid == uuid,
+    );
+
+    categoriesList[index] = newCategory;
 
     emit(
       CategoriesState(

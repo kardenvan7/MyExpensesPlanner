@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,25 +38,40 @@ class CategoriesDropdownField extends StatelessWidget {
             return Container();
           }
 
+          final TransactionCategory? pickedCategory =
+              state.categories!.firstWhereOrNull(
+            (element) => element.uuid == initialCategory?.uuid,
+          );
+
+          print('Picked color: ${pickedCategory?.color}');
+
           return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomDropdown<TransactionCategory?>(
-                items: _buildItems(context: context),
-                initialValue: initialCategory,
+                items: [
+                  ..._buildItems(
+                    context: context,
+                    categories: state.categories,
+                  )
+                ],
+                initialValue: pickedCategory,
                 onValueChanged: _onChanged,
               ),
               Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        _onCategoryCreate(context);
-                      },
-                      icon: Icon(Icons.add),
-                    ),
-                  ],
+                child: Container(
+                  padding: EdgeInsets.only(top: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          _onCategoryCreate(context);
+                        },
+                        icon: Icon(Icons.add),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -74,22 +89,38 @@ class CategoriesDropdownField extends StatelessWidget {
 
     itemsList.add(
       const CustomDropdownItem<TransactionCategory?>(
-        title: Text('No category'),
+        title: Text(
+          'No category',
+          style: TextStyle(fontSize: 18),
+        ), // TODO: localization
         value: null,
       ),
     );
 
     if (categories != null) {
       for (final TransactionCategory category in categories) {
+        print('Item color: ${category.color}');
         itemsList.add(
           CustomDropdownItem<TransactionCategory?>(
-            title: Text(category.name),
-            leading: Container(
-              height: 10,
-              width: 10,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: category.color,
+            title: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                category.name,
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            leading: Align(
+              alignment: Alignment.centerLeft,
+              widthFactor: 1,
+              child: Container(
+                height: 10,
+                width: 10,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: category.color,
+                ),
               ),
             ),
             trailing: Row(
@@ -99,13 +130,13 @@ class CategoriesDropdownField extends StatelessWidget {
                   onPressed: () {
                     _onCategoryEdit(context, category);
                   },
-                  icon: Icon(Icons.edit),
+                  icon: const Icon(Icons.edit),
                 ),
                 IconButton(
                   onPressed: () {
                     _onCategoryDelete(context, category.uuid);
                   },
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                 ),
               ],
             ),
@@ -119,19 +150,33 @@ class CategoriesDropdownField extends StatelessWidget {
   }
 
   void _onCategoryEdit(BuildContext context, TransactionCategory category) {
-    Navigator.pushNamed(context, EditCategoryScreen.routeName, arguments: {
-      'cubit': BlocProvider.of<CategoriesCubit>(context),
-      'category': category
-    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (editTransactionContext) {
+          return BlocProvider.value(
+            value: BlocProvider.of<CategoriesCubit>(context),
+            child: EditCategoryScreen(category: category),
+          );
+        },
+      ),
+    );
   }
 
   void _onCategoryDelete(BuildContext context, String categoryUuid) {}
 
   void _onCategoryCreate(BuildContext context) {
-    Navigator.pushNamed(context, EditCategoryScreen.routeName, arguments: {
-      'cubit': BlocProvider.of<CategoriesCubit>(context),
-      'category': null
-    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (editTransactionContext) {
+          return BlocProvider.value(
+            value: BlocProvider.of<CategoriesCubit>(context),
+            child: const EditCategoryScreen(),
+          );
+        },
+      ),
+    );
   }
 
   void _onChanged(TransactionCategory? value) {

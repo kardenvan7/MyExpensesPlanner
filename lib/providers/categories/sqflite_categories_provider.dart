@@ -34,7 +34,23 @@ class SqfliteCategoriesProvider implements ICategoriesProvider {
 
     if (id == 0) {
       print('Saving category failed');
-      throw FormatException('Saving category failed');
+      throw const FormatException('Saving category failed');
+    }
+  }
+
+  @override
+  Future<void> update(String uuid, TransactionCategory newCategory) async {
+    final Map<String, Object?> newCategoryMap = _getMapForDb(newCategory);
+
+    final int rowsChangedCount = await _dbProvider.database.update(
+      tableName,
+      newCategoryMap,
+      where: '${CategoriesTableColumns.uuid.code} = $uuid',
+    );
+
+    if (rowsChangedCount == 0) {
+      print('Updating category failed');
+      throw const FormatException('Updating category failed');
     }
   }
 
