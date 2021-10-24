@@ -1,6 +1,6 @@
-# my_expenses_planner
+# Expenses Planner
 
-A new Flutter project.
+A Flutter project created for creating, sorting and observing your expenses in a very convenient and simple way.
 
 ## Getting Started
 
