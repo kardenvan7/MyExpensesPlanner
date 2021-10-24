@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:my_expenses_planner/cubit/categories_cubit.dart';
+import 'package:my_expenses_planner/cubit/transactions_cubit.dart';
 import 'package:my_expenses_planner/extensions/color_extensions.dart';
 import 'package:my_expenses_planner/models/transaction_category.dart';
 import 'package:my_expenses_planner/routes/edit_category/components/title_input.dart';
@@ -88,7 +89,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
     );
   }
 
-  void _onSubmit(BuildContext context) {
+  Future<void> _onSubmit(BuildContext context) async {
     if (isFormValid) {
       final TransactionCategory newCategory = TransactionCategory(
         uuid: widget.category?.uuid ??
@@ -102,10 +103,11 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
       if (widget.category == null) {
         cubit.addCategory(newCategory);
       } else {
-        cubit.editCategory(widget.category!.uuid, newCategory);
+        await cubit.editCategory(widget.category!.uuid, newCategory);
+        BlocProvider.of<TransactionsCubit>(context).refresh();
       }
 
-      Navigator.pop(context);
+      Navigator.pop(context, newCategory);
     }
   }
 }

@@ -87,32 +87,32 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
       final String title = _titleController.text;
       final double amount = double.parse(_amountController.text);
 
-      if (isAdding) {
-        final Transaction newTransaction = Transaction(
-          uuid: DateTime.now().microsecondsSinceEpoch.toString(),
-          title: title,
-          amount: amount,
-          date: _pickedDate,
-          category: _pickedCategory,
-        );
+      final Transaction newTransaction = Transaction(
+        uuid: isAdding
+            ? DateTime.now().microsecondsSinceEpoch.toString()
+            : widget.transaction!.uuid,
+        title: title,
+        amount: amount,
+        date: _pickedDate,
+        category: _pickedCategory,
+      );
 
+      if (isAdding) {
         _addTransaction(
-          context: context,
           transaction: newTransaction,
         );
       } else {
+        print(newTransaction.category?.color);
+
         _editTransaction(
           id: widget.transaction!.uuid,
-          newDate: _pickedDate,
-          newTitle: title,
-          newAmount: amount,
+          newTransaction: newTransaction,
         );
       }
     }
   }
 
   Future<void> _addTransaction({
-    required BuildContext context,
     required Transaction transaction,
   }) async {
     try {
@@ -137,9 +137,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
 
   Future<void> _editTransaction({
     required String id,
-    required String newTitle,
-    required double newAmount,
-    required DateTime newDate,
+    required Transaction newTransaction,
   }) async {
     try {
       final TransactionsCubit transactionsCubit =
@@ -147,9 +145,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
 
       await transactionsCubit.editTransaction(
         txId: widget.transaction!.uuid,
-        newDate: newDate,
-        newTitle: newTitle,
-        newAmount: newAmount,
+        newTransaction: newTransaction,
       );
 
       Navigator.pop(context);

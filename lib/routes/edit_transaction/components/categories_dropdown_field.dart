@@ -43,8 +43,6 @@ class CategoriesDropdownField extends StatelessWidget {
             (element) => element.uuid == initialCategory?.uuid,
           );
 
-          print('Picked color: ${pickedCategory?.color}');
-
           return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -66,7 +64,7 @@ class CategoriesDropdownField extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
-                          _onCategoryCreate(context);
+                          _onCategoryEdit(context, null);
                         },
                         icon: Icon(Icons.add),
                       ),
@@ -99,7 +97,6 @@ class CategoriesDropdownField extends StatelessWidget {
 
     if (categories != null) {
       for (final TransactionCategory category in categories) {
-        print('Item color: ${category.color}');
         itemsList.add(
           CustomDropdownItem<TransactionCategory?>(
             title: Align(
@@ -149,7 +146,7 @@ class CategoriesDropdownField extends StatelessWidget {
     return itemsList;
   }
 
-  void _onCategoryEdit(BuildContext context, TransactionCategory category) {
+  void _onCategoryEdit(BuildContext context, TransactionCategory? category) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -160,24 +157,14 @@ class CategoriesDropdownField extends StatelessWidget {
           );
         },
       ),
-    );
+    ).then((value) {
+      if (value != null) {
+        onCategoryPick(value as TransactionCategory);
+      }
+    });
   }
 
   void _onCategoryDelete(BuildContext context, String categoryUuid) {}
-
-  void _onCategoryCreate(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (editTransactionContext) {
-          return BlocProvider.value(
-            value: BlocProvider.of<CategoriesCubit>(context),
-            child: const EditCategoryScreen(),
-          );
-        },
-      ),
-    );
-  }
 
   void _onChanged(TransactionCategory? value) {
     onCategoryPick(value);

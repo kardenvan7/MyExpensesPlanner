@@ -20,6 +20,7 @@ class SqfliteDatabaseProvider {
     final String _databasesPath = await getDatabasesPath();
     _myDbPath = join(_databasesPath, _dbFileName);
 
+    print(_myDbPath);
     database = await openDatabase(
       _myDbPath,
       version: _version,

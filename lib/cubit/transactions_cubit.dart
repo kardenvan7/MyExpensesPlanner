@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/extensions/datetime_extensions.dart';
 import 'package:my_expenses_planner/models/transaction.dart';
-import 'package:my_expenses_planner/models/transaction_category.dart';
 import 'package:my_expenses_planner/providers/transactions/transactions_provider.dart';
 
 class TransactionsCubit extends Cubit<TransactionsState> {
@@ -19,6 +18,11 @@ class TransactionsCubit extends Cubit<TransactionsState> {
 
   List<Transaction> get transactions {
     return [..._transactions];
+  }
+
+  void refresh() {
+    print('refreshed');
+    emit(TransactionsState(type: TransactionsStateType.initial));
   }
 
   List<Transaction> get sortedByDateTransactions {
@@ -47,6 +51,7 @@ class TransactionsCubit extends Cubit<TransactionsState> {
       0, (previousValue, element) => element.amount + previousValue);
 
   Future<void> fetchLastTransactions() async {
+    _transactions.clear();
     _transactions.addAll(await transactionsProvider.getLastTransactions());
 
     emit(
@@ -72,21 +77,11 @@ class TransactionsCubit extends Cubit<TransactionsState> {
 
   FutureOr<void> editTransaction({
     required String txId,
-    String? newTitle,
-    double? newAmount,
-    DateTime? newDate,
-    TransactionCategory? newCategory,
+    required Transaction newTransaction,
   }) async {
     final int index =
         _transactions.indexWhere((element) => element.uuid == txId);
-
-    final Transaction newTransaction = Transaction(
-      uuid: txId,
-      amount: newAmount ?? _transactions[index].amount,
-      title: newTitle ?? _transactions[index].title,
-      date: newDate ?? _transactions[index].date,
-      category: newCategory ?? _transactions[index].category,
-    );
+    print(newTransaction.category?.color);
 
     transactionsProvider
         .edit(
@@ -96,10 +91,10 @@ class TransactionsCubit extends Cubit<TransactionsState> {
         .then(
       (value) {
         _transactions[index].edit(
-          newTitle: newTitle,
-          newAmount: newAmount,
-          newDateTime: newDate,
-          newCategory: newCategory,
+          newTitle: newTransaction.title,
+          newAmount: newTransaction.amount,
+          newDateTime: newTransaction.date,
+          newCategory: newTransaction.category,
         );
 
         emit(
