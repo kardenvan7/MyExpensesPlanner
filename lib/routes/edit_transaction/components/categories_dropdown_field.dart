@@ -170,13 +170,15 @@ class CategoriesDropdownField extends StatelessWidget {
       context: context,
       builder: (BuildContext alertContext) {
         return AlertDialog(
-          title: Text('Are you sure you want to delete the category?'),
+          title: Text(
+              'Are you sure you want to delete the category?'), // TODO: localization
           actions: [
             TextButton(
-                onPressed: () {
-                  Navigator.pop(alertContext);
-                },
-                child: Text('No')),
+              onPressed: () {
+                Navigator.pop(alertContext);
+              },
+              child: Text('No'),
+            ), // TODO: localization
             TextButton(
               onPressed: () {
                 BlocProvider.of<CategoriesCubit>(context)
@@ -189,7 +191,7 @@ class CategoriesDropdownField extends StatelessWidget {
                 Navigator.pop(alertContext);
                 onCategoryPick(null);
               },
-              child: Text('Yes'),
+              child: Text('Yes'), // TODO: localization
             ),
           ],
         );
