@@ -20,10 +20,12 @@ class SqfliteDatabaseProvider {
     final String _databasesPath = await getDatabasesPath();
     _myDbPath = join(_databasesPath, _dbFileName);
 
-    print(_myDbPath);
     database = await openDatabase(
       _myDbPath,
       version: _version,
+      onOpen: (Database db) async {
+        db.execute('PRAGMA foreign_keys=ON');
+      },
       onCreate: (Database db, int version) async {
         await db.execute(
           'CREATE TABLE $transactionsTableName ('
@@ -31,16 +33,17 @@ class SqfliteDatabaseProvider {
           '${TransactionsTableColumns.uuid.code} TEXT, '
           '${TransactionsTableColumns.title.code} TEXT, '
           '${TransactionsTableColumns.amount.code} REAL, '
-          '${TransactionsTableColumns.date.code} INT, '
-          '${TransactionsTableColumns.categoryUuid.code} TEXT, '
-          'FOREIGN KEY(${TransactionsTableColumns.categoryUuid.code}) REFERENCES $categoriesTableName(${CategoriesTableColumns.uuid.code})'
+          '${TransactionsTableColumns.date.code} INT'
           ');',
         );
 
         await db.execute(
+          'ALTER TABLE $transactionsTableName ADD COLUMN ${TransactionsTableColumns.categoryUuid.code} TEXT REFERENCES $categoriesTableName(${CategoriesTableColumns.uuid.code})',
+        );
+
+        await db.execute(
           'CREATE TABLE $categoriesTableName ('
-          'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-          '${CategoriesTableColumns.uuid.code} TEXT, '
+          '${CategoriesTableColumns.uuid.code} TEXT PRIMARY KEY, '
           '${CategoriesTableColumns.name.code} TEXT, '
           '${CategoriesTableColumns.color.code} TEXT'
           ')',

@@ -21,7 +21,6 @@ class TransactionsCubit extends Cubit<TransactionsState> {
   }
 
   void refresh() {
-    print('refreshed');
     emit(TransactionsState(type: TransactionsStateType.initial));
   }
 
@@ -81,7 +80,6 @@ class TransactionsCubit extends Cubit<TransactionsState> {
   }) async {
     final int index =
         _transactions.indexWhere((element) => element.uuid == txId);
-    print(newTransaction.category?.color);
 
     transactionsProvider
         .edit(

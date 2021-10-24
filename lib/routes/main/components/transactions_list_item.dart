@@ -18,7 +18,7 @@ class TransactionsListItem extends StatelessWidget {
       child: Card(
         child: ListTile(
           leading: transaction.category != null
-              ? Container(
+              ? SizedBox(
                   width: 30,
                   height: 30,
                   child: Stack(
@@ -28,7 +28,7 @@ class TransactionsListItem extends StatelessWidget {
                         height: 30,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: transaction.category!.color,
+                          color: transaction.category?.color ?? Colors.white,
                         ),
                       ),
                       Align(
@@ -37,7 +37,7 @@ class TransactionsListItem extends StatelessWidget {
                     ],
                   ),
                 )
-              : Container(),
+              : null,
           title: Text(transaction.title),
           trailing: Text(transaction.amount.toStringAsFixed(2)),
         ),

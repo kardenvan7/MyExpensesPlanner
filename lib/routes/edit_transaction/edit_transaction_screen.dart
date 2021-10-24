@@ -102,8 +102,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
           transaction: newTransaction,
         );
       } else {
-        print(newTransaction.category?.color);
-
         _editTransaction(
           id: widget.transaction!.uuid,
           newTransaction: newTransaction,

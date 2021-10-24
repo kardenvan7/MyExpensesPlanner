@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/cubit/categories_cubit.dart';
+import 'package:my_expenses_planner/cubit/transactions_cubit.dart';
 import 'package:my_expenses_planner/models/transaction_category.dart';
 import 'package:my_expenses_planner/providers/categories/sqflite_categories_provider.dart';
 import 'package:my_expenses_planner/routes/edit_category/edit_category_screen.dart';
@@ -164,7 +165,37 @@ class CategoriesDropdownField extends StatelessWidget {
     });
   }
 
-  void _onCategoryDelete(BuildContext context, String categoryUuid) {}
+  void _onCategoryDelete(BuildContext context, String categoryUuid) {
+    showDialog(
+      context: context,
+      builder: (BuildContext alertContext) {
+        return AlertDialog(
+          title: Text('Are you sure you want to delete the category?'),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(alertContext);
+                },
+                child: Text('No')),
+            TextButton(
+              onPressed: () {
+                BlocProvider.of<CategoriesCubit>(context)
+                    .deleteCategory(categoryUuid)
+                    .then(
+                  (value) {
+                    BlocProvider.of<TransactionsCubit>(context).refresh();
+                  },
+                );
+                Navigator.pop(alertContext);
+                onCategoryPick(null);
+              },
+              child: Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _onChanged(TransactionCategory? value) {
     onCategoryPick(value);

@@ -31,11 +31,26 @@ class CategoriesCubit extends Cubit<CategoriesState> {
 
   Future<void> addCategory(TransactionCategory category) async {
     await provider.save(category);
-    add(category);
+    _add(category);
   }
 
-  void add(TransactionCategory category) {
-    categoriesList.add(category);
+  Future<void> editCategory(
+    String uuid,
+    TransactionCategory newCategory,
+  ) async {
+    await provider.update(uuid, newCategory);
+    _update(uuid, newCategory);
+  }
+
+  Future<void> deleteCategory(
+    String uuid,
+  ) async {
+    await provider.delete(uuid);
+    _delete(uuid);
+  }
+
+  void _delete(String uuid) {
+    categoriesList.removeWhere((element) => element.uuid == uuid);
 
     emit(
       CategoriesState(
@@ -45,20 +60,23 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     );
   }
 
-  Future<void> editCategory(
-    String uuid,
-    TransactionCategory newCategory,
-  ) async {
-    await provider.update(uuid, newCategory);
-    update(uuid, newCategory);
-  }
-
-  void update(String uuid, TransactionCategory newCategory) {
+  void _update(String uuid, TransactionCategory newCategory) {
     final int index = categoriesList.indexWhere(
       (element) => element.uuid == uuid,
     );
 
     categoriesList[index] = newCategory;
+
+    emit(
+      CategoriesState(
+        type: CategoriesStateType.loaded,
+        categories: categoriesList,
+      ),
+    );
+  }
+
+  void _add(TransactionCategory category) {
+    categoriesList.add(category);
 
     emit(
       CategoriesState(

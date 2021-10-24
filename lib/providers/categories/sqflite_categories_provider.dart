@@ -60,4 +60,23 @@ class SqfliteCategoriesProvider implements ICategoriesProvider {
 
     return map;
   }
+
+  @override
+  Future<void> delete(String uuid) async {
+    await _dbProvider.database.update(
+      transactionsTableName,
+      {TransactionsTableColumns.categoryUuid.code: null},
+      where: '${TransactionsTableColumns.categoryUuid.code} = $uuid',
+    );
+
+    final int rowsDeletedCount = await _dbProvider.database.delete(
+      tableName,
+      where: '${CategoriesTableColumns.uuid.code} = $uuid',
+    );
+
+    if (rowsDeletedCount == 0) {
+      print('Deleting category failed');
+      throw FormatException('Deleting category failed');
+    }
+  }
 }
