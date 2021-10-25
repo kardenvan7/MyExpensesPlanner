@@ -59,15 +59,15 @@ class CategoriesDropdownField extends StatelessWidget {
               ),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.only(top: 8),
+                  padding: const EdgeInsets.only(top: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
                         onPressed: () {
-                          _onCategoryEdit(context, null);
+                          _onCategoryEdit(context: context);
                         },
-                        icon: Icon(Icons.add),
+                        icon: const Icon(Icons.add),
                       ),
                     ],
                   ),
@@ -104,7 +104,7 @@ class CategoriesDropdownField extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 category.name,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                 ),
               ),
@@ -126,7 +126,7 @@ class CategoriesDropdownField extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    _onCategoryEdit(context, category);
+                    _onCategoryEdit(context: context, category: category);
                   },
                   icon: const Icon(Icons.edit),
                 ),
@@ -147,7 +147,10 @@ class CategoriesDropdownField extends StatelessWidget {
     return itemsList;
   }
 
-  void _onCategoryEdit(BuildContext context, TransactionCategory? category) {
+  void _onCategoryEdit({
+    required BuildContext context,
+    TransactionCategory? category,
+  }) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -170,14 +173,15 @@ class CategoriesDropdownField extends StatelessWidget {
       context: context,
       builder: (BuildContext alertContext) {
         return AlertDialog(
-          title: Text(
-              'Are you sure you want to delete the category?'), // TODO: localization
+          title: const Text(
+            'Are you sure you want to delete the category?',
+          ), // TODO: localization
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(alertContext);
               },
-              child: Text('No'),
+              child: const Text('No'),
             ), // TODO: localization
             TextButton(
               onPressed: () {
@@ -191,7 +195,7 @@ class CategoriesDropdownField extends StatelessWidget {
                 Navigator.pop(alertContext);
                 onCategoryPick(null);
               },
-              child: Text('Yes'), // TODO: localization
+              child: const Text('Yes'), // TODO: localization
             ),
           ],
         );

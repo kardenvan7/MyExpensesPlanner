@@ -33,15 +33,12 @@ class Transaction extends Cubit<TransactionState> {
   }
 
   void edit({
-    String? newTitle,
-    double? newAmount,
-    DateTime? newDateTime,
-    TransactionCategory? newCategory,
+    required Transaction newTransactionData,
   }) {
-    amount = newAmount ?? amount;
-    title = newTitle ?? title;
-    date = newDateTime ?? date;
-    category = newCategory ?? category;
+    amount = newTransactionData.amount;
+    title = newTransactionData.title;
+    date = newTransactionData.date;
+    category = newTransactionData.category;
 
     emit(TransactionState());
   }

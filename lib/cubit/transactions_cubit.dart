@@ -81,26 +81,19 @@ class TransactionsCubit extends Cubit<TransactionsState> {
     final int index =
         _transactions.indexWhere((element) => element.uuid == txId);
 
-    transactionsProvider
-        .edit(
+    await transactionsProvider.edit(
       transactionId: txId,
       newTransaction: newTransaction,
-    )
-        .then(
-      (value) {
-        _transactions[index].edit(
-          newTitle: newTransaction.title,
-          newAmount: newTransaction.amount,
-          newDateTime: newTransaction.date,
-          newCategory: newTransaction.category,
-        );
+    );
 
-        emit(
-          TransactionsState(
-            type: TransactionsStateType.loaded,
-          ),
-        );
-      },
+    _transactions[index].edit(
+      newTransactionData: newTransaction,
+    );
+
+    emit(
+      TransactionsState(
+        type: TransactionsStateType.loaded,
+      ),
     );
   }
 
