@@ -60,21 +60,19 @@ class TransactionsCubit extends Cubit<TransactionsState> {
     );
   }
 
-  FutureOr<void> addTransaction(Transaction transaction) async {
-    transactionsProvider.save(transaction: transaction).then(
-      (value) {
-        _transactions.add(transaction);
+  Future<void> addTransaction(Transaction transaction) async {
+    await transactionsProvider.save(transaction: transaction);
 
-        emit(
-          TransactionsState(
-            type: TransactionsStateType.loaded,
-          ),
-        );
-      },
+    _transactions.add(transaction);
+
+    emit(
+      TransactionsState(
+        type: TransactionsStateType.loaded,
+      ),
     );
   }
 
-  FutureOr<void> editTransaction({
+  Future<void> editTransaction({
     required String txId,
     required Transaction newTransaction,
   }) async {
@@ -97,17 +95,15 @@ class TransactionsCubit extends Cubit<TransactionsState> {
     );
   }
 
-  FutureOr<void> deleteTransaction(String txId) async {
-    transactionsProvider.delete(transactionId: txId).then(
-      (value) {
-        _transactions.removeWhere((transaction) => transaction.uuid == txId);
+  Future<void> deleteTransaction(String txId) async {
+    transactionsProvider.delete(transactionId: txId);
 
-        emit(
-          TransactionsState(
-            type: TransactionsStateType.loaded,
-          ),
-        );
-      },
+    _transactions.removeWhere((transaction) => transaction.uuid == txId);
+
+    emit(
+      TransactionsState(
+        type: TransactionsStateType.loaded,
+      ),
     );
   }
 }

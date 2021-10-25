@@ -13,7 +13,6 @@ class EditTransactionScreen extends StatefulWidget {
   const EditTransactionScreen({this.transaction, Key? key}) : super(key: key);
 
   static const String routeName = '/edit_transaction';
-  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final Transaction? transaction;
 
@@ -22,6 +21,8 @@ class EditTransactionScreen extends StatefulWidget {
 }
 
 class _EditTransactionScreenState extends State<EditTransactionScreen> {
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   late final TextEditingController _titleController =
       TextEditingController(text: widget.transaction?.title ?? '');
   late final TextEditingController _amountController =
@@ -29,8 +30,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
   late DateTime _pickedDate = widget.transaction?.date ?? DateTime.now();
   late TransactionCategory? _pickedCategory = widget.transaction?.category;
 
-  bool get _isFormValid =>
-      EditTransactionScreen._formKey.currentState!.validate();
+  bool get _isFormValid => _formKey.currentState!.validate();
   bool get isAdding => widget.transaction == null;
 
   @override
@@ -43,7 +43,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
         actions: [
           IconButton(
             onPressed: _onSubmit,
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
           ),
         ],
       ),
@@ -51,7 +51,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         margin: const EdgeInsets.only(top: 10),
         child: Form(
-          key: EditTransactionScreen._formKey,
+          key: _formKey,
           child: Column(
             children: [
               TitleInput(controller: _titleController),
@@ -124,7 +124,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text(
             'An error has occurred during adding transaction', // TODO: localization
           ),
@@ -149,7 +149,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text(
             'An error has occurred during editing transaction', // TODO: localization
           ),
