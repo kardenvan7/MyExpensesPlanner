@@ -1,10 +1,10 @@
 {
-  "main_appbar_title": "Your Expenses",
+  "main_app_bar_title": "Your Expenses",
   "add_transaction_title": "Add Transaction",
   "edit_transaction_title": "Edit Transaction",
   "title_input_label": "Title",
   "amount_input_label": "Amount",
   "yes": "Yes",
   "no": "No",
-  "deleteTransactionConfirmationQuestion": "Are you sure you want to delete the transaction? This action can not be undone"
+  "delete_transaction_confirmation_question": "Are you sure you want to delete the transaction? This action can not be undone"
 }

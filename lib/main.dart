@@ -1,23 +1,34 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_expenses_planner/cubit/transactions_cubit.dart';
-import 'package:my_expenses_planner/languages/config.dart';
-import 'package:my_expenses_planner/local_db/sqflite_local_db.dart';
-import 'package:my_expenses_planner/models/transaction.dart';
-import 'package:my_expenses_planner/models/transaction_category.dart';
-import 'package:my_expenses_planner/providers/transactions/sqflite_transactions_provider.dart';
-import 'package:my_expenses_planner/routes/edit_category/edit_category_screen.dart';
-import 'package:my_expenses_planner/routes/edit_transaction/edit_transaction_screen.dart';
-import 'package:my_expenses_planner/routes/main/main_screen.dart';
+import 'package:my_expenses_planner/config/localization/localization.dart';
+import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
+import 'package:my_expenses_planner/data/repositories/categories/sqflite_categories_repository.dart';
+import 'package:my_expenses_planner/data/repositories/transactions/sqflite_transactions_repository.dart';
+import 'package:my_expenses_planner/di.dart';
+import 'package:my_expenses_planner/domain/models/transaction.dart';
+import 'package:my_expenses_planner/domain/models/transaction_category.dart';
+import 'package:my_expenses_planner/domain/use_cases/categories/categories_case_impl.dart';
+import 'package:my_expenses_planner/domain/use_cases/transactions/transactions_case_impl.dart';
+import 'package:my_expenses_planner/presentation/cubit/categories_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/transactions_cubit.dart';
+import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
+import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
+import 'package:my_expenses_planner/presentation/ui/main/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await EasyLocalization.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  await SqfliteDatabaseProvider().initDatabase();
+  try {
+    await EasyLocalization.ensureInitialized();
+    await SqfliteDatabaseProvider().initDatabase();
+  } catch (e) {
+    exit(1);
+  }
 
   runApp(
     const ConfiguredEasyLocalization(
@@ -31,10 +42,24 @@ class MyExpensesPlanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TransactionsCubit>(
-      create: (BuildContext context) => TransactionsCubit(
-        transactionsProvider: SqfliteTransactionsProvider(),
-      ), // TODO: getIt
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<TransactionsCubit>(
+          create: (_) => TransactionsCubit(
+            transactionsCaseImpl: TransactionsCaseImpl(
+              sqfliteTransactionsRepository:
+                  getIt<SqfliteTransactionsRepository>(),
+            ),
+          ),
+        ),
+        BlocProvider<CategoriesCubit>(
+          create: (_) => CategoriesCubit(
+            categoriesCaseImpl: CategoriesCaseImpl(
+              sqfliteCategoriesRepository: getIt<SqfliteCategoriesRepository>(),
+            ),
+          ),
+        ),
+      ], // TODO: getIt
       child: MaterialApp(
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
@@ -42,7 +67,7 @@ class MyExpensesPlanner extends StatelessWidget {
         home: const MainScreen(),
         onGenerateRoute: _onGenerateRoute,
         theme: ThemeData(
-          textTheme: TextTheme(
+          textTheme: const TextTheme(
             headline3: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w600,
