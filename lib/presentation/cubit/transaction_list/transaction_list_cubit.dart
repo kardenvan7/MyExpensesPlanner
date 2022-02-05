@@ -21,7 +21,12 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   final ITransactionsCase _transactionsCaseImpl;
 
   List<Transaction> _copyCurrentTransactions() {
-    return [...state.transactions];
+    return List.generate(
+      state.transactions.length,
+      (index) => state.transactions[index].copyWith(
+        uuid: state.transactions[index].uuid,
+      ),
+    );
   }
 
   void refresh() {
@@ -30,31 +35,6 @@ class TransactionListCubit extends Cubit<TransactionListState> {
       transactions: state.transactions,
     ));
   }
-
-  List<Transaction> get sortedByDateTransactions {
-    final List<Transaction> sortedTransactions = _copyCurrentTransactions();
-
-    sortedTransactions
-        .sort((current, next) => current.date.compareTo(next.date));
-
-    return sortedTransactions.reversed.toList();
-  }
-
-  List<Transaction> get lastWeekTransactions {
-    final DateTime now = DateTime.now();
-    final DateTime weekBefore = DateTime(
-      now.year,
-      now.month,
-      now.day,
-    ).subtract(const Duration(days: 6));
-
-    return state.transactions.where((element) {
-      return element.date > weekBefore;
-    }).toList();
-  }
-
-  double get fullAmount => state.transactions
-      .fold(0, (previousValue, element) => element.amount + previousValue);
 
   Future<void> fetchLastTransactions() async {
     emit(

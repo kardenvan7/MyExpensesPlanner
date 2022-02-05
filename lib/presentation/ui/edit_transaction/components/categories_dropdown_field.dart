@@ -22,9 +22,7 @@ class CategoriesDropdownField extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryListCubit, CategoryListState>(
       builder: (BuildContext context, CategoryListState state) {
-        final bool isLoaded = state.type == CategoriesStateType.loaded;
-
-        if (!isLoaded) {
+        if (state.isLoading) {
           final CategoryListCubit cubit =
               BlocProvider.of<CategoryListCubit>(context);
 
@@ -36,7 +34,7 @@ class CategoriesDropdownField extends StatelessWidget {
         }
 
         final TransactionCategory? pickedCategory =
-            state.categories!.firstWhereOrNull(
+            state.categories.firstWhereOrNull(
           (element) => element.uuid == initialCategory?.uuid,
         );
 

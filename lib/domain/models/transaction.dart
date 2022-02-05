@@ -66,18 +66,18 @@ class Transaction {
   }
 
   Transaction copyWith({
-    required String uuid,
-    String? newTitle,
-    double? newAmount,
-    DateTime? newDate,
-    TransactionCategory? newCategory,
+    String? uuid,
+    String? title,
+    double? amount,
+    DateTime? date,
+    TransactionCategory? category,
   }) {
     return Transaction(
-      uuid: uuid,
-      amount: newAmount ?? amount,
-      title: newTitle ?? title,
-      date: newDate ?? date,
-      category: newCategory ?? category,
+      uuid: uuid ?? this.uuid,
+      amount: amount ?? this.amount,
+      title: title ?? this.title,
+      date: date ?? this.date,
+      category: category ?? this.category,
     );
   }
 }

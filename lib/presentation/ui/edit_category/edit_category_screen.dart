@@ -108,7 +108,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
       if (widget.category == null) {
         cubit.addCategory(newCategory);
       } else {
-        await cubit.editCategory(widget.category!.uuid, newCategory);
+        await cubit.updateCategory(widget.category!.uuid, newCategory);
         BlocProvider.of<TransactionListCubit>(context).refresh();
       }
 

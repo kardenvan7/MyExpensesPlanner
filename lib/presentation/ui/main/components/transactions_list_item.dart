@@ -26,6 +26,7 @@ class TransactionsListItem extends StatelessWidget {
               child: Center(
                 child: Text(
                   transaction.category?.name ?? '',
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),

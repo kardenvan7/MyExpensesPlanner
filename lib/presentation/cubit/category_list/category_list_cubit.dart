@@ -10,40 +10,40 @@ class CategoryListCubit extends Cubit<CategoryListState> {
   })  : _categoriesCaseImpl = categoriesCaseImpl,
         super(
           CategoryListState(
-            type: CategoriesStateType.loading,
+            isLoading: false,
+            categories: [],
           ),
         );
 
   final ICategoriesCase _categoriesCaseImpl;
 
   List<TransactionCategory> _copyCurrentCategories() {
-    return state.categories != null
-        ? List.generate(
-            state.categories!.length,
-            (index) => state.categories![index].copyWith(),
-          )
-        : [];
+    return List.generate(
+      state.categories.length,
+      (index) => state.categories[index].copyWith(),
+    );
   }
 
   Future<void> fetchCategories() async {
+    emit(
+      CategoryListState(
+        isLoading: true,
+      ),
+    );
+
     final List<TransactionCategory> categoriesList =
         await _categoriesCaseImpl.getCategories();
 
     emit(
       CategoryListState(
-        type: CategoriesStateType.loaded,
+        isLoading: false,
         categories: categoriesList,
       ),
     );
   }
 
   void refresh() {
-    emit(
-      CategoryListState(
-        type: CategoriesStateType.loaded,
-        categories: state.categories,
-      ),
-    );
+    fetchCategories();
   }
 
   Future<void> addCategory(TransactionCategory category) async {
@@ -51,7 +51,7 @@ class CategoryListCubit extends Cubit<CategoryListState> {
     _add(category);
   }
 
-  Future<void> editCategory(
+  Future<void> updateCategory(
     String uuid,
     TransactionCategory newCategory,
   ) async {
@@ -72,7 +72,6 @@ class CategoryListCubit extends Cubit<CategoryListState> {
 
     emit(
       CategoryListState(
-        type: CategoriesStateType.loaded,
         categories: _categories,
       ),
     );
@@ -88,7 +87,6 @@ class CategoryListCubit extends Cubit<CategoryListState> {
 
     emit(
       CategoryListState(
-        type: CategoriesStateType.loaded,
         categories: _categories,
       ),
     );
@@ -100,7 +98,6 @@ class CategoryListCubit extends Cubit<CategoryListState> {
 
     emit(
       CategoryListState(
-        type: CategoriesStateType.loaded,
         categories: _categories,
       ),
     );

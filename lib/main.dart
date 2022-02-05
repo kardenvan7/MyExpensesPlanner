@@ -52,14 +52,14 @@ class MyExpensesPlanner extends StatelessWidget {
               sqfliteTransactionsRepository:
                   getIt<SqfliteTransactionsRepository>(),
             ),
-          ),
+          )..fetchLastTransactions(),
         ),
         BlocProvider<CategoryListCubit>(
           create: (_) => CategoryListCubit(
             categoriesCaseImpl: CategoriesCaseImpl(
               sqfliteCategoriesRepository: getIt<SqfliteCategoriesRepository>(),
             ),
-          ),
+          )..fetchCategories(),
         ),
       ], // TODO: getIt
       child: MaterialApp(

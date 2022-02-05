@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/app_bar.dart';
@@ -18,17 +17,8 @@ class MainScreen extends StatelessWidget {
       body: SafeArea(
         child: BlocBuilder<TransactionListCubit, TransactionListState>(
           builder: (context, state) {
-            final TransactionListCubit cubit =
-                BlocProvider.of<TransactionListCubit>(context);
-
             switch (state.type) {
               case TransactionsStateType.initial:
-                SchedulerBinding.instance!.addPostFrameCallback(
-                  (timeStamp) {
-                    cubit.fetchLastTransactions();
-                  },
-                );
-
                 return Container(
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(bottom: kToolbarHeight),
@@ -44,7 +34,7 @@ class MainScreen extends StatelessWidget {
                       Flexible(
                         flex: 3,
                         child: LastWeekTransactions(
-                          lastWeekTransactions: cubit.lastWeekTransactions,
+                          lastWeekTransactions: state.lastWeekTransactions,
                         ),
                       ),
                       Flexible(
@@ -52,7 +42,7 @@ class MainScreen extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: TransactionsList(
-                            transactions: cubit.sortedByDateTransactions,
+                            transactions: state.sortedByDateTransactions,
                           ),
                         ),
                       ),
