@@ -5,7 +5,7 @@ extension HexColor on Color {
     return value.toRadixString(16).padLeft(8, '0').toUpperCase();
   }
 
-  static Color fromHex(String hexString) {
+  static Color? fromHex(String hexString) {
     final StringBuffer buffer = StringBuffer();
 
     if (hexString.length == 6 || hexString.length == 7) {
@@ -13,7 +13,7 @@ extension HexColor on Color {
     }
 
     if (hexString.length < 6 || hexString.length > 9) {
-      throw const FormatException('Incorrect string format provided');
+      return null;
     }
 
     buffer.write(hexString.replaceFirst('#', ''));

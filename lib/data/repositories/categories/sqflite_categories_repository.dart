@@ -1,17 +1,25 @@
+import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
+import 'package:my_expenses_planner/data/local_db/config.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
+import 'package:my_expenses_planner/data/models/transaction_category.dart';
 import 'package:my_expenses_planner/data/repositories/categories/i_categories_repository.dart';
-import 'package:my_expenses_planner/domain/core/extensions/color_extensions.dart';
-import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 
 class SqfliteCategoriesRepository implements ICategoriesRepository {
-  final SqfliteDatabaseProvider _dbProvider = SqfliteDatabaseProvider();
-  static const String tableName = categoriesTableName;
+  SqfliteCategoriesRepository(this._dbProvider);
+
+  static const String tableName = SqfliteDbConfig.categoriesTableName;
+
+  final SqfliteDatabaseProvider _dbProvider;
 
   @override
   Future<List<TransactionCategory>> getCategories() async {
     final List<Map<String, dynamic>> categoriesMapList =
         await _dbProvider.database.rawQuery(
-      'SELECT ${CategoriesTableColumns.uuid.code}, ${CategoriesTableColumns.name.code}, ${CategoriesTableColumns.color.code} FROM $tableName',
+      'SELECT *'
+      // '${CategoriesTableColumns.uuid.code}, '
+      // '${CategoriesTableColumns.name.code}, '
+      // '${CategoriesTableColumns.color.code} '
+      'FROM $tableName',
     );
 
     final List<TransactionCategory> categoriesList = [];
@@ -33,8 +41,7 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
     );
 
     if (id == 0) {
-      print('Saving category failed');
-      throw const FormatException('Saving category failed');
+      throw const FormatException('Saving category_list failed');
     }
   }
 
@@ -49,8 +56,7 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
     );
 
     if (rowsChangedCount == 0) {
-      print('Updating category failed');
-      throw const FormatException('Updating category failed');
+      throw const FormatException('Updating category_list failed');
     }
   }
 
@@ -64,7 +70,7 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
   @override
   Future<void> delete(String uuid) async {
     await _dbProvider.database.update(
-      transactionsTableName,
+      SqfliteDbConfig.transactionsTableName,
       {TransactionsTableColumns.categoryUuid.code: null},
       where: '${TransactionsTableColumns.categoryUuid.code} = $uuid',
     );
@@ -75,8 +81,7 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
     );
 
     if (rowsDeletedCount == 0) {
-      print('Deleting category failed');
-      throw FormatException('Deleting category failed');
+      throw const FormatException('Deleting category_list failed');
     }
   }
 }

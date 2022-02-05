@@ -14,7 +14,7 @@ Future<void> configureDependencies() async {
       SqfliteDatabaseProvider(),
     )
     ..registerSingleton<SqfliteCategoriesRepository>(
-      SqfliteCategoriesRepository(),
+      SqfliteCategoriesRepository(getIt<SqfliteDatabaseProvider>()),
     )
     ..registerLazySingleton<SqfliteTransactionsRepository>(
       () => SqfliteTransactionsRepository(

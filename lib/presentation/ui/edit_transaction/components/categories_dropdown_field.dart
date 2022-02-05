@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
-import 'package:my_expenses_planner/presentation/cubit/categories_cubit.dart';
-import 'package:my_expenses_planner/presentation/cubit/transactions_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/core/widgets/custom_dropdown.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 
@@ -20,13 +20,13 @@ class CategoriesDropdownField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoriesCubit, CategoriesState>(
-      builder: (BuildContext context, CategoriesState state) {
+    return BlocBuilder<CategoryListCubit, CategoryListState>(
+      builder: (BuildContext context, CategoryListState state) {
         final bool isLoaded = state.type == CategoriesStateType.loaded;
 
         if (!isLoaded) {
-          final CategoriesCubit cubit =
-              BlocProvider.of<CategoriesCubit>(context);
+          final CategoryListCubit cubit =
+              BlocProvider.of<CategoryListCubit>(context);
 
           SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
             cubit.fetchCategories();
@@ -151,7 +151,7 @@ class CategoriesDropdownField extends StatelessWidget {
       MaterialPageRoute(
         builder: (editTransactionContext) {
           return BlocProvider.value(
-            value: BlocProvider.of<CategoriesCubit>(context),
+            value: BlocProvider.of<CategoryListCubit>(context),
             child: EditCategoryScreen(category: category),
           );
         },
@@ -169,7 +169,7 @@ class CategoriesDropdownField extends StatelessWidget {
       builder: (BuildContext alertContext) {
         return AlertDialog(
           title: const Text(
-            'Are you sure you want to delete the category?',
+            'Are you sure you want to delete the category_list?',
           ), // TODO: localization
           actions: [
             TextButton(
@@ -180,11 +180,11 @@ class CategoriesDropdownField extends StatelessWidget {
             ), // TODO: localization
             TextButton(
               onPressed: () {
-                BlocProvider.of<CategoriesCubit>(context)
+                BlocProvider.of<CategoryListCubit>(context)
                     .deleteCategory(categoryUuid)
                     .then(
                   (value) {
-                    BlocProvider.of<TransactionsCubit>(context).refresh();
+                    BlocProvider.of<TransactionListCubit>(context).refresh();
                   },
                 );
                 Navigator.pop(alertContext);

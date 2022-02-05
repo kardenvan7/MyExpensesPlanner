@@ -1,3 +1,4 @@
+import 'package:my_expenses_planner/data/local_db/config.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -28,7 +29,7 @@ class SqfliteDatabaseProvider {
       },
       onCreate: (Database db, int version) async {
         await db.execute(
-          'CREATE TABLE $transactionsTableName ('
+          'CREATE TABLE ${SqfliteDbConfig.transactionsTableName} ('
           'id INTEGER PRIMARY KEY AUTOINCREMENT, '
           '${TransactionsTableColumns.uuid.code} TEXT, '
           '${TransactionsTableColumns.title.code} TEXT, '
@@ -38,11 +39,13 @@ class SqfliteDatabaseProvider {
         );
 
         await db.execute(
-          'ALTER TABLE $transactionsTableName ADD COLUMN ${TransactionsTableColumns.categoryUuid.code} TEXT REFERENCES $categoriesTableName(${CategoriesTableColumns.uuid.code})',
+          'ALTER TABLE ${SqfliteDbConfig.transactionsTableName} '
+          'ADD COLUMN ${TransactionsTableColumns.categoryUuid.code} '
+          'TEXT REFERENCES ${SqfliteDbConfig.categoriesTableName}(${CategoriesTableColumns.uuid.code})',
         );
 
         await db.execute(
-          'CREATE TABLE $categoriesTableName ('
+          'CREATE TABLE ${SqfliteDbConfig.categoriesTableName} ('
           '${CategoriesTableColumns.uuid.code} TEXT PRIMARY KEY, '
           '${CategoriesTableColumns.name.code} TEXT, '
           '${CategoriesTableColumns.color.code} TEXT'
@@ -60,9 +63,6 @@ class SqfliteDatabaseProvider {
     await database.close();
   }
 }
-
-const String transactionsTableName = 'transactions';
-const String categoriesTableName = 'categories';
 
 enum TransactionsTableColumns { uuid, title, amount, date, categoryUuid }
 enum CategoriesTableColumns { uuid, name, color }

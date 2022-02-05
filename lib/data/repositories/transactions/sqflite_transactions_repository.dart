@@ -1,9 +1,10 @@
 import 'package:collection/collection.dart';
+import 'package:my_expenses_planner/data/local_db/config.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
+import 'package:my_expenses_planner/data/models/transaction.dart';
+import 'package:my_expenses_planner/data/models/transaction_category.dart';
 import 'package:my_expenses_planner/data/repositories/categories/sqflite_categories_repository.dart';
 import 'package:my_expenses_planner/data/repositories/transactions/i_transactions_repository.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 
 class SqfliteTransactionsRepository implements ITransactionsRepository {
   SqfliteTransactionsRepository({
@@ -12,7 +13,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   })  : _categoriesRepository = categoriesRepository,
         _dbProvider = dbProvider;
 
-  static const String _tableName = transactionsTableName;
+  static const String _tableName = SqfliteDbConfig.transactionsTableName;
 
   final SqfliteDatabaseProvider _dbProvider;
   final SqfliteCategoriesRepository _categoriesRepository;
@@ -66,7 +67,6 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     );
 
     if (rowsChangedCount == 0) {
-      print('Editing transaction $transactionId failed');
       throw FormatException('Editing transaction $transactionId failed');
     }
   }
@@ -81,7 +81,6 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     );
 
     if (id == 0) {
-      print('Saving transaction $id failed');
       throw FormatException('Saving transaction $id failed');
     }
   }
@@ -96,7 +95,6 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     );
 
     if (rowsDeletedCount == 0) {
-      print('Deleting transaction $transactionId failed');
       throw FormatException('Deleting transaction $transactionId failed');
     }
   }
@@ -107,7 +105,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     transactionMap[TransactionsTableColumns.categoryUuid.code] =
         transaction.category?.uuid;
 
-    transactionMap.remove('category');
+    transactionMap.remove('category_list');
 
     return transactionMap;
   }
@@ -118,7 +116,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   }) {
     final Map<String, Object?> newMap = Map.from(map);
 
-    newMap['category'] = category?.toMap();
+    newMap['category_list'] = category?.toMap();
     newMap.remove(TransactionsTableColumns.categoryUuid.code);
 
     return Transaction.fromMap(newMap);

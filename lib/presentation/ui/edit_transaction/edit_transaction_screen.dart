@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
-import 'package:my_expenses_planner/presentation/cubit/transactions_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/amount_input.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/categories_dropdown_field.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/date_input.dart';
@@ -114,8 +114,8 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
     required Transaction transaction,
   }) async {
     try {
-      final TransactionsCubit transactionsCubit =
-          BlocProvider.of<TransactionsCubit>(context);
+      final TransactionListCubit transactionsCubit =
+          BlocProvider.of<TransactionListCubit>(context);
 
       await transactionsCubit.addTransaction(
         transaction,
@@ -138,8 +138,8 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
     required Transaction newTransaction,
   }) async {
     try {
-      final TransactionsCubit transactionsCubit =
-          BlocProvider.of<TransactionsCubit>(context);
+      final TransactionListCubit transactionsCubit =
+          BlocProvider.of<TransactionListCubit>(context);
 
       await transactionsCubit.editTransaction(
         txId: widget.transaction!.uuid,

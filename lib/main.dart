@@ -13,8 +13,8 @@ import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/categories_case_impl.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/transactions_case_impl.dart';
-import 'package:my_expenses_planner/presentation/cubit/categories_cubit.dart';
-import 'package:my_expenses_planner/presentation/cubit/transactions_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/main/main_screen.dart';
@@ -30,6 +30,8 @@ void main() async {
     exit(1);
   }
 
+  await configureDependencies();
+
   runApp(
     const ConfiguredEasyLocalization(
       child: MyExpensesPlanner(),
@@ -44,16 +46,16 @@ class MyExpensesPlanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<TransactionsCubit>(
-          create: (_) => TransactionsCubit(
+        BlocProvider<TransactionListCubit>(
+          create: (_) => TransactionListCubit(
             transactionsCaseImpl: TransactionsCaseImpl(
               sqfliteTransactionsRepository:
                   getIt<SqfliteTransactionsRepository>(),
             ),
           ),
         ),
-        BlocProvider<CategoriesCubit>(
-          create: (_) => CategoriesCubit(
+        BlocProvider<CategoryListCubit>(
+          create: (_) => CategoryListCubit(
             categoriesCaseImpl: CategoriesCaseImpl(
               sqfliteCategoriesRepository: getIt<SqfliteCategoriesRepository>(),
             ),

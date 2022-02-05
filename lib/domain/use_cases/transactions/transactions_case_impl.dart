@@ -1,3 +1,4 @@
+import 'package:my_expenses_planner/data/models/transaction.dart' as data;
 import 'package:my_expenses_planner/data/repositories/transactions/sqflite_transactions_repository.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
@@ -14,9 +15,17 @@ class TransactionsCaseImpl implements ITransactionsCase {
     int limit = 40,
     int offset = 0,
   }) async {
-    return _sqfliteTransactionsRepository.getLastTransactions(
+    final List<data.Transaction> _transactions =
+        await _sqfliteTransactionsRepository.getLastTransactions(
       limit: limit,
       offset: offset,
+    );
+
+    return List.generate(
+      _transactions.length,
+      (index) => Transaction.fromDataTransaction(
+        _transactions[index],
+      ),
     );
   }
 
@@ -27,7 +36,7 @@ class TransactionsCaseImpl implements ITransactionsCase {
   }) async {
     _sqfliteTransactionsRepository.edit(
       transactionId: transactionId,
-      newTransaction: newTransaction,
+      newTransaction: newTransaction.toDataTransaction(),
     );
   }
 
@@ -35,13 +44,17 @@ class TransactionsCaseImpl implements ITransactionsCase {
   Future<void> save({
     required Transaction transaction,
   }) async {
-    _sqfliteTransactionsRepository.save(transaction: transaction);
+    _sqfliteTransactionsRepository.save(
+      transaction: transaction.toDataTransaction(),
+    );
   }
 
   @override
   Future<void> delete({
     required String transactionId,
   }) async {
-    _sqfliteTransactionsRepository.delete(transactionId: transactionId);
+    _sqfliteTransactionsRepository.delete(
+      transactionId: transactionId,
+    );
   }
 }

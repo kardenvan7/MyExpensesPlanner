@@ -1,10 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:my_expenses_planner/domain/core/extensions/color_extensions.dart';
+import 'package:my_expenses_planner/config/localization/locale_keys.dart';
+import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
-import 'package:my_expenses_planner/presentation/cubit/categories_cubit.dart';
-import 'package:my_expenses_planner/presentation/cubit/transactions_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/components/title_input.dart';
 
 class EditCategoryScreen extends StatefulWidget {
@@ -54,7 +56,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Form(
             key: EditCategoryScreen._formKey,
             child: Column(
@@ -62,8 +64,8 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
               children: [
                 CategoryTitleInput(controller: _titleController),
                 Container(
-                  margin: EdgeInsets.only(top: 30),
-                  padding: EdgeInsets.symmetric(horizontal: 40),
+                  margin: const EdgeInsets.only(top: 30),
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: ColorPicker(
                     hexInputController: _colorController,
                     pickerColor: _pickedColor,
@@ -77,7 +79,9 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                       onPressed: () {
                         _onSubmit(context);
                       },
-                      child: Text('Submit'),
+                      child: Text(
+                        LocaleKeys.submit.tr(),
+                      ),
                     ),
                   ],
                 ) // TODO: localization
@@ -94,17 +98,18 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
       final TransactionCategory newCategory = TransactionCategory(
         uuid: widget.category?.uuid ??
             DateTime.now().microsecondsSinceEpoch.toString(),
-        color: HexColor.fromHex(_colorController.text),
+        color: HexColor.fromHex(_colorController.text) ?? Colors.white,
         name: _titleController.text,
       );
 
-      final CategoriesCubit cubit = BlocProvider.of<CategoriesCubit>(context);
+      final CategoryListCubit cubit =
+          BlocProvider.of<CategoryListCubit>(context);
 
       if (widget.category == null) {
         cubit.addCategory(newCategory);
       } else {
         await cubit.editCategory(widget.category!.uuid, newCategory);
-        BlocProvider.of<TransactionsCubit>(context).refresh();
+        BlocProvider.of<TransactionListCubit>(context).refresh();
       }
 
       Navigator.pop(context, newCategory);

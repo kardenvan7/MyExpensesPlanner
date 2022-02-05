@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/presentation/cubit/transactions_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
 
 class TransactionsListItem extends StatelessWidget {
@@ -16,31 +16,64 @@ class TransactionsListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Slidable(
       child: Card(
-        child: ListTile(
-          leading: transaction.category != null
-              ? SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: Stack(
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: transaction.category?.color ?? Colors.white,
-                        ),
-                      ),
-                      Align(
-                        child: Text(transaction.category!.name),
-                      )
-                    ],
-                  ),
-                )
-              : null,
-          title: Text(transaction.title),
-          trailing: Text(transaction.amount.toStringAsFixed(2)),
+        clipBehavior: Clip.hardEdge,
+        child: Row(
+          children: [
+            Container(
+              width: 70,
+              height: 50,
+              color: transaction.category?.color,
+              child: Center(
+                child: Text(
+                  transaction.category?.name ?? '',
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: 10,
+                ),
+                child: Text(
+                  transaction.title,
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(
+                right: 10,
+              ),
+              child: Text(
+                transaction.amount.toStringAsFixed(2),
+              ),
+            ),
+          ],
         ),
+        // ListTile(
+        //   leading: transaction.category != null
+        //       ? SizedBox(
+        //           width: 30,
+        //           height: 30,
+        //           child: Stack(
+        //             children: [
+        //               Container(
+        //                 width: 30,
+        //                 height: 30,
+        //                 decoration: BoxDecoration(
+        //                   shape: BoxShape.circle,
+        //                   color: transaction.category?.color ?? Colors.white,
+        //                 ),
+        //               ),
+        //               Align(
+        //                 child: Text(transaction.category!.name),
+        //               )
+        //             ],
+        //           ),
+        //         )
+        //       : null,
+        //   title: Text(transaction.title),
+        //   trailing: Text(transaction.amount.toStringAsFixed(2)),
+        // ),
       ),
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
@@ -103,7 +136,7 @@ class TransactionsListItem extends StatelessWidget {
 
   void _onDeleteConfirmed(BuildContext context) {
     try {
-      BlocProvider.of<TransactionsCubit>(context)
+      BlocProvider.of<TransactionListCubit>(context)
           .deleteTransaction(transaction.uuid);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

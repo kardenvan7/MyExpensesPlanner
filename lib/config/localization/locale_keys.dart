@@ -11,4 +11,5 @@ class LocaleKeys {
   static const String editTransactionTitle = 'edit_transaction_title';
   static const String deleteTransactionConfirmationQuestion =
       'delete_transaction_confirmation_question';
+  static const String submit = 'submit';
 }
