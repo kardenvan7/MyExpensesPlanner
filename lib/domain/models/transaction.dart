@@ -19,8 +19,8 @@ class Transaction {
       date: DateTime.fromMillisecondsSinceEpoch(
         map['date'] as int,
       ),
-      category: map['category_list'] is Map
-          ? TransactionCategory.fromMap(map['category_list'] as Map)
+      category: map['category'] is Map
+          ? TransactionCategory.fromMap(map['category'] as Map)
           : null,
     );
   }
@@ -61,7 +61,7 @@ class Transaction {
       'title': title,
       'code': amount,
       'date': date.millisecondsSinceEpoch,
-      'category_list': category?.toMap(),
+      'category': category?.toMap(),
     };
   }
 

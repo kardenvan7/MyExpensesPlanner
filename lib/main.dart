@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/localization/localization.dart';
-import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
+import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/data/repositories/categories/sqflite_categories_repository.dart';
 import 'package:my_expenses_planner/data/repositories/transactions/sqflite_transactions_repository.dart';
 import 'package:my_expenses_planner/di.dart';
@@ -22,15 +22,14 @@ import 'package:my_expenses_planner/presentation/ui/main/main_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await configureDependencies();
 
   try {
     await EasyLocalization.ensureInitialized();
-    await SqfliteDatabaseProvider().initDatabase();
+    await getIt<DatabaseWrapper>().initDatabase();
   } catch (e) {
     exit(1);
   }
-
-  await configureDependencies();
 
   runApp(
     const ConfiguredEasyLocalization(
@@ -61,7 +60,7 @@ class MyExpensesPlanner extends StatelessWidget {
             ),
           )..fetchCategories(),
         ),
-      ], // TODO: getIt
+      ],
       child: MaterialApp(
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,

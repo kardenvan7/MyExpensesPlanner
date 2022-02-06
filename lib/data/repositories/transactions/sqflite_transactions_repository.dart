@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:my_expenses_planner/data/local_db/config.dart';
+import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
 import 'package:my_expenses_planner/data/models/transaction.dart';
 import 'package:my_expenses_planner/data/models/transaction_category.dart';
@@ -9,13 +10,13 @@ import 'package:my_expenses_planner/data/repositories/transactions/i_transaction
 class SqfliteTransactionsRepository implements ITransactionsRepository {
   SqfliteTransactionsRepository({
     required SqfliteCategoriesRepository categoriesRepository,
-    required SqfliteDatabaseProvider dbProvider,
+    required DatabaseWrapper dbWrapper,
   })  : _categoriesRepository = categoriesRepository,
-        _dbProvider = dbProvider;
+        _dbWrapper = dbWrapper;
 
   static const String _tableName = SqfliteDbConfig.transactionsTableName;
 
-  final SqfliteDatabaseProvider _dbProvider;
+  final DatabaseWrapper _dbWrapper;
   final SqfliteCategoriesRepository _categoriesRepository;
 
   @override
@@ -24,7 +25,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     int offset = 0,
   }) async {
     final List<Map<String, Object?>> transactionsMapsList =
-        await _dbProvider.database.rawQuery(
+        await _dbWrapper.rawQuery(
       'SELECT * FROM $_tableName '
       'ORDER BY date DESC LIMIT $offset, $limit;',
     );
@@ -60,7 +61,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     final Map<String, Object?> transactionMap =
         _getTransactionMapForDb(newTransaction);
 
-    final int rowsChangedCount = await _dbProvider.database.update(
+    final int rowsChangedCount = await _dbWrapper.update(
       _tableName,
       transactionMap,
       where: '${TransactionsTableColumns.uuid.code} = $transactionId',
@@ -75,7 +76,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   Future<void> save({
     required Transaction transaction,
   }) async {
-    final int id = await _dbProvider.database.insert(
+    final int id = await _dbWrapper.insert(
       _tableName,
       _getTransactionMapForDb(transaction),
     );
@@ -89,7 +90,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   Future<void> delete({
     required String transactionId,
   }) async {
-    final int rowsDeletedCount = await _dbProvider.database.delete(
+    final int rowsDeletedCount = await _dbWrapper.delete(
       _tableName,
       where: '${TransactionsTableColumns.uuid.code} = $transactionId',
     );
@@ -105,7 +106,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     transactionMap[TransactionsTableColumns.categoryUuid.code] =
         transaction.category?.uuid;
 
-    transactionMap.remove('category_list');
+    transactionMap.remove('category');
 
     return transactionMap;
   }
@@ -116,7 +117,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   }) {
     final Map<String, Object?> newMap = Map.from(map);
 
-    newMap['category_list'] = category?.toMap();
+    newMap['category'] = category?.toMap();
     newMap.remove(TransactionsTableColumns.categoryUuid.code);
 
     return Transaction.fromMap(newMap);

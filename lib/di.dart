@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
 import 'package:my_expenses_planner/data/repositories/categories/sqflite_categories_repository.dart';
 import 'package:my_expenses_planner/data/repositories/transactions/sqflite_transactions_repository.dart';
@@ -10,16 +11,18 @@ Future<void> configureDependencies() async {
   getIt
 
     /// sqflite db and repos
-    ..registerSingleton<SqfliteDatabaseProvider>(
-      SqfliteDatabaseProvider(),
+    ..registerSingleton<DatabaseWrapper>(
+      DatabaseWrapper(
+        SqfliteDatabaseProvider(),
+      ),
     )
     ..registerSingleton<SqfliteCategoriesRepository>(
-      SqfliteCategoriesRepository(getIt<SqfliteDatabaseProvider>()),
+      SqfliteCategoriesRepository(getIt<DatabaseWrapper>()),
     )
     ..registerLazySingleton<SqfliteTransactionsRepository>(
       () => SqfliteTransactionsRepository(
         categoriesRepository: getIt<SqfliteCategoriesRepository>(),
-        dbProvider: getIt<SqfliteDatabaseProvider>(),
+        dbWrapper: getIt<DatabaseWrapper>(),
       ),
     );
 

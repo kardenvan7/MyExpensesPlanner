@@ -167,7 +167,7 @@ class CategoriesDropdownField extends StatelessWidget {
       builder: (BuildContext alertContext) {
         return AlertDialog(
           title: const Text(
-            'Are you sure you want to delete the category_list?',
+            'Are you sure you want to delete the category?',
           ), // TODO: localization
           actions: [
             TextButton(
