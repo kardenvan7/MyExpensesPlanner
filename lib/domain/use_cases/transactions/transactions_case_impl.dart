@@ -1,22 +1,22 @@
 import 'package:my_expenses_planner/data/models/transaction.dart' as data;
-import 'package:my_expenses_planner/data/repositories/transactions/sqflite_transactions_repository.dart';
+import 'package:my_expenses_planner/data/repositories/transactions/i_transactions_repository.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 
 class TransactionsCaseImpl implements ITransactionsCase {
   TransactionsCaseImpl({
-    required SqfliteTransactionsRepository sqfliteTransactionsRepository,
-  }) : _sqfliteTransactionsRepository = sqfliteTransactionsRepository;
+    required ITransactionsRepository transactionsRepository,
+  }) : _transactionsRepository = transactionsRepository;
 
-  final SqfliteTransactionsRepository _sqfliteTransactionsRepository;
+  final ITransactionsRepository _transactionsRepository;
 
   @override
-  Future<List<Transaction>> getLastTransactions({
+  Future<List<Transaction>> getTransactions({
     int limit = 40,
     int offset = 0,
   }) async {
     final List<data.Transaction> _transactions =
-        await _sqfliteTransactionsRepository.getLastTransactions(
+        await _transactionsRepository.getTransactions(
       limit: limit,
       offset: offset,
     );
@@ -34,7 +34,7 @@ class TransactionsCaseImpl implements ITransactionsCase {
     required String transactionId,
     required Transaction newTransaction,
   }) async {
-    _sqfliteTransactionsRepository.edit(
+    _transactionsRepository.edit(
       transactionId: transactionId,
       newTransaction: newTransaction.toDataTransaction(),
     );
@@ -44,7 +44,7 @@ class TransactionsCaseImpl implements ITransactionsCase {
   Future<void> save({
     required Transaction transaction,
   }) async {
-    _sqfliteTransactionsRepository.save(
+    _transactionsRepository.save(
       transaction: transaction.toDataTransaction(),
     );
   }
@@ -53,8 +53,34 @@ class TransactionsCaseImpl implements ITransactionsCase {
   Future<void> delete({
     required String transactionId,
   }) async {
-    _sqfliteTransactionsRepository.delete(
+    _transactionsRepository.delete(
       transactionId: transactionId,
+    );
+  }
+
+  @override
+  Future<List<Transaction>> getLastWeekTransactions() async {
+    final DateTime _now = DateTime.now();
+    final DateTime _startDate = DateTime(
+      _now.year,
+      _now.month,
+      _now.day,
+    ).subtract(
+      const Duration(
+        days: 6,
+      ),
+    );
+
+    final List<data.Transaction> _transactions =
+        await _transactionsRepository.getTransactionsFromPeriod(
+      startDate: _startDate,
+    );
+
+    return List.generate(
+      _transactions.length,
+      (index) => Transaction.fromDataTransaction(
+        _transactions[index],
+      ),
     );
   }
 }

@@ -18,32 +18,28 @@ class MainScreen extends StatelessWidget {
         child: BlocBuilder<TransactionListCubit, TransactionListState>(
           builder: (context, state) {
             switch (state.type) {
-              case TransactionsStateType.initial:
+              case TransactionListStateType.initial:
                 return Container(
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(bottom: kToolbarHeight),
                   child: const CircularProgressIndicator(),
                 );
 
-              case TransactionsStateType.loaded:
+              case TransactionListStateType.loaded:
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   margin: const EdgeInsets.only(top: 15),
                   child: Column(
-                    children: [
+                    children: const [
                       Flexible(
                         flex: 3,
-                        child: LastWeekTransactions(
-                          lastWeekTransactions: state.lastWeekTransactions,
-                        ),
+                        child: LastWeekTransactions(),
                       ),
                       Flexible(
                         flex: 7,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: TransactionsList(
-                            transactions: state.sortedByDateTransactions,
-                          ),
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: TransactionsList(),
                         ),
                       ),
                     ],

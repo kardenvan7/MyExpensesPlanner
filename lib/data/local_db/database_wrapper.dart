@@ -7,15 +7,6 @@ class DatabaseWrapper {
   DatabaseWrapper(this._databaseProvider);
 
   final SqfliteDatabaseProvider _databaseProvider;
-  final StreamController<int> _controller = StreamController<int>();
-
-  Stream<int> get stream => _controller.stream;
-
-  Future<void> _triggerStream() async {
-    final int _lastElement = await stream.isEmpty ? 0 : await stream.last;
-
-    _controller.add(_lastElement + 1);
-  }
 
   Future<void> initDatabase() async {
     await _databaseProvider.initDatabase();
@@ -30,8 +21,6 @@ class DatabaseWrapper {
       query,
       arguments,
     );
-
-    await _triggerStream();
 
     return _data;
   }
@@ -48,8 +37,6 @@ class DatabaseWrapper {
       nullColumnHack: nullColumnHack,
       conflictAlgorithm: conflictAlgorithm,
     );
-
-    await _triggerStream();
 
     return _status;
   }
@@ -69,8 +56,6 @@ class DatabaseWrapper {
       conflictAlgorithm: conflictAlgorithm,
     );
 
-    await _triggerStream();
-
     return _status;
   }
 
@@ -84,8 +69,6 @@ class DatabaseWrapper {
       where: where,
       whereArgs: whereArgs,
     );
-
-    await _triggerStream();
 
     return _status;
   }

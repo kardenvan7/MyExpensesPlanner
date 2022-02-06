@@ -25,21 +25,26 @@ class CategoryListCubit extends Cubit<CategoryListState> {
   }
 
   Future<void> fetchCategories() async {
-    emit(
-      CategoryListState(
-        isLoading: true,
-      ),
-    );
+    try {
+      emit(
+        CategoryListState(
+          isLoading: true,
+        ),
+      );
 
-    final List<TransactionCategory> categoriesList =
-        await _categoriesCaseImpl.getCategories();
+      final List<TransactionCategory> categoriesList =
+          await _categoriesCaseImpl.getCategories();
 
-    emit(
-      CategoryListState(
-        isLoading: false,
-        categories: categoriesList,
-      ),
-    );
+      emit(
+        CategoryListState(
+          isLoading: false,
+          categories: categoriesList,
+        ),
+      );
+    } catch (e, st) {
+      print(e);
+      print(st);
+    }
   }
 
   void refresh() {

@@ -5,7 +5,7 @@ import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions
 
 class MockTransactionsCaseImpl implements ITransactionsCase {
   @override
-  Future<List<Transaction>> getLastTransactions({
+  Future<List<Transaction>> getTransactions({
     int limit = 40,
     int offset = 0,
   }) async {
@@ -42,6 +42,12 @@ class MockTransactionsCaseImpl implements ITransactionsCase {
   @override
   Future<void> delete({required String transactionId}) {
     // TODO: implement delete
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Transaction>> getLastWeekTransactions() {
+    // TODO: implement getLastWeekTransactions
     throw UnimplementedError();
   }
 }

@@ -13,7 +13,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   })  : _transactionsCaseImpl = transactionsCaseImpl,
         super(
           TransactionListState(
-            type: TransactionsStateType.initial,
+            type: TransactionListStateType.initial,
             transactions: [],
           ),
         );
@@ -31,28 +31,33 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
   void refresh() {
     emit(TransactionListState(
-      type: TransactionsStateType.initial,
+      type: TransactionListStateType.initial,
       transactions: state.transactions,
     ));
   }
 
   Future<void> fetchLastTransactions() async {
-    emit(
-      TransactionListState(
-        type: TransactionsStateType.initial,
-        transactions: [],
-      ),
-    );
+    try {
+      emit(
+        TransactionListState(
+          type: TransactionListStateType.initial,
+          transactions: [],
+        ),
+      );
 
-    final List<Transaction> _transactions =
-        await _transactionsCaseImpl.getLastTransactions();
+      final List<Transaction> _transactions =
+          await _transactionsCaseImpl.getTransactions();
 
-    emit(
-      TransactionListState(
-        type: TransactionsStateType.loaded,
-        transactions: _transactions,
-      ),
-    );
+      emit(
+        TransactionListState(
+          type: TransactionListStateType.loaded,
+          transactions: _transactions,
+        ),
+      );
+    } catch (e, st) {
+      print(e);
+      print(st);
+    }
   }
 
   Future<void> addTransaction(Transaction transaction) async {
@@ -63,7 +68,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
     emit(
       TransactionListState(
-        type: TransactionsStateType.loaded,
+        type: TransactionListStateType.loaded,
         transactions: _transactions,
       ),
     );
@@ -86,7 +91,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
     emit(
       TransactionListState(
-        type: TransactionsStateType.loaded,
+        type: TransactionListStateType.loaded,
         transactions: _transactions,
       ),
     );
@@ -100,7 +105,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
     emit(
       TransactionListState(
-        type: TransactionsStateType.loaded,
+        type: TransactionListStateType.loaded,
         transactions: _transactions,
       ),
     );

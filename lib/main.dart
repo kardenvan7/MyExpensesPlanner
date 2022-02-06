@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -6,8 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/localization/localization.dart';
 import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
-import 'package:my_expenses_planner/data/repositories/categories/sqflite_categories_repository.dart';
-import 'package:my_expenses_planner/data/repositories/transactions/sqflite_transactions_repository.dart';
+import 'package:my_expenses_planner/data/repositories/categories/i_categories_repository.dart';
+import 'package:my_expenses_planner/data/repositories/transactions/i_transactions_repository.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
@@ -20,21 +21,33 @@ import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transa
 import 'package:my_expenses_planner/presentation/ui/main/main_screen.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  await configureDependencies();
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+      await configureDependencies();
 
-  try {
-    await EasyLocalization.ensureInitialized();
-    await getIt<DatabaseWrapper>().initDatabase();
-  } catch (e) {
-    exit(1);
-  }
+      try {
+        await EasyLocalization.ensureInitialized();
+        await getIt<DatabaseWrapper>().initDatabase();
+      } catch (e) {
+        exit(1);
+      }
 
-  runApp(
-    const ConfiguredEasyLocalization(
-      child: MyExpensesPlanner(),
-    ),
+      FlutterError.onError = (FlutterErrorDetails details) {
+        FlutterError.presentError(details);
+      };
+
+      runApp(
+        const ConfiguredEasyLocalization(
+          child: MyExpensesPlanner(),
+        ),
+      );
+    },
+    (Object error, StackTrace stack) {
+      print(error);
+      print(stack);
+    },
   );
 }
 
@@ -48,15 +61,14 @@ class MyExpensesPlanner extends StatelessWidget {
         BlocProvider<TransactionListCubit>(
           create: (_) => TransactionListCubit(
             transactionsCaseImpl: TransactionsCaseImpl(
-              sqfliteTransactionsRepository:
-                  getIt<SqfliteTransactionsRepository>(),
+              transactionsRepository: getIt<ITransactionsRepository>(),
             ),
           )..fetchLastTransactions(),
         ),
         BlocProvider<CategoryListCubit>(
           create: (_) => CategoryListCubit(
             categoriesCaseImpl: CategoriesCaseImpl(
-              sqfliteCategoriesRepository: getIt<SqfliteCategoriesRepository>(),
+              categoriesRepository: getIt<ICategoriesRepository>(),
             ),
           )..fetchCategories(),
         ),

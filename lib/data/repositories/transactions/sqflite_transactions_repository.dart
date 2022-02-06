@@ -1,11 +1,12 @@
 import 'package:collection/collection.dart';
-import 'package:my_expenses_planner/data/local_db/config.dart';
-import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
-import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
-import 'package:my_expenses_planner/data/models/transaction.dart';
-import 'package:my_expenses_planner/data/models/transaction_category.dart';
-import 'package:my_expenses_planner/data/repositories/categories/sqflite_categories_repository.dart';
-import 'package:my_expenses_planner/data/repositories/transactions/i_transactions_repository.dart';
+
+import '../../local_db/config.dart';
+import '../../local_db/database_wrapper.dart';
+import '../../local_db/sqflite_local_db.dart';
+import '../../models/transaction.dart';
+import '../../models/transaction_category.dart';
+import '../../repositories/categories/sqflite_categories_repository.dart';
+import '../../repositories/transactions/i_transactions_repository.dart';
 
 class SqfliteTransactionsRepository implements ITransactionsRepository {
   SqfliteTransactionsRepository({
@@ -20,7 +21,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   final SqfliteCategoriesRepository _categoriesRepository;
 
   @override
-  Future<List<Transaction>> getLastTransactions({
+  Future<List<Transaction>> getTransactions({
     int limit = 40,
     int offset = 0,
   }) async {
@@ -121,5 +122,31 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     newMap.remove(TransactionsTableColumns.categoryUuid.code);
 
     return Transaction.fromMap(newMap);
+  }
+
+  @override
+  Future<List<Transaction>> getTransactionsFromPeriod({
+    required DateTime startDate,
+    DateTime? endDate,
+  }) async {
+    String _query = 'SELECT * FROM $_tableName '
+        'WHERE ${TransactionsTableColumns.date} >= ${startDate.millisecondsSinceEpoch}';
+
+    if (endDate != null) {
+      _query +=
+          ' AND ${TransactionsTableColumns.date} < ${endDate.millisecondsSinceEpoch}';
+    }
+
+    _query += ';';
+
+    final List<Map<String, dynamic>> _transactionsJsonList =
+        await _dbWrapper.rawQuery(_query);
+
+    return List.generate(
+      _transactionsJsonList.length,
+      (index) => Transaction.fromMap(
+        _transactionsJsonList[index],
+      ),
+    );
   }
 }

@@ -1,7 +1,7 @@
 part of './transaction_list_cubit.dart';
 
 class TransactionListState {
-  final TransactionsStateType type;
+  final TransactionListStateType type;
   final List<Transaction> transactions;
 
   TransactionListState({
@@ -10,7 +10,7 @@ class TransactionListState {
   });
 
   TransactionListState copyWith({
-    TransactionsStateType? type,
+    TransactionListStateType? type,
     List<Transaction>? transactions,
   }) {
     return TransactionListState(
@@ -54,4 +54,4 @@ class TransactionListState {
       );
 }
 
-enum TransactionsStateType { initial, loaded }
+enum TransactionListStateType { initial, loaded }

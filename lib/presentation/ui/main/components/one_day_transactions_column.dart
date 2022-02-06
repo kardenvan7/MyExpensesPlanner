@@ -13,9 +13,11 @@ class OneDayTransactionsColumn extends StatelessWidget {
   final String title;
   final double maxAmount;
 
-  double get amount {
+  double get amountForDay {
     return transactions.fold(
-        0, (previousValue, element) => element.amount + previousValue);
+      0,
+      (previousValue, element) => element.amount + previousValue,
+    );
   }
 
   @override
@@ -39,15 +41,17 @@ class OneDayTransactionsColumn extends StatelessWidget {
               ),
               child: FractionallySizedBox(
                 alignment: Alignment.bottomCenter,
-                heightFactor: maxAmount != 0 ? amount / maxAmount : 0,
+                heightFactor: maxAmount != 0 ? amountForDay / maxAmount : 0,
                 child: Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primary,
                     borderRadius: BorderRadius.only(
                       bottomLeft: const Radius.circular(8),
                       bottomRight: const Radius.circular(8),
-                      topLeft: Radius.circular(amount == maxAmount ? 8 : 0),
-                      topRight: Radius.circular(amount == maxAmount ? 8 : 0),
+                      topLeft:
+                          Radius.circular(amountForDay == maxAmount ? 8 : 0),
+                      topRight:
+                          Radius.circular(amountForDay == maxAmount ? 8 : 0),
                     ),
                   ),
                 ),
@@ -59,7 +63,7 @@ class OneDayTransactionsColumn extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Text(
-                amount.toStringAsFixed(1),
+                amountForDay.toStringAsFixed(1),
                 softWrap: true,
               ),
             ),
