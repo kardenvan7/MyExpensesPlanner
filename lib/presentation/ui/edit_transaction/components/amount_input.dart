@@ -1,30 +1,28 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AmountInput extends StatelessWidget {
-  const AmountInput({required this.controller, Key? key}) : super(key: key);
+  const AmountInput({
+    required this.value,
+    required this.onChanged,
+    Key? key,
+  }) : super(key: key);
 
-  final TextEditingController controller;
+  final String? value;
+  final void Function(String? string) onChanged;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
+      initialValue: value,
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         label: const Text('amount_input_label').tr(),
         border: const OutlineInputBorder(),
       ),
-      validator: (String? value) {
-        if (value == null || value == '') {
-          return 'Field must be filled'; // TODO: localization
-        }
-
-        if (double.tryParse(value) == null) {
-          return 'Wrong format'; // TODO: localization
-        }
-      },
+      onChanged: onChanged,
     );
   }
 }

@@ -130,11 +130,11 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     DateTime? endDate,
   }) async {
     String _query = 'SELECT * FROM $_tableName '
-        'WHERE ${TransactionsTableColumns.date} >= ${startDate.millisecondsSinceEpoch}';
+        'WHERE ${TransactionsTableColumns.date.code} >= ${startDate.millisecondsSinceEpoch}';
 
     if (endDate != null) {
       _query +=
-          ' AND ${TransactionsTableColumns.date} < ${endDate.millisecondsSinceEpoch}';
+          ' AND ${TransactionsTableColumns.date.code} < ${endDate.millisecondsSinceEpoch}';
     }
 
     _query += ';';

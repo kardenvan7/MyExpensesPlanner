@@ -50,31 +50,6 @@ class TransactionsListItem extends StatelessWidget {
             ),
           ],
         ),
-        // ListTile(
-        //   leading: transaction.category != null
-        //       ? SizedBox(
-        //           width: 30,
-        //           height: 30,
-        //           child: Stack(
-        //             children: [
-        //               Container(
-        //                 width: 30,
-        //                 height: 30,
-        //                 decoration: BoxDecoration(
-        //                   shape: BoxShape.circle,
-        //                   color: transaction.category?.color ?? Colors.white,
-        //                 ),
-        //               ),
-        //               Align(
-        //                 child: Text(transaction.category!.name),
-        //               )
-        //             ],
-        //           ),
-        //         )
-        //       : null,
-        //   title: Text(transaction.title),
-        //   trailing: Text(transaction.amount.toStringAsFixed(2)),
-        // ),
       ),
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
@@ -141,7 +116,7 @@ class TransactionsListItem extends StatelessWidget {
           .deleteTransaction(transaction.uuid);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text(
             'Failed to delete transaction',
           ),

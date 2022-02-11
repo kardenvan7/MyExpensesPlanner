@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:my_expenses_planner/data/models/transaction.dart' as data;
 import 'package:my_expenses_planner/data/repositories/transactions/i_transactions_repository.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
@@ -9,6 +11,11 @@ class TransactionsCaseImpl implements ITransactionsCase {
   }) : _transactionsRepository = transactionsRepository;
 
   final ITransactionsRepository _transactionsRepository;
+  final StreamController<int> streamController = StreamController<int>();
+  int streamState = 0;
+
+  @override
+  Stream<int> get stream => streamController.stream;
 
   @override
   Future<List<Transaction>> getTransactions({
@@ -38,6 +45,8 @@ class TransactionsCaseImpl implements ITransactionsCase {
       transactionId: transactionId,
       newTransaction: newTransaction.toDataTransaction(),
     );
+
+    await _triggerStream();
   }
 
   @override
@@ -47,6 +56,8 @@ class TransactionsCaseImpl implements ITransactionsCase {
     _transactionsRepository.save(
       transaction: transaction.toDataTransaction(),
     );
+
+    await _triggerStream();
   }
 
   @override
@@ -56,6 +67,8 @@ class TransactionsCaseImpl implements ITransactionsCase {
     _transactionsRepository.delete(
       transactionId: transactionId,
     );
+
+    await _triggerStream();
   }
 
   @override
@@ -82,5 +95,9 @@ class TransactionsCaseImpl implements ITransactionsCase {
         _transactions[index],
       ),
     );
+  }
+
+  Future<void> _triggerStream() async {
+    streamController.add(++streamState);
   }
 }

@@ -16,4 +16,6 @@ abstract class ITransactionsCase {
   });
 
   Future<void> delete({required String transactionId});
+
+  Stream<int> get stream;
 }

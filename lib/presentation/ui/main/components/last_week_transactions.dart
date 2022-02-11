@@ -22,42 +22,49 @@ class LastWeekTransactions extends StatelessWidget {
       )..fetchLastWeekTransactions(),
       child: BlocBuilder<LastWeekGraphsCubit, LastWeekGraphsState>(
         builder: (context, state) {
-          return Container(
-            clipBehavior: Clip.hardEdge,
-            width: size.width,
-            height: size.height,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Colors.black12,
+          if (state.isLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return Container(
+              clipBehavior: Clip.hardEdge,
+              width: size.width,
+              height: size.height,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.black12,
+                ),
               ),
-            ),
-            child: state.isLoading
-                ? const CircularProgressIndicator()
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List<Widget>.generate(
-                      7,
-                      (int index) {
-                        final DateTime date = DateTime.now().subtract(
-                          Duration(
-                            days: index,
-                          ),
-                        );
+              child: state.isLoading
+                  ? const CircularProgressIndicator()
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List<Widget>.generate(
+                        7,
+                        (int index) {
+                          final DateTime date = DateTime.now().subtract(
+                            Duration(
+                              days: index,
+                            ),
+                          );
 
-                        return OneDayTransactionsColumn(
-                          transactions: state.transactions
-                              .where((element) => element.date.day == date.day)
-                              .toList(),
-                          title: DateFormat('EEE').format(date),
-                          maxAmount: state.max,
-                        );
-                      },
-                    ).reversed.toList(),
-                  ),
-          );
+                          return OneDayTransactionsColumn(
+                            transactions: state.transactions
+                                .where(
+                                    (element) => element.date.day == date.day)
+                                .toList(),
+                            title: DateFormat('EEE').format(date),
+                            maxAmount: state.max,
+                          );
+                        },
+                      ).reversed.toList(),
+                    ),
+            );
+          }
         },
       ),
     );

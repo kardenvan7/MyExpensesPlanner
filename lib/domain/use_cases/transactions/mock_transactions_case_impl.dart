@@ -50,4 +50,8 @@ class MockTransactionsCaseImpl implements ITransactionsCase {
     // TODO: implement getLastWeekTransactions
     throw UnimplementedError();
   }
+
+  @override
+  // TODO: implement stream
+  Stream<int> get stream => throw UnimplementedError();
 }

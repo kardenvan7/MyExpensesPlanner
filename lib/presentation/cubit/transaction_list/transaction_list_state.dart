@@ -1,20 +1,20 @@
 part of './transaction_list_cubit.dart';
 
 class TransactionListState {
-  final TransactionListStateType type;
+  final bool isLoading;
   final List<Transaction> transactions;
 
   TransactionListState({
-    required this.type,
+    required this.isLoading,
     required this.transactions,
   });
 
   TransactionListState copyWith({
-    TransactionListStateType? type,
+    bool? isLoading,
     List<Transaction>? transactions,
   }) {
     return TransactionListState(
-      type: type ?? this.type,
+      isLoading: isLoading ?? false,
       transactions: transactions ?? this.transactions,
     );
   }
@@ -53,5 +53,3 @@ class TransactionListState {
         (previousValue, element) => element.amount + previousValue,
       );
 }
-
-enum TransactionListStateType { initial, loaded }

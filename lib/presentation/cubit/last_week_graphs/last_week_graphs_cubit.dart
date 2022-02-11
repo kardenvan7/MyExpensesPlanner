@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_expenses_planner/core/extensions/datetime_extensions.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 
@@ -21,7 +20,7 @@ class LastWeekGraphsCubit extends Cubit<LastWeekGraphsState> {
         await _transactionsCase.getLastWeekTransactions();
 
     _transactions.sort(
-      (current, next) => next.date > current.date,
+      (current, next) => next.date.compareTo(current.date),
     );
 
     emit(
