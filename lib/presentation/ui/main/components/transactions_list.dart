@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +25,9 @@ class TransactionsList extends StatelessWidget {
         builder: (context, state) {
           return state.transactions.isNotEmpty
               ? ListView.builder(
+                  padding: EdgeInsets.only(
+                    bottom: Platform.isIOS ? 30 : 10,
+                  ),
                   shrinkWrap: true,
                   itemCount: state.sortedDates.length,
                   itemBuilder: (context, index) {
@@ -52,7 +57,7 @@ class TransactionsList extends StatelessWidget {
                               transaction: _currentDateTransactions[index],
                             );
                           },
-                        )
+                        ),
                       ],
                     );
                   },

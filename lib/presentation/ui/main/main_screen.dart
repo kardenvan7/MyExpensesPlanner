@@ -12,25 +12,23 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const MainScreenAppBar(),
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          margin: const EdgeInsets.only(top: 15),
-          child: Column(
-            children: const [
-              Flexible(
-                flex: 3,
-                child: LastWeekTransactions(),
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        margin: const EdgeInsets.only(top: 15),
+        child: Column(
+          children: const [
+            Flexible(
+              flex: 3,
+              child: LastWeekTransactions(),
+            ),
+            Flexible(
+              flex: 7,
+              child: Padding(
+                padding: EdgeInsets.only(top: 8.0),
+                child: TransactionsList(),
               ),
-              Flexible(
-                flex: 7,
-                child: Padding(
-                  padding: EdgeInsets.only(top: 8.0),
-                  child: TransactionsList(),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
