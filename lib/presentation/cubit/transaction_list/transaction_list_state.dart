@@ -19,37 +19,44 @@ class TransactionListState {
     );
   }
 
-  List<Transaction> _copyCurrentTransactions() {
-    return [...transactions];
-  }
+  List<Transaction> get sortedByCreateDateTransactions {
+    final _list = [...transactions];
 
-  List<Transaction> get sortedByDateTransactions {
-    final List<Transaction> sortedTransactions = _copyCurrentTransactions();
-
-    sortedTransactions.sort(
-      (current, next) => next.date.compareTo(
-        current.date,
+    _list.sort(
+      (curElem, newElem) => int.parse(newElem.uuid).compareTo(
+        int.parse(curElem.uuid),
       ),
     );
 
-    return sortedTransactions;
+    return _list;
   }
 
-  List<Transaction> get lastWeekTransactions {
-    final DateTime now = DateTime.now();
-    final DateTime weekBefore = DateTime(
-      now.year,
-      now.month,
-      now.day,
-    ).subtract(const Duration(days: 6));
+  Map<DateTime, List<Transaction>> get transactionsByDate {
+    final Map<DateTime, List<Transaction>> _transactionsByDate = {};
 
-    return transactions.where((element) {
-      return element.date > weekBefore;
-    }).toList();
-  }
-
-  double get fullAmount => transactions.fold(
-        0,
-        (previousValue, element) => element.amount + previousValue,
+    for (final Transaction _transaction in sortedByCreateDateTransactions) {
+      final DateTime _date = DateTime(
+        _transaction.date.year,
+        _transaction.date.month,
+        _transaction.date.day,
       );
+
+      if (_transactionsByDate.containsKey(_date)) {
+        _transactionsByDate[_date]!.add(_transaction);
+      } else {
+        _transactionsByDate[_date] = [_transaction];
+      }
+    }
+
+    return _transactionsByDate;
+  }
+
+  List<DateTime> get sortedDates {
+    return transactionsByDate.keys.toList()
+      ..sort(
+        (curDateTime, newDateTime) => newDateTime.compareTo(
+          curDateTime,
+        ),
+      );
+  }
 }

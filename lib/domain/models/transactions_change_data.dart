@@ -1,0 +1,15 @@
+import 'package:my_expenses_planner/domain/models/transaction.dart';
+
+class TransactionsChangeData {
+  TransactionsChangeData({
+    List<Transaction>? addedTransactions,
+    List<Transaction>? editedTransactions,
+    List<String>? deletedTransactionsUuids,
+  })  : addedTransactions = addedTransactions ?? [],
+        editedTransactions = editedTransactions ?? [],
+        deletedTransactionsUuids = deletedTransactionsUuids ?? [];
+
+  final List<Transaction> addedTransactions;
+  final List<Transaction> editedTransactions;
+  final List<String> deletedTransactionsUuids;
+}

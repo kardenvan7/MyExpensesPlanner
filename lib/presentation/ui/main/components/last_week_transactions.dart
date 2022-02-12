@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:my_expenses_planner/core/extensions/datetime_extensions.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 
@@ -19,7 +20,7 @@ class LastWeekTransactions extends StatelessWidget {
     return BlocProvider<LastWeekGraphsCubit>(
       create: (context) => LastWeekGraphsCubit(
         getIt<ITransactionsCase>(),
-      )..fetchLastWeekTransactions(),
+      )..initialize(),
       child: BlocBuilder<LastWeekGraphsCubit, LastWeekGraphsState>(
         builder: (context, state) {
           if (state.isLoading) {
@@ -54,8 +55,8 @@ class LastWeekTransactions extends StatelessWidget {
 
                           return OneDayTransactionsColumn(
                             transactions: state.transactions
-                                .where(
-                                    (element) => element.date.day == date.day)
+                                .where((element) =>
+                                    element.date.isSameDayWith(date))
                                 .toList(),
                             title: DateFormat('EEE').format(date),
                             maxAmount: state.max,

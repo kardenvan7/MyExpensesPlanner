@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:my_expenses_planner/domain/models/transaction.dart';
+import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 
 class MockTransactionsCaseImpl implements ITransactionsCase {
@@ -53,5 +54,5 @@ class MockTransactionsCaseImpl implements ITransactionsCase {
 
   @override
   // TODO: implement stream
-  Stream<int> get stream => throw UnimplementedError();
+  Stream<TransactionsChangeData> get stream => throw UnimplementedError();
 }

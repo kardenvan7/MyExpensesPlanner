@@ -35,6 +35,10 @@ class EditTransactionScreen extends StatelessWidget {
               ),
             );
           }
+
+          if (state.popScreen) {
+            Navigator.of(context).pop();
+          }
         },
         buildWhen: (oldState, newState) {
           return newState.triggerBuilder;
@@ -46,7 +50,7 @@ class EditTransactionScreen extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                state.isAdding
+                _cubit.isAdding
                     ? 'add_transaction_title'
                     : 'edit_transaction_title',
               ).tr(),
@@ -65,21 +69,23 @@ class EditTransactionScreen extends StatelessWidget {
                   TitleInput(
                     value: state.title,
                     onChanged: _cubit.setTitle,
+                    errorText: state.formState.titleErrorText,
                   ),
                   const SizedBox(
                     height: 10,
                   ),
                   AmountInput(
                     value: state.amount,
-                    onChanged: _cubit.setTitle,
+                    onChanged: _cubit.setAmount,
+                    errorText: state.formState.amountErrorText,
                   ),
                   DateInput(
                     initialDate: state.date,
                     onDatePicked: _cubit.setDate,
                   ),
                   CategoriesDropdownField(
-                    onCategoryPick: _cubit.setCategory,
                     initialCategory: state.category?.value,
+                    onCategoryPick: _cubit.setCategory,
                   ),
                 ],
               ),

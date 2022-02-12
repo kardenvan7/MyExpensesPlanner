@@ -68,7 +68,7 @@ class TransactionsListItem extends StatelessWidget {
           SlidableAction(
             backgroundColor: Colors.red,
             icon: Icons.delete,
-            onPressed: (BuildContext context) async {
+            onPressed: (BuildContext onPressedContext) async {
               await _onDelete(
                 context: context,
                 transaction: transaction,
@@ -86,7 +86,7 @@ class TransactionsListItem extends StatelessWidget {
   }) async {
     return await showDialog(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return AlertDialog(
           title: const Text(
             'delete_transaction_confirmation_question',
@@ -94,13 +94,13 @@ class TransactionsListItem extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                _onDeleteDenied(context);
+                _onDeleteDenied(dialogContext);
               },
               child: const Text('no').tr(),
             ),
             TextButton(
               onPressed: () {
-                _onDeleteConfirmed(context);
+                _onDeleteConfirmed(context, dialogContext);
               },
               child: const Text('yes').tr(),
             ),
@@ -110,20 +110,13 @@ class TransactionsListItem extends StatelessWidget {
     );
   }
 
-  void _onDeleteConfirmed(BuildContext context) {
-    try {
-      BlocProvider.of<TransactionListCubit>(context)
-          .deleteTransaction(transaction.uuid);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Failed to delete transaction',
-          ),
-        ), // TODO: localization
-      );
-    }
-    Navigator.of(context).pop();
+  void _onDeleteConfirmed(
+    BuildContext contextWithCubit,
+    BuildContext dialogContext,
+  ) {
+    BlocProvider.of<TransactionListCubit>(contextWithCubit)
+        .deleteTransaction(transaction.uuid);
+    Navigator.of(dialogContext).pop();
   }
 
   void _onDeleteDenied(BuildContext context) {

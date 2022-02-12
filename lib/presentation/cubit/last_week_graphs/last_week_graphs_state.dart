@@ -10,14 +10,37 @@ class LastWeekGraphsState {
   final List<Transaction> transactions;
 
   double get max {
-    double max = 0;
+    double maxAmount = 0;
 
-    for (final Transaction transaction in transactions) {
-      if (max < transaction.amount) {
-        max = transaction.amount;
+    final _dates = transactionsByDate.keys.toList();
+
+    for (final DateTime _date in _dates) {
+      final double _amountInDay = transactionsByDate[_date]!.fold<double>(
+        0,
+        (previousValue, element) => previousValue + element.amount,
+      );
+
+      if (_amountInDay > maxAmount) {
+        maxAmount = _amountInDay;
       }
     }
 
-    return max;
+    return maxAmount;
+  }
+
+  Map<DateTime, List<Transaction>> get transactionsByDate {
+    final Map<DateTime, List<Transaction>> _transactionsByDate = {};
+
+    for (final Transaction _transaction in transactions) {
+      final _date = _transaction.date.withoutTime;
+
+      if (_transactionsByDate.containsKey(_date)) {
+        _transactionsByDate[_date]!.add(_transaction);
+      } else {
+        _transactionsByDate[_date] = [_transaction];
+      }
+    }
+
+    return _transactionsByDate;
   }
 }

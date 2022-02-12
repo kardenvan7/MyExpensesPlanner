@@ -10,7 +10,8 @@ class EditTransactionState {
     this.triggerBuilder = true,
     this.snackBarText,
     this.popScreen = false,
-  });
+    FormState? formState,
+  }) : formState = formState ?? const FormState();
 
   factory EditTransactionState.fromTransaction(Transaction transaction) {
     return EditTransactionState(
@@ -35,12 +36,11 @@ class EditTransactionState {
   final String? title;
   final ValueWrapper<TransactionCategory>? category;
 
-  bool get isAdding => uuid == null;
-
   /// UI related
   final bool triggerBuilder;
   final String? snackBarText;
   final bool popScreen;
+  final FormState formState;
 
   bool get showSnackBar => snackBarText != null;
 
@@ -52,6 +52,7 @@ class EditTransactionState {
     bool? triggerBuilder,
     String? snackBarText,
     bool? popScreen,
+    FormState? formState,
   }) {
     return EditTransactionState(
       uuid: uuid,
@@ -62,11 +63,17 @@ class EditTransactionState {
       triggerBuilder: triggerBuilder ?? true,
       snackBarText: snackBarText,
       popScreen: popScreen ?? false,
+      formState: formState,
     );
   }
 }
 
 class FormState {
+  const FormState({
+    this.titleErrorText,
+    this.amountErrorText,
+  });
+
   final String? titleErrorText;
   final String? amountErrorText;
 }

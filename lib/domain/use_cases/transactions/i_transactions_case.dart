@@ -1,4 +1,5 @@
 import 'package:my_expenses_planner/domain/models/transaction.dart';
+import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
 
 abstract class ITransactionsCase {
   Future<List<Transaction>> getTransactions({
@@ -17,5 +18,5 @@ abstract class ITransactionsCase {
 
   Future<void> delete({required String transactionId});
 
-  Stream<int> get stream;
+  Stream<TransactionsChangeData> get stream;
 }

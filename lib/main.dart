@@ -8,14 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/localization/localization.dart';
 import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/data/repositories/categories/i_categories_repository.dart';
-import 'package:my_expenses_planner/data/repositories/transactions/i_transactions_repository.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/categories_case_impl.dart';
-import 'package:my_expenses_planner/domain/use_cases/transactions/transactions_case_impl.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
-import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/main/main_screen.dart';
@@ -58,13 +55,6 @@ class MyExpensesPlanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<TransactionListCubit>(
-          create: (_) => TransactionListCubit(
-            transactionsCaseImpl: TransactionsCaseImpl(
-              transactionsRepository: getIt<ITransactionsRepository>(),
-            ),
-          )..fetchLastTransactions(),
-        ),
         BlocProvider<CategoryListCubit>(
           create: (_) => CategoryListCubit(
             categoriesCaseImpl: CategoriesCaseImpl(
@@ -87,9 +77,23 @@ class MyExpensesPlanner extends StatelessWidget {
               color: Colors.black,
             ),
           ),
+          inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
+                errorBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.red,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                border: const OutlineInputBorder(),
+                enabledBorder: const OutlineInputBorder(),
+                errorStyle: const TextStyle(
+                  color: Colors.red,
+                ),
+              ),
           colorScheme: Theme.of(context).colorScheme.copyWith(
                 primary: Colors.purple,
                 secondary: Colors.orangeAccent,
+                error: Colors.red,
               ),
           buttonTheme: Theme.of(context).buttonTheme.copyWith(
                 colorScheme:

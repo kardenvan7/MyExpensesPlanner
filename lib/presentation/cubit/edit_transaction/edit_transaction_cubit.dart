@@ -19,14 +19,16 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
   final Transaction? transaction;
   final ITransactionsCase transactionsCase;
 
-  bool validateForm() {
+  bool get isAdding => transaction == null;
+
+  bool _validateForm() {
     String? titleErrorText;
     String? amountErrorText;
 
     final String? _amount = state.amount;
     final String? _title = state.title;
 
-    if (_amount == null) {
+    if (_amount == null || _amount == '') {
       amountErrorText = 'Field must be filled';
     } else {
       final double? parsedAmount = double.tryParse(_amount);
@@ -41,29 +43,40 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
     }
 
     if (titleErrorText == null && amountErrorText == null) {
+      emit(
+        state.copyWith(
+          formState: const FormState(),
+        ),
+      );
+
       return true;
     } else {
-      emit(state.copyWith());
-
-      /// TODO
+      emit(
+        state.copyWith(
+          formState: FormState(
+            titleErrorText: titleErrorText,
+            amountErrorText: amountErrorText,
+          ),
+        ),
+      );
 
       return false;
     }
   }
 
   Future<void> submit() async {
-    if (_isFormValid) {
+    if (_validateForm()) {
       final String title = state.title!;
       final double amount = double.parse(state.amount!);
 
       final Transaction newTransaction = Transaction(
         uuid: isAdding
             ? DateTime.now().microsecondsSinceEpoch.toString()
-            : widget.transaction!.uuid,
+            : state.uuid!,
         title: title,
         amount: amount,
-        date: _pickedDate,
-        category: _pickedCategory,
+        date: state.date!,
+        category: state.category?.value,
       );
 
       if (isAdding) {
@@ -72,7 +85,7 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
         );
       } else {
         _editTransaction(
-          id: widget.transaction!.uuid,
+          id: newTransaction.uuid,
           newTransaction: newTransaction,
         );
       }
@@ -86,6 +99,8 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
       await transactionsCase.save(
         transaction: transaction,
       );
+
+      emit(state.copyWith(popScreen: true));
     } catch (e) {
       emit(
         state.copyWith(
@@ -104,6 +119,8 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
         transactionId: id,
         newTransaction: newTransaction,
       );
+
+      emit(state.copyWith(popScreen: true));
     } catch (e) {
       emit(
         state.copyWith(
@@ -137,7 +154,6 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
         category: ValueWrapper(
           value: category,
         ),
-        triggerBuilder: false,
       ),
     );
   }

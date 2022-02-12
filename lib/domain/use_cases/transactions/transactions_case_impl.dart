@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:my_expenses_planner/data/models/transaction.dart' as data;
 import 'package:my_expenses_planner/data/repositories/transactions/i_transactions_repository.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
+import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 
 class TransactionsCaseImpl implements ITransactionsCase {
@@ -11,11 +12,12 @@ class TransactionsCaseImpl implements ITransactionsCase {
   }) : _transactionsRepository = transactionsRepository;
 
   final ITransactionsRepository _transactionsRepository;
-  final StreamController<int> streamController = StreamController<int>();
+  final StreamController<TransactionsChangeData> streamController =
+      StreamController<TransactionsChangeData>.broadcast();
   int streamState = 0;
 
   @override
-  Stream<int> get stream => streamController.stream;
+  Stream<TransactionsChangeData> get stream => streamController.stream;
 
   @override
   Future<List<Transaction>> getTransactions({
@@ -46,7 +48,13 @@ class TransactionsCaseImpl implements ITransactionsCase {
       newTransaction: newTransaction.toDataTransaction(),
     );
 
-    await _triggerStream();
+    streamController.add(
+      TransactionsChangeData(
+        editedTransactions: [
+          newTransaction,
+        ],
+      ),
+    );
   }
 
   @override
@@ -57,7 +65,13 @@ class TransactionsCaseImpl implements ITransactionsCase {
       transaction: transaction.toDataTransaction(),
     );
 
-    await _triggerStream();
+    streamController.add(
+      TransactionsChangeData(
+        addedTransactions: [
+          transaction,
+        ],
+      ),
+    );
   }
 
   @override
@@ -68,7 +82,13 @@ class TransactionsCaseImpl implements ITransactionsCase {
       transactionId: transactionId,
     );
 
-    await _triggerStream();
+    streamController.add(
+      TransactionsChangeData(
+        deletedTransactionsUuids: [
+          transactionId,
+        ],
+      ),
+    );
   }
 
   @override
@@ -95,9 +115,5 @@ class TransactionsCaseImpl implements ITransactionsCase {
         _transactions[index],
       ),
     );
-  }
-
-  Future<void> _triggerStream() async {
-    streamController.add(++streamState);
   }
 }

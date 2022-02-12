@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 
@@ -58,12 +59,15 @@ class OneDayTransactionsColumn extends StatelessWidget {
               ),
             ),
           ),
-          FittedBox(
-            fit: BoxFit.fill,
-            child: Padding(
+          SizedBox(
+            height: 25,
+            child: Container(
+              alignment: Alignment.center,
               padding: const EdgeInsets.all(5.0),
-              child: Text(
-                amountForDay.toStringAsFixed(1),
+              child: AutoSizeText(
+                amountForDay.toInt().toString(),
+                minFontSize: 10,
+                maxFontSize: 14,
                 softWrap: true,
               ),
             ),
