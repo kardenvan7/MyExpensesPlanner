@@ -154,6 +154,7 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
         category: ValueWrapper(
           value: category,
         ),
+        triggerBuilder: false,
       ),
     );
   }

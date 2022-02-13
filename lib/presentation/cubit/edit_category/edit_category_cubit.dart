@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
-import 'package:my_expenses_planner/domain/models/value_wrapper.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 
 part 'edit_category_state.dart';
@@ -21,7 +18,7 @@ class EditCategoryCubit extends Cubit<EditCategoryState> {
   final TransactionCategory? category;
   final ICategoriesCase categoriesCase;
 
-  bool get isAdding => category == null;
+  bool get isCreating => category == null;
 
   bool _validateForm() {
     String? nameErrorText;
@@ -56,60 +53,20 @@ class EditCategoryCubit extends Cubit<EditCategoryState> {
   Future<void> submit() async {
     if (_validateForm()) {
       final TransactionCategory newCategory = TransactionCategory(
-        uuid: state.uuid ?? DateTime.now().microsecondsSinceEpoch.toString(),
-        color: HexColor.fromHex(_colorController.text) ?? Colors.white,
-        name: _titleController.text,
+        uuid: isCreating
+            ? DateTime.now().microsecondsSinceEpoch.toString()
+            : state.uuid!,
+        color: state.color!,
+        name: state.name!,
       );
 
-      final CategoryListCubit cubit =
-          BlocProvider.of<CategoryListCubit>(context);
-
-      if (widget.category == null) {
-        cubit.addCategory(newCategory);
+      if (isCreating) {
+        await categoriesCase.save(newCategory);
       } else {
-        await cubit.updateCategory(widget.category!.uuid, newCategory);
-        BlocProvider.of<TransactionListCubit>(context).refresh();
+        await categoriesCase.update(newCategory.uuid, newCategory);
       }
 
-      Navigator.pop(context, newCategory);
-    }
-  }
-
-  Future<void> _addTransaction({
-    required Transaction transaction,
-  }) async {
-    try {
-      await categoriesCase.save(
-        transaction: transaction,
-      );
-
       emit(state.copyWith(popScreen: true));
-    } catch (e) {
-      emit(
-        state.copyWith(
-          snackBarText: 'An error occurred while saving transaction',
-        ),
-      );
-    }
-  }
-
-  Future<void> _editTransaction({
-    required String id,
-    required Transaction newTransaction,
-  }) async {
-    try {
-      await categoriesCase.edit(
-        transactionId: id,
-        newTransaction: newTransaction,
-      );
-
-      emit(state.copyWith(popScreen: true));
-    } catch (e) {
-      emit(
-        state.copyWith(
-          snackBarText: 'An error occurred while saving changes',
-        ),
-      );
     }
   }
 
@@ -122,13 +79,10 @@ class EditCategoryCubit extends Cubit<EditCategoryState> {
     );
   }
 
-  void setColor(String? color) {
-    final _color =
-        color != null ? HexColor.fromHex(color) ?? Colors.white : Colors.white;
-
+  void setColor(Color? color) {
     emit(
       state.copyWith(
-        color: _color,
+        color: color,
         triggerBuilder: false,
       ),
     );

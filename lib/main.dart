@@ -7,11 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/localization/localization.dart';
 import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
-import 'package:my_expenses_planner/data/repositories/categories/i_categories_repository.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
-import 'package:my_expenses_planner/domain/use_cases/categories/categories_case_impl.dart';
+import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
@@ -56,11 +55,10 @@ class MyExpensesPlanner extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<CategoryListCubit>(
+          lazy: false,
           create: (_) => CategoryListCubit(
-            categoriesCaseImpl: CategoriesCaseImpl(
-              categoriesRepository: getIt<ICategoriesRepository>(),
-            ),
-          )..fetchCategories(),
+            categoriesCaseImpl: getIt<ICategoriesCase>(),
+          )..initialize(),
         ),
       ],
       child: MaterialApp(

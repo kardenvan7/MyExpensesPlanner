@@ -1,3 +1,4 @@
+import 'package:my_expenses_planner/domain/models/categories_change_data.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 
@@ -25,4 +26,8 @@ class MockCategoriesCaseImpl implements ICategoriesCase {
     // TODO: implement update
     throw UnimplementedError();
   }
+
+  @override
+  // TODO: implement stream
+  Stream<CategoriesChangeData> get stream => throw UnimplementedError();
 }

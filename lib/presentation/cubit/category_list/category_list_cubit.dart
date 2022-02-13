@@ -1,4 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_expenses_planner/domain/models/categories_change_data.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 
@@ -15,14 +17,25 @@ class CategoryListCubit extends Cubit<CategoryListState> {
           ),
         );
 
-  final ICategoriesCase _categoriesCaseImpl;
+  bool initialized = false;
 
-  List<TransactionCategory> _copyCurrentCategories() {
-    return List.generate(
-      state.categories.length,
-      (index) => state.categories[index].copyWith(),
-    );
+  Future<void> initialize() async {
+    try {
+      if (!initialized) {
+        _categoriesCaseImpl.stream.listen((CategoriesChangeData newData) {
+          _refreshFromNewData(newData);
+        });
+
+        fetchCategories();
+
+        initialized = true;
+      }
+    } catch (e) {
+      print(e);
+    }
   }
+
+  final ICategoriesCase _categoriesCaseImpl;
 
   Future<void> fetchCategories() async {
     try {
@@ -53,7 +66,6 @@ class CategoryListCubit extends Cubit<CategoryListState> {
 
   Future<void> addCategory(TransactionCategory category) async {
     await _categoriesCaseImpl.save(category);
-    _add(category);
   }
 
   Future<void> updateCategory(
@@ -61,50 +73,28 @@ class CategoryListCubit extends Cubit<CategoryListState> {
     TransactionCategory newCategory,
   ) async {
     await _categoriesCaseImpl.update(uuid, newCategory);
-    _update(uuid, newCategory);
   }
 
   Future<void> deleteCategory(
     String uuid,
   ) async {
     await _categoriesCaseImpl.delete(uuid);
-    _delete(uuid);
   }
 
-  void _delete(String uuid) {
-    final List<TransactionCategory> _categories = _copyCurrentCategories();
-    _categories.removeWhere((element) => element.uuid == uuid);
+  void _refreshFromNewData(CategoriesChangeData newData) {
+    final List<TransactionCategory> _list = [...state.categories];
 
-    emit(
-      CategoryListState(
-        categories: _categories,
-      ),
-    );
-  }
-
-  void _update(String uuid, TransactionCategory newCategory) {
-    final List<TransactionCategory> _categories = _copyCurrentCategories();
-    final int index = _categories.indexWhere(
-      (element) => element.uuid == uuid,
+    _list.removeWhere(
+      (currentListElement) =>
+          newData.deletedCategoriesUuids.contains(currentListElement.uuid) ||
+          newData.editedCategories.firstWhereOrNull(
+                (element) => currentListElement.uuid == element.uuid,
+              ) !=
+              null,
     );
 
-    _categories[index] = newCategory;
+    _list.addAll(newData.addedCategories.followedBy(newData.editedCategories));
 
-    emit(
-      CategoryListState(
-        categories: _categories,
-      ),
-    );
-  }
-
-  void _add(TransactionCategory category) {
-    final List<TransactionCategory> _categories = _copyCurrentCategories();
-    _categories.add(category);
-
-    emit(
-      CategoryListState(
-        categories: _categories,
-      ),
-    );
+    emit(CategoryListState(categories: _list));
   }
 }

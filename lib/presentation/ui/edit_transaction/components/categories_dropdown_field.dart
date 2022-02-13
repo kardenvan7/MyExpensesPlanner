@@ -1,14 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
-import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/core/widgets/custom_dropdown.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 
-class CategoriesDropdownField extends StatelessWidget {
+class CategoriesDropdownField extends StatefulWidget {
   const CategoriesDropdownField({
     required this.onCategoryPick,
     this.initialCategory,
@@ -19,23 +17,23 @@ class CategoriesDropdownField extends StatelessWidget {
   final void Function(TransactionCategory? category) onCategoryPick;
 
   @override
+  State<CategoriesDropdownField> createState() =>
+      _CategoriesDropdownFieldState();
+}
+
+class _CategoriesDropdownFieldState extends State<CategoriesDropdownField> {
+  late TransactionCategory? _pickedCategory = widget.initialCategory;
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryListCubit, CategoryListState>(
       builder: (BuildContext context, CategoryListState state) {
         if (state.isLoading) {
-          final CategoryListCubit cubit =
-              BlocProvider.of<CategoryListCubit>(context);
-
-          SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-            cubit.fetchCategories();
-          });
-
           return Container();
         }
 
-        final TransactionCategory? pickedCategory =
-            state.categories.firstWhereOrNull(
-          (element) => element.uuid == initialCategory?.uuid,
+        final _pickedCategoryFromState = state.categories.firstWhereOrNull(
+          (element) => _pickedCategory?.uuid == element.uuid,
         );
 
         return Row(
@@ -48,7 +46,7 @@ class CategoriesDropdownField extends StatelessWidget {
                   categories: state.categories,
                 )
               ],
-              initialValue: pickedCategory,
+              initialValue: _pickedCategoryFromState,
               onValueChanged: _onChanged,
             ),
             Expanded(
@@ -148,17 +146,13 @@ class CategoriesDropdownField extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (editTransactionContext) {
-          return BlocProvider.value(
-            value: BlocProvider.of<CategoryListCubit>(context),
-            child: EditCategoryScreen(category: category),
+          return EditCategoryScreen(
+            category: category,
+            onEditFinish: widget.onCategoryPick,
           );
         },
       ),
-    ).then((value) {
-      if (value != null) {
-        onCategoryPick(value as TransactionCategory);
-      }
-    });
+    );
   }
 
   void _onCategoryDelete(BuildContext context, String categoryUuid) {
@@ -177,16 +171,18 @@ class CategoriesDropdownField extends StatelessWidget {
               child: const Text('No'),
             ), // TODO: localization
             TextButton(
-              onPressed: () {
-                BlocProvider.of<CategoryListCubit>(context)
-                    .deleteCategory(categoryUuid)
-                    .then(
-                  (value) {
-                    BlocProvider.of<TransactionListCubit>(context).refresh();
-                  },
-                );
+              onPressed: () async {
+                await BlocProvider.of<CategoryListCubit>(context)
+                    .deleteCategory(categoryUuid);
+
+                if (_pickedCategory?.uuid == categoryUuid) {
+                  setState(() {
+                    _pickedCategory = null;
+                    widget.onCategoryPick(null);
+                  });
+                }
+
                 Navigator.pop(alertContext);
-                onCategoryPick(null);
               },
               child: const Text('Yes'), // TODO: localization
             ),
@@ -197,6 +193,9 @@ class CategoriesDropdownField extends StatelessWidget {
   }
 
   void _onChanged(TransactionCategory? value) {
-    onCategoryPick(value);
+    setState(() {
+      _pickedCategory = value;
+      widget.onCategoryPick(value);
+    });
   }
 }
