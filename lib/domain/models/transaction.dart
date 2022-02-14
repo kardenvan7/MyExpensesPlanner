@@ -1,3 +1,4 @@
+import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 import 'package:my_expenses_planner/data/models/transaction.dart' as data;
 
 import './transaction_category.dart';
@@ -8,7 +9,7 @@ class Transaction {
     required this.amount,
     required this.title,
     required this.date,
-    this.category,
+    this.categoryUuid,
   });
 
   factory Transaction.fromMap(Map<String, dynamic> map) {
@@ -19,9 +20,7 @@ class Transaction {
       date: DateTime.fromMillisecondsSinceEpoch(
         map['date'] as int,
       ),
-      category: map['category'] is Map
-          ? TransactionCategory.fromMap(map['category'] as Map)
-          : null,
+      categoryUuid: map['category_uuid'] as String?,
     );
   }
 
@@ -31,11 +30,7 @@ class Transaction {
       amount: _transaction.amount,
       title: _transaction.title,
       date: _transaction.date,
-      category: _transaction.category != null
-          ? TransactionCategory.fromDataTransactionCategory(
-              _transaction.category!,
-            )
-          : null,
+      categoryUuid: _transaction.categoryUuid,
     );
   }
 
@@ -43,7 +38,7 @@ class Transaction {
   final DateTime date;
   final String title;
   final double amount;
-  final TransactionCategory? category;
+  final String? categoryUuid;
 
   data.Transaction toDataTransaction() {
     return data.Transaction(
@@ -51,7 +46,7 @@ class Transaction {
       amount: amount,
       title: title,
       date: date,
-      category: category?.toDataTransactionCategory(),
+      categoryUuid: categoryUuid,
     );
   }
 
@@ -61,7 +56,7 @@ class Transaction {
       'title': title,
       'code': amount,
       'date': date.millisecondsSinceEpoch,
-      'category': category?.toMap(),
+      'category_uuid': categoryUuid,
     };
   }
 
@@ -71,13 +66,15 @@ class Transaction {
     double? amount,
     DateTime? date,
     TransactionCategory? category,
+    ValueWrapper<String>? categoryUuid,
   }) {
     return Transaction(
       uuid: uuid ?? this.uuid,
       amount: amount ?? this.amount,
       title: title ?? this.title,
       date: date ?? this.date,
-      category: category ?? this.category,
+      categoryUuid:
+          categoryUuid == null ? this.categoryUuid : categoryUuid.value,
     );
   }
 }

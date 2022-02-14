@@ -1,5 +1,5 @@
+import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
-import 'package:my_expenses_planner/data/models/transaction_category.dart';
 
 class Transaction {
   Transaction({
@@ -7,7 +7,7 @@ class Transaction {
     required this.amount,
     required this.title,
     required this.date,
-    this.category,
+    this.categoryUuid,
   });
 
   factory Transaction.fromMap(Map<String, dynamic> map) {
@@ -18,9 +18,7 @@ class Transaction {
       date: DateTime.fromMillisecondsSinceEpoch(
         map[TransactionsTableColumns.date.code] as int,
       ),
-      category: map['category'] is Map
-          ? TransactionCategory.fromMap(map['category'] as Map)
-          : null,
+      categoryUuid: map['category_uuid'] as String?,
     );
   }
 
@@ -28,21 +26,22 @@ class Transaction {
   final DateTime date;
   final String title;
   final double amount;
-  final TransactionCategory? category;
+  final String? categoryUuid;
 
   Transaction copyWith({
     required String uuid,
-    String? newTitle,
-    double? newAmount,
-    DateTime? newDate,
-    TransactionCategory? newCategory,
+    String? title,
+    double? amount,
+    DateTime? date,
+    ValueWrapper<String>? categoryUuid,
   }) {
     return Transaction(
       uuid: uuid,
-      amount: newAmount ?? amount,
-      title: newTitle ?? title,
-      date: newDate ?? date,
-      category: newCategory ?? category,
+      amount: amount ?? this.amount,
+      title: title ?? this.title,
+      date: date ?? this.date,
+      categoryUuid:
+          categoryUuid == null ? this.categoryUuid : categoryUuid.value,
     );
   }
 
@@ -52,7 +51,7 @@ class Transaction {
       TransactionsTableColumns.title.code: title,
       TransactionsTableColumns.amount.code: amount,
       TransactionsTableColumns.date.code: date.millisecondsSinceEpoch,
-      'category': category?.toMap(),
+      TransactionsTableColumns.categoryUuid.code: categoryUuid,
     };
   }
 }

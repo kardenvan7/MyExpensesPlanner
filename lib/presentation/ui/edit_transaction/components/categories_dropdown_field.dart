@@ -9,12 +9,12 @@ import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_
 class CategoriesDropdownField extends StatefulWidget {
   const CategoriesDropdownField({
     required this.onCategoryPick,
-    this.initialCategory,
+    this.initialCategoryUuid,
     Key? key,
   }) : super(key: key);
 
-  final TransactionCategory? initialCategory;
-  final void Function(TransactionCategory? category) onCategoryPick;
+  final String? initialCategoryUuid;
+  final void Function(String? categoryUuid) onCategoryPick;
 
   @override
   State<CategoriesDropdownField> createState() =>
@@ -22,7 +22,7 @@ class CategoriesDropdownField extends StatefulWidget {
 }
 
 class _CategoriesDropdownFieldState extends State<CategoriesDropdownField> {
-  late TransactionCategory? _pickedCategory = widget.initialCategory;
+  late String? _pickedCategoryUuid = widget.initialCategoryUuid;
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +32,16 @@ class _CategoriesDropdownFieldState extends State<CategoriesDropdownField> {
           return Container();
         }
 
-        final _pickedCategoryFromState = state.categories.firstWhereOrNull(
-          (element) => _pickedCategory?.uuid == element.uuid,
-        );
+        final String? _pickedCategoryFromState = state.categories
+            .firstWhereOrNull(
+              (element) => _pickedCategoryUuid == element.uuid,
+            )
+            ?.uuid;
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomDropdown<TransactionCategory?>(
+            CustomDropdown<String?>(
               items: [
                 ..._buildItems(
                   context: context,
@@ -71,14 +73,14 @@ class _CategoriesDropdownFieldState extends State<CategoriesDropdownField> {
     );
   }
 
-  List<CustomDropdownItem<TransactionCategory?>> _buildItems({
+  List<CustomDropdownItem<String?>> _buildItems({
     required BuildContext context,
     List<TransactionCategory>? categories,
   }) {
-    final List<CustomDropdownItem<TransactionCategory?>> itemsList = [];
+    final List<CustomDropdownItem<String?>> itemsList = [];
 
     itemsList.add(
-      const CustomDropdownItem<TransactionCategory?>(
+      const CustomDropdownItem<String?>(
         title: Text(
           'No category',
           style: TextStyle(fontSize: 18),
@@ -90,7 +92,7 @@ class _CategoriesDropdownFieldState extends State<CategoriesDropdownField> {
     if (categories != null) {
       for (final TransactionCategory category in categories) {
         itemsList.add(
-          CustomDropdownItem<TransactionCategory?>(
+          CustomDropdownItem<String?>(
             title: Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -129,7 +131,7 @@ class _CategoriesDropdownFieldState extends State<CategoriesDropdownField> {
                 ),
               ],
             ),
-            value: category,
+            value: category.uuid,
           ),
         );
       }
@@ -175,9 +177,9 @@ class _CategoriesDropdownFieldState extends State<CategoriesDropdownField> {
                 await BlocProvider.of<CategoryListCubit>(context)
                     .deleteCategory(categoryUuid);
 
-                if (_pickedCategory?.uuid == categoryUuid) {
+                if (_pickedCategoryUuid == categoryUuid) {
                   setState(() {
-                    _pickedCategory = null;
+                    _pickedCategoryUuid = null;
                     widget.onCategoryPick(null);
                   });
                 }
@@ -192,9 +194,9 @@ class _CategoriesDropdownFieldState extends State<CategoriesDropdownField> {
     );
   }
 
-  void _onChanged(TransactionCategory? value) {
+  void _onChanged(String? value) {
     setState(() {
-      _pickedCategory = value;
+      _pickedCategoryUuid = value;
       widget.onCategoryPick(value);
     });
   }

@@ -1,24 +1,17 @@
-import 'package:collection/collection.dart';
-
 import '../../local_db/config.dart';
 import '../../local_db/database_wrapper.dart';
 import '../../local_db/sqflite_local_db.dart';
 import '../../models/transaction.dart';
-import '../../models/transaction_category.dart';
-import '../../repositories/categories/sqflite_categories_repository.dart';
 import '../../repositories/transactions/i_transactions_repository.dart';
 
 class SqfliteTransactionsRepository implements ITransactionsRepository {
   SqfliteTransactionsRepository({
-    required SqfliteCategoriesRepository categoriesRepository,
     required DatabaseWrapper dbWrapper,
-  })  : _categoriesRepository = categoriesRepository,
-        _dbWrapper = dbWrapper;
+  }) : _dbWrapper = dbWrapper;
 
   static const String _tableName = SqfliteDbConfig.transactionsTableName;
 
   final DatabaseWrapper _dbWrapper;
-  final SqfliteCategoriesRepository _categoriesRepository;
 
   @override
   Future<List<Transaction>> getTransactions({
@@ -31,23 +24,11 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
       'ORDER BY date DESC LIMIT $offset, $limit;',
     );
 
-    final List<TransactionCategory> categoriesList =
-        await _categoriesRepository.getCategories();
-
     final List<Transaction> transactions = [];
 
     for (final Map<String, Object?> transactionMap in transactionsMapsList) {
-      final TransactionCategory? category = categoriesList.firstWhereOrNull(
-        (element) =>
-            element.uuid ==
-            transactionMap[TransactionsTableColumns.categoryUuid.code],
-      );
-
       transactions.add(
-        _getTransactionFromDbMapAndCategory(
-          map: transactionMap,
-          category: category,
-        ),
+        Transaction.fromMap(transactionMap),
       );
     }
 
@@ -59,8 +40,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     required String transactionId,
     required Transaction newTransaction,
   }) async {
-    final Map<String, Object?> transactionMap =
-        _getTransactionMapForDb(newTransaction);
+    final Map<String, dynamic> transactionMap = newTransaction.toMap();
 
     final int rowsChangedCount = await _dbWrapper.update(
       _tableName,
@@ -79,7 +59,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   }) async {
     final int id = await _dbWrapper.insert(
       _tableName,
-      _getTransactionMapForDb(transaction),
+      transaction.toMap(),
     );
 
     if (id == 0) {
@@ -101,40 +81,20 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     }
   }
 
-  Map<String, Object?> _getTransactionMapForDb(Transaction transaction) {
-    final Map<String, Object?> transactionMap = transaction.toMap();
-
-    transactionMap[TransactionsTableColumns.categoryUuid.code] =
-        transaction.category?.uuid;
-
-    transactionMap.remove('category');
-
-    return transactionMap;
-  }
-
-  Transaction _getTransactionFromDbMapAndCategory({
-    required Map<String, Object?> map,
-    required TransactionCategory? category,
-  }) {
-    final Map<String, Object?> newMap = Map.from(map);
-
-    newMap['category'] = category?.toMap();
-    newMap.remove(TransactionsTableColumns.categoryUuid.code);
-
-    return Transaction.fromMap(newMap);
-  }
-
   @override
   Future<List<Transaction>> getTransactionsFromPeriod({
     required DateTime startDate,
     DateTime? endDate,
   }) async {
     String _query = 'SELECT * FROM $_tableName '
-        'WHERE ${TransactionsTableColumns.date.code} >= ${startDate.millisecondsSinceEpoch}';
+        'WHERE '
+        '${TransactionsTableColumns.date.code} '
+        '>= ${startDate.millisecondsSinceEpoch}';
 
     if (endDate != null) {
-      _query +=
-          ' AND ${TransactionsTableColumns.date.code} < ${endDate.millisecondsSinceEpoch}';
+      _query += ' AND '
+          '${TransactionsTableColumns.date.code} '
+          '< ${endDate.millisecondsSinceEpoch}';
     }
 
     _query += ';';

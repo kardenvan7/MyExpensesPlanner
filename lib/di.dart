@@ -9,6 +9,7 @@ import 'package:my_expenses_planner/domain/use_cases/categories/categories_case_
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/transactions_case_impl.dart';
+import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 
 /// Syntax sugar. A shorter way for accessing [GetIt.instance].
 final GetIt getIt = GetIt.instance;
@@ -27,12 +28,11 @@ Future<void> configureDependencies() async {
     )
     ..registerLazySingleton<ITransactionsRepository>(
       () => SqfliteTransactionsRepository(
-        categoriesRepository: SqfliteCategoriesRepository(
-          getIt<DatabaseWrapper>(),
-        ),
         dbWrapper: getIt<DatabaseWrapper>(),
       ),
     )
+
+    /// Use cases
     ..registerLazySingleton<ITransactionsCase>(
       () => TransactionsCaseImpl(
         transactionsRepository: getIt<ITransactionsRepository>(),
@@ -41,6 +41,13 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<ICategoriesCase>(
       () => CategoriesCaseImpl(
         categoriesRepository: getIt<ICategoriesRepository>(),
+      ),
+    )
+
+    /// Global singletons
+    ..registerLazySingleton<CategoryListCubit>(
+      () => CategoryListCubit(
+        categoriesCaseImpl: getIt<ICategoriesCase>(),
       ),
     );
 

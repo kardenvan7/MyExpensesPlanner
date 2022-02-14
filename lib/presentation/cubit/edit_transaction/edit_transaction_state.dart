@@ -6,7 +6,7 @@ class EditTransactionState {
     this.date,
     this.amount,
     this.title,
-    this.category,
+    this.categoryUuid,
     this.triggerBuilder = true,
     this.snackBarText,
     this.popScreen = false,
@@ -19,7 +19,7 @@ class EditTransactionState {
       date: transaction.date,
       amount: transaction.amount.toString(),
       title: transaction.title,
-      category: ValueWrapper(value: transaction.category),
+      categoryUuid: transaction.categoryUuid,
     );
   }
 
@@ -34,7 +34,7 @@ class EditTransactionState {
   final DateTime? date;
   final String? amount;
   final String? title;
-  final ValueWrapper<TransactionCategory>? category;
+  final String? categoryUuid;
 
   /// UI related
   final bool triggerBuilder;
@@ -48,7 +48,7 @@ class EditTransactionState {
     DateTime? date,
     String? amount,
     String? title,
-    ValueWrapper<TransactionCategory>? category,
+    ValueWrapper<String>? categoryUuid,
     bool? triggerBuilder,
     String? snackBarText,
     bool? popScreen,
@@ -59,7 +59,8 @@ class EditTransactionState {
       date: date ?? this.date,
       amount: amount ?? this.amount,
       title: title ?? this.title,
-      category: category ?? this.category,
+      categoryUuid:
+          categoryUuid == null ? this.categoryUuid : categoryUuid.value,
       triggerBuilder: triggerBuilder ?? true,
       snackBarText: snackBarText,
       popScreen: popScreen ?? false,

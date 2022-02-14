@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:my_expenses_planner/core/utils/print.dart';
 import 'package:my_expenses_planner/data/models/transaction_category.dart'
     as data;
 import 'package:my_expenses_planner/data/repositories/categories/i_categories_repository.dart';
@@ -50,7 +49,6 @@ class CategoriesCaseImpl implements ICategoriesCase {
 
   @override
   Future<void> update(String uuid, TransactionCategory newCategory) async {
-    printWithBrackets('updating');
     try {
       await _categoriesRepository.update(
         uuid,

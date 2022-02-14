@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/domain/models/transaction_category.dart';
-import 'package:my_expenses_planner/domain/models/value_wrapper.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 
 part 'edit_transaction_state.dart';
@@ -76,7 +75,7 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
         title: title,
         amount: amount,
         date: state.date!,
-        category: state.category?.value,
+        categoryUuid: state.categoryUuid,
       );
 
       if (isAdding) {
@@ -148,10 +147,10 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
     );
   }
 
-  void setCategory(TransactionCategory? category) {
+  void setCategoryUuid(String? category) {
     emit(
       state.copyWith(
-        category: ValueWrapper(
+        categoryUuid: ValueWrapper(
           value: category,
         ),
         triggerBuilder: false,

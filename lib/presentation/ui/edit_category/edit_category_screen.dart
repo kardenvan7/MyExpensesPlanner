@@ -19,7 +19,7 @@ class EditCategoryScreen extends StatelessWidget {
   }) : super(key: key);
 
   final TransactionCategory? category;
-  final void Function(TransactionCategory? category)? onEditFinish;
+  final void Function(String? categoryUuid)? onEditFinish;
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +31,7 @@ class EditCategoryScreen extends StatelessWidget {
       child: BlocConsumer<EditCategoryCubit, EditCategoryState>(
         listener: (context, state) {
           if (state.popScreen) {
-            onEditFinish?.call(
-              TransactionCategory(
-                uuid: state.uuid!,
-                color: state.color!,
-                name: state.name!,
-              ),
-            );
+            onEditFinish?.call(state.uuid!);
 
             Navigator.of(context).pop();
           }

@@ -10,7 +10,6 @@ import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
-import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
@@ -54,11 +53,8 @@ class MyExpensesPlanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<CategoryListCubit>(
-          lazy: false,
-          create: (_) => CategoryListCubit(
-            categoriesCaseImpl: getIt<ICategoriesCase>(),
-          )..initialize(),
+        BlocProvider<CategoryListCubit>.value(
+          value: getIt<CategoryListCubit>()..initialize(),
         ),
       ],
       child: MaterialApp(

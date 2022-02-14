@@ -1,10 +1,14 @@
+import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
-import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
+import 'package:my_expenses_planner/domain/models/transaction_category.dart';
+
+import '../../../cubit/category_list/category_list_cubit.dart';
+import '../../../cubit/transaction_list/transaction_list_cubit.dart';
+import '../../../ui/edit_transaction/edit_transaction_screen.dart';
 
 class TransactionsListItem extends StatelessWidget {
   const TransactionsListItem({required this.transaction, Key? key})
@@ -19,16 +23,25 @@ class TransactionsListItem extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         child: Row(
           children: [
-            Container(
-              width: 70,
-              height: 50,
-              color: transaction.category?.color,
-              child: Center(
-                child: Text(
-                  transaction.category?.name ?? '',
-                  textAlign: TextAlign.center,
-                ),
-              ),
+            BlocBuilder<CategoryListCubit, CategoryListState>(
+              builder: (context, state) {
+                final TransactionCategory? _category =
+                    state.categories.firstWhereOrNull(
+                  (element) => element.uuid == transaction.categoryUuid,
+                );
+
+                return Container(
+                  width: 70,
+                  height: 50,
+                  color: _category?.color,
+                  child: Center(
+                    child: Text(
+                      _category?.name ?? '',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
             ),
             Expanded(
               child: Container(
