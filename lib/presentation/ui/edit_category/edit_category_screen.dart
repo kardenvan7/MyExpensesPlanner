@@ -1,8 +1,7 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:my_expenses_planner/config/localization/locale_keys.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
@@ -46,8 +45,8 @@ class EditCategoryScreen extends StatelessWidget {
             appBar: AppBar(
               title: Text(
                 _cubit.isCreating
-                    ? LocaleKeys.addCategory.tr()
-                    : LocaleKeys.editCategory.tr(),
+                    ? AppLocalizationsWrapper.of(context).add_category
+                    : AppLocalizationsWrapper.of(context).edit_category,
               ),
             ),
             body: SingleChildScrollView(
@@ -76,7 +75,7 @@ class EditCategoryScreen extends StatelessWidget {
                         ElevatedButton(
                           onPressed: _cubit.submit,
                           child: Text(
-                            LocaleKeys.submit.tr(),
+                            AppLocalizationsWrapper.of(context).submit,
                           ),
                         ),
                       ],

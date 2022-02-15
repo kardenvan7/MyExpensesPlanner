@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 
 class ConfiguredEasyLocalization extends StatelessWidget {
   const ConfiguredEasyLocalization({
@@ -12,26 +13,11 @@ class ConfiguredEasyLocalization extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EasyLocalization(
-      path: _LocalizationsConfig.pathToLocalizations,
-      supportedLocales: _LocalizationsConfig.supportedLocalizations,
-      fallbackLocale: _LocalizationsConfig.defaultLocale,
+      path: LocalizationsConfig.pathToLocalizations,
+      supportedLocales: LocalizationsConfig.supportedLocalizations,
+      fallbackLocale: LocalizationsConfig.defaultLocale,
       // useOnlyLangCode: true,
       child: child,
     );
   }
-}
-
-class _LocalizationsConfig {
-  static const String pathToLocalizations = 'assets/translations';
-  static const List<Locale> supportedLocalizations = <Locale>[
-    SupportedLocales.english,
-    SupportedLocales.russian,
-  ];
-
-  static const Locale defaultLocale = SupportedLocales.russian;
-}
-
-class SupportedLocales {
-  static const Locale russian = Locale('ru', 'RU');
-  static const Locale english = Locale('en', 'GB');
 }

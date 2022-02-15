@@ -1,19 +1,22 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_expenses_planner/config/localization/localization.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
+import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/main/main_screen.dart';
+import 'package:my_expenses_planner/presentation/ui/settings/settings_screen.dart';
 
 void main() async {
   await runZonedGuarded(
@@ -22,7 +25,7 @@ void main() async {
         WidgetsFlutterBinding.ensureInitialized();
         SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
         await configureDependencies();
-        await EasyLocalization.ensureInitialized();
+        // await EasyLocalization.ensureInitialized();
         await getIt<DatabaseWrapper>().initDatabase();
       } catch (e) {
         exit(1);
@@ -33,9 +36,10 @@ void main() async {
       };
 
       runApp(
-        const ConfiguredEasyLocalization(
-          child: MyExpensesPlanner(),
-        ),
+        // const ConfiguredEasyLocalization(
+        //   child:
+        const MyExpensesPlanner(),
+        // ),
       );
     },
     (Object error, StackTrace stack) {
@@ -55,48 +59,67 @@ class MyExpensesPlanner extends StatelessWidget {
         BlocProvider<CategoryListCubit>.value(
           value: getIt<CategoryListCubit>()..initialize(),
         ),
-      ],
-      child: MaterialApp(
-        localizationsDelegates: context.localizationDelegates,
-        supportedLocales: context.supportedLocales,
-        locale: context.locale,
-        // context.locale,
-        home: const MainScreen(),
-        onGenerateRoute: _onGenerateRoute,
-        theme: ThemeData(
-          textTheme: const TextTheme(
-            headline3: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
-          inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-                errorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.red,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                border: const OutlineInputBorder(),
-                enabledBorder: const OutlineInputBorder(),
-                errorStyle: const TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-          colorScheme: Theme.of(context).colorScheme.copyWith(
-                primary: Colors.purple,
-                secondary: Colors.orangeAccent,
-                error: Colors.red,
-              ),
-          buttonTheme: Theme.of(context).buttonTheme.copyWith(
-                colorScheme:
-                    Theme.of(context).buttonTheme.colorScheme!.copyWith(
-                          primary: Colors.orangeAccent,
-                        ),
-                buttonColor: Colors.orangeAccent,
-              ),
+        BlocProvider<AppCubit>.value(
+          value: getIt<AppCubit>()..setLocale(SupportedLocales.english),
         ),
+      ],
+      child: BlocBuilder<AppCubit, AppState>(
+        builder: (context, state) {
+          return MaterialApp(
+            localizationsDelegates: const [
+              AppLocalizations.delegate, // Add this line
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              SupportedLocales.english,
+              SupportedLocales.russian,
+            ],
+            locale: state.locale,
+            // localizationsDelegates: context.localizationDelegates,
+            // supportedLocales: context.supportedLocales,
+            // locale: state.locale,
+            debugShowCheckedModeBanner: false,
+            home: const MainScreen(),
+            onGenerateRoute: _onGenerateRoute,
+            theme: ThemeData(
+              textTheme: const TextTheme(
+                headline3: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              inputDecorationTheme:
+                  Theme.of(context).inputDecorationTheme.copyWith(
+                        errorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Colors.red,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        border: const OutlineInputBorder(),
+                        enabledBorder: const OutlineInputBorder(),
+                        errorStyle: const TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+              colorScheme: Theme.of(context).colorScheme.copyWith(
+                    primary: Colors.purple,
+                    secondary: Colors.orangeAccent,
+                    error: Colors.red,
+                  ),
+              buttonTheme: Theme.of(context).buttonTheme.copyWith(
+                    colorScheme:
+                        Theme.of(context).buttonTheme.colorScheme!.copyWith(
+                              primary: Colors.orangeAccent,
+                            ),
+                    buttonColor: Colors.orangeAccent,
+                  ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -106,12 +129,12 @@ Route _onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
     case MainScreen.routeName:
       return MaterialPageRoute(
-        builder: (BuildContext context) => const MainScreen(),
+        builder: (_) => const MainScreen(),
       );
 
     case EditTransactionScreen.routeName:
       return MaterialPageRoute(
-        builder: (BuildContext context) => EditTransactionScreen(
+        builder: (_) => EditTransactionScreen(
           transaction: settings.arguments as Transaction?,
         ),
       );
@@ -121,9 +144,14 @@ Route _onGenerateRoute(RouteSettings settings) {
           settings.arguments as TransactionCategory?;
 
       return MaterialPageRoute(
-        builder: (BuildContext context) => EditCategoryScreen(
+        builder: (_) => EditCategoryScreen(
           category: category,
         ),
+      );
+
+    case SettingsScreen.routeName:
+      return MaterialPageRoute(
+        builder: (_) => const SettingsScreen(),
       );
 
     default:

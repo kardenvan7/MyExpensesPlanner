@@ -1,6 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:my_expenses_planner/core/extensions/datetime_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/string_extensions.dart';
 import 'package:my_expenses_planner/di.dart';
@@ -61,7 +61,7 @@ class LastWeekTransactions extends StatelessWidget {
                                 .toList(),
                             title: DateFormat(
                               'EEE',
-                              context.locale.toStringWithSeparator(),
+                              Localizations.localeOf(context).toLanguageTag(),
                             ).format(date).toStandardCase(),
                             maxAmount: state.max,
                           );

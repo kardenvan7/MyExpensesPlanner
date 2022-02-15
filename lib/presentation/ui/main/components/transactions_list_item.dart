@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 
@@ -101,21 +101,24 @@ class TransactionsListItem extends StatelessWidget {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'delete_transaction_confirmation_question',
-          ).tr(),
+          title: Text(
+            AppLocalizationsWrapper.of(context)
+                .delete_transaction_confirmation_question,
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 _onDeleteDenied(dialogContext);
               },
-              child: const Text('no').tr(),
+              child: Text(AppLocalizationsWrapper.of(context).no),
             ),
             TextButton(
               onPressed: () {
                 _onDeleteConfirmed(context, dialogContext);
               },
-              child: const Text('yes').tr(),
+              child: Text(
+                AppLocalizationsWrapper.of(context).yes,
+              ),
             ),
           ],
         );

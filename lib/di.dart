@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
 import 'package:my_expenses_planner/data/repositories/categories/i_categories_repository.dart';
@@ -9,6 +10,7 @@ import 'package:my_expenses_planner/domain/use_cases/categories/categories_case_
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/transactions_case_impl.dart';
+import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 
 /// Syntax sugar. A shorter way for accessing [GetIt.instance].
@@ -48,6 +50,11 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<CategoryListCubit>(
       () => CategoryListCubit(
         categoriesCaseImpl: getIt<ICategoriesCase>(),
+      ),
+    )
+    ..registerSingleton<AppCubit>(
+      AppCubit(
+        defaultLocale: LocalizationsConfig.defaultLocale,
       ),
     );
 

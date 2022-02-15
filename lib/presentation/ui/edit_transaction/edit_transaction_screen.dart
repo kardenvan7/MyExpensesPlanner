@@ -1,6 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
@@ -51,9 +51,10 @@ class EditTransactionScreen extends StatelessWidget {
             appBar: AppBar(
               title: Text(
                 _cubit.isAdding
-                    ? 'add_transaction_title'
-                    : 'edit_transaction_title',
-              ).tr(),
+                    ? AppLocalizationsWrapper.of(context).add_transaction_title
+                    : AppLocalizationsWrapper.of(context)
+                        .edit_transaction_title,
+              ),
               actions: [
                 IconButton(
                   onPressed: _cubit.submit,

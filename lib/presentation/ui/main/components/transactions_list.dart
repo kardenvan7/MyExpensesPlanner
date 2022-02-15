@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_expenses_planner/config/localization/locale_keys.dart';
+import 'package:intl/intl.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/datetime_extensions.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
@@ -42,12 +42,14 @@ class TransactionsList extends StatelessWidget {
                         Chip(
                           label: Text(
                             _currentDate.isToday
-                                ? LocaleKeys.today.tr()
+                                ? AppLocalizationsWrapper.of(context).today
                                 : _currentDate.isYesterday
-                                    ? LocaleKeys.yesterday.tr()
+                                    ? AppLocalizationsWrapper.of(context)
+                                        .yesterday
                                     : DateFormat(
                                         'yMMMMd',
-                                        context.locale.toStringWithSeparator(),
+                                        Localizations.localeOf(context)
+                                            .toLanguageTag(),
                                       ).format(_currentDate),
                           ), //TODO: change to "January 13, 2021/13 января 2021"
                         ),
@@ -69,7 +71,8 @@ class TransactionsList extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: kToolbarHeight),
                   child: Center(
                     child: Text(
-                      LocaleKeys.emptyTransactionListPlaceholderText.tr(),
+                      AppLocalizationsWrapper.of(context)
+                          .empty_transaction_list_placeholder_text,
                       textAlign: TextAlign.center,
                     ),
                   ),

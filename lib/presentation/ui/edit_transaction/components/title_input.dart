@@ -1,5 +1,5 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 
 class TitleInput extends StatelessWidget {
   const TitleInput({
@@ -24,7 +24,9 @@ class TitleInput extends StatelessWidget {
           initialValue: value,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
-            label: const Text('title_input_label').tr(),
+            label: Text(
+              AppLocalizationsWrapper.of(context).title_input_label,
+            ),
             enabledBorder: isErrorState
                 ? Theme.of(context).inputDecorationTheme.errorBorder
                 : const OutlineInputBorder(),
@@ -34,6 +36,8 @@ class TitleInput extends StatelessWidget {
             if (value == null || value == '') {
               return 'Field must be filled'; // TODO: localization
             }
+
+            return null;
           },
         ),
         if (isErrorState)

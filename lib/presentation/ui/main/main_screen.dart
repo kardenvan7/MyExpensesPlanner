@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/app_bar.dart';
+import 'package:my_expenses_planner/presentation/ui/main/components/drawer.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/last_week_transactions.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/transactions_list.dart';
 
@@ -12,6 +13,7 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const MainScreenAppBar(),
+      drawer: const MainScreenDrawer(),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         margin: const EdgeInsets.only(top: 15),

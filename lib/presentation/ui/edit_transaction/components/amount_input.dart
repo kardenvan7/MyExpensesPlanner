@@ -1,6 +1,5 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 
 class AmountInput extends StatelessWidget {
   const AmountInput({
@@ -25,7 +24,7 @@ class AmountInput extends StatelessWidget {
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
-            label: const Text('amount_input_label').tr(),
+            label: Text(AppLocalizationsWrapper.of(context).amount_input_label),
             enabledBorder: isErrorState
                 ? Theme.of(context).inputDecorationTheme.errorBorder
                 : const OutlineInputBorder(),

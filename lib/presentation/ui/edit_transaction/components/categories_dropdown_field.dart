@@ -1,8 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_expenses_planner/config/localization/locale_keys.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/core/widgets/custom_dropdown.dart';
@@ -84,7 +83,7 @@ class _CategoriesDropdownFieldState extends State<CategoriesDropdownField> {
     itemsList.add(
       CustomDropdownItem<String?>(
         title: Text(
-          LocaleKeys.withoutCategory.tr(),
+          AppLocalizationsWrapper.of(context).without_category,
           style: const TextStyle(fontSize: 18),
         ),
         value: null,

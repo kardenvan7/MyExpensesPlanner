@@ -22,4 +22,8 @@ class LocaleKeys {
       'empty_transaction_list_placeholder_text';
   static const String today = 'today';
   static const String yesterday = 'yesterday';
+
+  /// settings
+  static const String settings = 'settings';
+  static const String appLanguage = 'app_language';
 }
