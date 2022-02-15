@@ -16,19 +16,18 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: const Text('main_app_bar_title').tr(),
       actions: [
         IconButton(
+          padding: EdgeInsets.zero,
           onPressed: () {
             context.switchLocale();
           },
           icon: context.isEnglishLocale
               ? Assets.svg.russianFlag.svg(
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.scaleDown,
+                  width: 35,
+                  fit: BoxFit.fill,
                 )
               : Assets.svg.englishFlag.svg(
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.scaleDown,
+                  width: 35,
+                  fit: BoxFit.fill,
                 ),
         ),
         IconButton(
