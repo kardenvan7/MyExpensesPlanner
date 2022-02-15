@@ -53,11 +53,9 @@ class EditCategoryCubit extends Cubit<EditCategoryState> {
   Future<void> submit() async {
     if (_validateForm()) {
       final TransactionCategory newCategory = TransactionCategory(
-        uuid: isCreating
-            ? DateTime.now().microsecondsSinceEpoch.toString()
-            : state.uuid!,
-        color: state.color!,
-        name: state.name!,
+        uuid: state.uuid,
+        color: state.color,
+        name: state.name,
       );
 
       if (isCreating) {
@@ -66,7 +64,9 @@ class EditCategoryCubit extends Cubit<EditCategoryState> {
         await categoriesCase.update(newCategory.uuid, newCategory);
       }
 
-      emit(state.copyWith(popScreen: true));
+      emit(state.copyWith(
+        popScreen: true,
+      ));
     }
   }
 

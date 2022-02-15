@@ -4,6 +4,8 @@ class _SvgAssets {
   const _SvgAssets();
 
   _SvgAsset get search => _SvgAsset('search');
+  _SvgAsset get russianFlag => _SvgAsset('russian_flag');
+  _SvgAsset get englishFlag => _SvgAsset('english_flag');
 }
 
 class _SvgAsset {

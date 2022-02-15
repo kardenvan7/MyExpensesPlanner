@@ -12,4 +12,14 @@ class LocaleKeys {
   static const String deleteTransactionConfirmationQuestion =
       'delete_transaction_confirmation_question';
   static const String submit = 'submit';
+  static const String changeDate = 'change_date';
+  static const String withoutCategory = 'without_category';
+  static const String addCategory = 'add_category';
+  static const String editCategory = 'edit_category';
+
+  /// transaction list
+  static const String emptyTransactionListPlaceholderText =
+      'empty_transaction_list_placeholder_text';
+  static const String today = 'today';
+  static const String yesterday = 'yesterday';
 }

@@ -15,7 +15,7 @@ class ConfiguredEasyLocalization extends StatelessWidget {
       path: _LocalizationsConfig.pathToLocalizations,
       supportedLocales: _LocalizationsConfig.supportedLocalizations,
       fallbackLocale: _LocalizationsConfig.defaultLocale,
-      useOnlyLangCode: true,
+      // useOnlyLangCode: true,
       child: child,
     );
   }
@@ -24,14 +24,14 @@ class ConfiguredEasyLocalization extends StatelessWidget {
 class _LocalizationsConfig {
   static const String pathToLocalizations = 'assets/translations';
   static const List<Locale> supportedLocalizations = <Locale>[
-    _SupportedLocales.english,
-    _SupportedLocales.russian,
+    SupportedLocales.english,
+    SupportedLocales.russian,
   ];
 
-  static const Locale defaultLocale = _SupportedLocales.english;
+  static const Locale defaultLocale = SupportedLocales.russian;
 }
 
-class _SupportedLocales {
-  static const Locale russian = Locale('ru');
-  static const Locale english = Locale('en');
+class SupportedLocales {
+  static const Locale russian = Locale('ru', 'RU');
+  static const Locale english = Locale('en', 'GB');
 }

@@ -18,11 +18,10 @@ import 'package:my_expenses_planner/presentation/ui/main/main_screen.dart';
 void main() async {
   await runZonedGuarded(
     () async {
-      WidgetsFlutterBinding.ensureInitialized();
-      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-      await configureDependencies();
-
       try {
+        WidgetsFlutterBinding.ensureInitialized();
+        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+        await configureDependencies();
         await EasyLocalization.ensureInitialized();
         await getIt<DatabaseWrapper>().initDatabase();
       } catch (e) {
@@ -61,6 +60,7 @@ class MyExpensesPlanner extends StatelessWidget {
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
+        // context.locale,
         home: const MainScreen(),
         onGenerateRoute: _onGenerateRoute,
         theme: ThemeData(

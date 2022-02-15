@@ -2,9 +2,9 @@ part of 'edit_category_cubit.dart';
 
 class EditCategoryState {
   EditCategoryState({
-    this.uuid,
-    this.color,
-    this.name,
+    required this.uuid,
+    required this.color,
+    required this.name,
     this.triggerBuilder = true,
     this.snackBarText,
     this.popScreen = false,
@@ -20,13 +20,17 @@ class EditCategoryState {
   }
 
   factory EditCategoryState.initialAdding() {
-    return EditCategoryState();
+    return EditCategoryState(
+      uuid: DateTime.now().millisecondsSinceEpoch.toString(),
+      color: Colors.white,
+      name: '',
+    );
   }
 
   /// Category related
-  final String? uuid;
-  final Color? color;
-  final String? name;
+  final String uuid;
+  final Color color;
+  final String name;
 
   /// UI related
   final bool triggerBuilder;

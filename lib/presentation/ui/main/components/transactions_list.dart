@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_expenses_planner/config/localization/locale_keys.dart';
 import 'package:my_expenses_planner/core/extensions/datetime_extensions.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
@@ -41,11 +42,13 @@ class TransactionsList extends StatelessWidget {
                         Chip(
                           label: Text(
                             _currentDate.isToday
-                                ? 'Today'
+                                ? LocaleKeys.today.tr()
                                 : _currentDate.isYesterday
-                                    ? 'Yesterday'
-                                    : DateFormat('dd.MM.yyyy')
-                                        .format(_currentDate),
+                                    ? LocaleKeys.yesterday.tr()
+                                    : DateFormat(
+                                        'yMMMMd',
+                                        context.locale.toStringWithSeparator(),
+                                      ).format(_currentDate),
                           ), //TODO: change to "January 13, 2021/13 января 2021"
                         ),
                         ListView.builder(
@@ -64,10 +67,9 @@ class TransactionsList extends StatelessWidget {
                 )
               : Container(
                   margin: const EdgeInsets.only(bottom: kToolbarHeight),
-                  child: const Center(
+                  child: Center(
                     child: Text(
-                      'You have no transactions yet.\n\nGo ahead and add some by pressing "+" button in the top right corner of the screen',
-                      // TODO: localization
+                      LocaleKeys.emptyTransactionListPlaceholderText.tr(),
                       textAlign: TextAlign.center,
                     ),
                   ),

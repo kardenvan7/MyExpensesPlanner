@@ -31,7 +31,7 @@ class EditCategoryScreen extends StatelessWidget {
       child: BlocConsumer<EditCategoryCubit, EditCategoryState>(
         listener: (context, state) {
           if (state.popScreen) {
-            onEditFinish?.call(state.uuid!);
+            onEditFinish?.call(state.uuid);
 
             Navigator.of(context).pop();
           }
@@ -45,7 +45,9 @@ class EditCategoryScreen extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                _cubit.isCreating ? 'Create category' : 'Edit category',
+                _cubit.isCreating
+                    ? LocaleKeys.addCategory.tr()
+                    : LocaleKeys.editCategory.tr(),
               ),
             ),
             body: SingleChildScrollView(
@@ -64,7 +66,7 @@ class EditCategoryScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 30),
                       padding: const EdgeInsets.symmetric(horizontal: 40),
                       child: ColorPicker(
-                        pickerColor: state.color ?? Colors.white,
+                        pickerColor: state.color,
                         onColorChanged: _cubit.setColor,
                       ),
                     ),

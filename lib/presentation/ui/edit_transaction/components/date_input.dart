@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/config/localization/locale_keys.dart';
 
 class DateInput extends StatefulWidget {
   const DateInput({required this.onDatePicked, this.initialDate, Key? key})
@@ -24,11 +25,14 @@ class _DateInputState extends State<DateInput> {
         left: 12,
       ),
       title: Text(
-        DateFormat('dd.MM.yyyy').format(_pickedDate),
+        DateFormat(
+          'dd.MM.yyyy',
+          context.locale.toStringWithSeparator(),
+        ).format(_pickedDate),
       ),
       trailing: ElevatedButton(
         child: Text(
-          'Change date', // TODO: localization
+          LocaleKeys.changeDate.tr(),
         ),
         onPressed: _onPickDate,
       ),

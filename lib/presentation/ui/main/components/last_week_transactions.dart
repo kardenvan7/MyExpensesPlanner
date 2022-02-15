@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -58,7 +59,10 @@ class LastWeekTransactions extends StatelessWidget {
                                 .where((element) =>
                                     element.date.isSameDayWith(date))
                                 .toList(),
-                            title: DateFormat('EEE').format(date),
+                            title: DateFormat(
+                              'EEE',
+                              context.locale.toStringWithSeparator(),
+                            ).format(date),
                             maxAmount: state.max,
                           );
                         },

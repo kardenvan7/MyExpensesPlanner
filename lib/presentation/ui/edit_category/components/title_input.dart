@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/config/localization/locale_keys.dart';
 
 class CategoryTitleInput extends StatelessWidget {
   const CategoryTitleInput({
@@ -23,7 +25,9 @@ class CategoryTitleInput extends StatelessWidget {
           onChanged: onChange,
           initialValue: initialValue,
           decoration: InputDecoration(
-            label: const Text('Title'), // TODO: localization
+            label: Text(
+              LocaleKeys.titleInputLabel.tr(),
+            ),
             enabledBorder: isErrorState
                 ? Theme.of(context).inputDecorationTheme.errorBorder
                 : const OutlineInputBorder(),
