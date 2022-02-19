@@ -46,12 +46,11 @@ class TransactionsList extends StatelessWidget {
                                 : _currentDate.isYesterday
                                     ? AppLocalizationsWrapper.of(context)
                                         .yesterday
-                                    : DateFormat(
-                                        'yMMMMd',
+                                    : DateFormat.yMMMMd(
                                         Localizations.localeOf(context)
                                             .toLanguageTag(),
                                       ).format(_currentDate),
-                          ), //TODO: change to "January 13, 2021/13 января 2021"
+                          ),
                         ),
                         ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),

@@ -32,8 +32,8 @@ class SettingsScreen extends StatelessWidget {
                     decoration: const BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 5,
+                          color: Colors.black38,
+                          blurRadius: 10,
                           spreadRadius: 2,
                         ),
                       ],
@@ -41,6 +41,9 @@ class SettingsScreen extends StatelessWidget {
                     child: BlocBuilder<AppCubit, AppState>(
                       builder: (context, state) {
                         return IconButton(
+                          constraints: BoxConstraints(
+                            minWidth: 35,
+                          ),
                           padding: EdgeInsets.zero,
                           onPressed: () {
                             BlocProvider.of<AppCubit>(context).switchLanguage();
