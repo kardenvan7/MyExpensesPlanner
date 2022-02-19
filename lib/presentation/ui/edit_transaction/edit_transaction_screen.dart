@@ -1,12 +1,17 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
+import 'package:my_expenses_planner/core/utils/print.dart';
+import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
+import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
+import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/edit_transaction/edit_transaction_cubit.dart';
+import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/amount_input.dart';
-import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/categories_dropdown_field.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/date_input.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/title_input.dart';
 
@@ -86,10 +91,14 @@ class EditTransactionScreen extends StatelessWidget {
                     initialDate: state.date,
                     onDatePicked: _cubit.setDate,
                   ),
-                  CategoriesDropdownField(
-                    initialCategoryUuid: state.categoryUuid,
-                    onCategoryPick: _cubit.setCategoryUuid,
+                  CategoryPickField(
+                    pickedCategoryUuid: state.categoryUuid,
+                    onCategoryPicked: _cubit.setCategoryUuid,
                   ),
+                  // CategoriesDropdownField(
+                  //   initialCategoryUuid: state.categoryUuid,
+                  //   onCategoryPick: _cubit.setCategoryUuid,
+                  // ),
                 ],
               ),
             ),

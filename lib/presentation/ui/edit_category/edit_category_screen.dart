@@ -79,7 +79,7 @@ class EditCategoryScreen extends StatelessWidget {
                           ),
                         ),
                       ],
-                    ) // TODO: localization
+                    ),
                   ],
                 ),
               ),

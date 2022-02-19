@@ -147,11 +147,11 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
     );
   }
 
-  void setCategoryUuid(String? category) {
+  void setCategoryUuid(String? categoryUuid) {
     emit(
       state.copyWith(
         categoryUuid: ValueWrapper(
-          value: category,
+          value: categoryUuid,
         ),
         triggerBuilder: false,
       ),
