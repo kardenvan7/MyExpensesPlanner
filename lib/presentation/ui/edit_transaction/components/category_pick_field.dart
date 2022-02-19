@@ -27,29 +27,7 @@ class _CategoryPickFieldState extends State<CategoryPickField> {
         );
 
         return InkWell(
-          onTap: () async {
-            final ValueWrapper<String>? _newCategoryUuid =
-                await showDialog<ValueWrapper<String>?>(
-              context: context,
-              builder: (builderContext) => AlertDialog(
-                clipBehavior: Clip.hardEdge,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                contentPadding: EdgeInsets.zero,
-                content: PickCategoryModalSheet(
-                  pickedCategoryUuid: _pickedCategoryUuid,
-                ),
-              ),
-            );
-
-            if (_newCategoryUuid != null) {
-              setState(() {
-                _pickedCategoryUuid = _newCategoryUuid.value;
-                widget.onCategoryPicked(_newCategoryUuid.value);
-              });
-            }
-          },
+          onTap: _onCategoryPick,
           child: Container(
             padding: const EdgeInsets.symmetric(
               horizontal: 12,
@@ -66,10 +44,14 @@ class _CategoryPickFieldState extends State<CategoryPickField> {
               children: [
                 if (_pickedCategory != null)
                   Container(
-                    width: 50,
-                    height: 20,
+                    width: 25,
+                    height: 25,
+                    margin: const EdgeInsets.only(
+                      right: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: _pickedCategory.color,
+                      shape: BoxShape.circle,
                     ),
                   ),
                 Expanded(
@@ -91,15 +73,42 @@ class _CategoryPickFieldState extends State<CategoryPickField> {
       },
     );
   }
+
+  Future<void> _onCategoryPick() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    final ValueWrapper<String>? _newCategoryUuid =
+        await showDialog<ValueWrapper<String>?>(
+      context: context,
+      builder: (builderContext) => AlertDialog(
+        clipBehavior: Clip.hardEdge,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        contentPadding: EdgeInsets.zero,
+        content: PickCategoryModalSheet(
+          pickedCategoryUuid: _pickedCategoryUuid,
+          onCategoryUuidPicked: (ValueWrapper<String> _newCategoryUuid) {
+            setState(() {
+              _pickedCategoryUuid = _newCategoryUuid.value;
+              widget.onCategoryPicked(_newCategoryUuid.value);
+            });
+          },
+        ),
+      ),
+    );
+  }
 }
 
 class PickCategoryModalSheet extends StatelessWidget {
   const PickCategoryModalSheet({
     required this.pickedCategoryUuid,
+    required this.onCategoryUuidPicked,
     Key? key,
   }) : super(key: key);
 
   final String? pickedCategoryUuid;
+  final void Function(ValueWrapper<String> categoryUuid) onCategoryUuidPicked;
 
   @override
   Widget build(BuildContext context) {
@@ -160,15 +169,39 @@ class PickCategoryModalSheet extends StatelessWidget {
 
                     return InkWell(
                       child: ListTile(
+                        horizontalTitleGap: 0,
                         title: Text(
                           _categoryList[_index].name,
                         ),
                         leading: Container(
-                          width: 20,
+                          width: 25,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: _categoryList[_index].color,
                           ),
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                _onCategoryEdit(
+                                  context: context,
+                                  category: _categoryList[_index],
+                                );
+                              },
+                              icon: const Icon(Icons.edit),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                _onCategoryDelete(
+                                  context,
+                                  _categoryList[_index].uuid,
+                                );
+                              },
+                              icon: const Icon(Icons.delete),
+                            ),
+                          ],
                         ),
                         onTap: () {
                           _onCategoryTap(
@@ -195,6 +228,57 @@ class PickCategoryModalSheet extends StatelessWidget {
   }
 
   void _onCategoryTap(BuildContext context, String? categoryUuid) {
-    Navigator.pop(context, ValueWrapper(value: categoryUuid));
+    onCategoryUuidPicked(ValueWrapper(value: categoryUuid));
+    Navigator.pop(context);
+  }
+
+  void _onCategoryEdit({
+    required BuildContext context,
+    TransactionCategory? category,
+  }) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (editTransactionContext) {
+          return EditCategoryScreen(
+            category: category,
+          );
+        },
+      ),
+    );
+  }
+
+  void _onCategoryDelete(BuildContext context, String categoryUuid) {
+    showDialog(
+      context: context,
+      builder: (BuildContext alertContext) {
+        return AlertDialog(
+          title: const Text(
+            'Are you sure you want to delete the category?',
+          ), // TODO: localization
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(alertContext);
+              },
+              child: Text(AppLocalizationsWrapper.of(context).no),
+            ),
+            TextButton(
+              onPressed: () async {
+                await BlocProvider.of<CategoryListCubit>(context)
+                    .deleteCategory(categoryUuid);
+
+                if (pickedCategoryUuid == categoryUuid) {
+                  onCategoryUuidPicked(ValueWrapper(value: null));
+                }
+
+                Navigator.pop(alertContext);
+              },
+              child: Text(AppLocalizationsWrapper.of(context).yes),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

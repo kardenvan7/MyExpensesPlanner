@@ -19,4 +19,8 @@ extension HexColor on Color {
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
   }
+
+  bool get isBright {
+    return computeLuminance() > 0.4;
+  }
 }

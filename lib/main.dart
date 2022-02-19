@@ -61,7 +61,7 @@ class MyExpensesPlanner extends StatelessWidget {
           value: getIt<CategoryListCubit>()..initialize(),
         ),
         BlocProvider<AppCubit>.value(
-          value: getIt<AppCubit>(),
+          value: getIt<AppCubit>()..initialize(),
         ),
       ],
       child: BlocBuilder<AppCubit, AppState>(
@@ -85,6 +85,19 @@ class MyExpensesPlanner extends StatelessWidget {
             home: const MainScreen(),
             onGenerateRoute: _onGenerateRoute,
             theme: ThemeData(
+              appBarTheme: AppBarTheme(
+                iconTheme: IconThemeData(
+                  color: appState.secondaryColor,
+                ),
+                titleTextStyle: TextStyle(
+                  color: appState.secondaryColor,
+                  fontSize: 21,
+                  fontWeight: FontWeight.w500,
+                ),
+                actionsIconTheme: IconThemeData(
+                  color: appState.secondaryColor,
+                ),
+              ),
               textTheme: const TextTheme(
                 headline3: TextStyle(
                   fontSize: 24,

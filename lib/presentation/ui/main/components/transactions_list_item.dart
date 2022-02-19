@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
+import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 
@@ -37,6 +38,11 @@ class TransactionsListItem extends StatelessWidget {
                   child: Center(
                     child: Text(
                       _category?.name ?? '',
+                      style: TextStyle(
+                        color: _category?.color.isBright ?? true
+                            ? Colors.black
+                            : Colors.white,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),

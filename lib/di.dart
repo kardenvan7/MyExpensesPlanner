@@ -57,6 +57,7 @@ Future<void> configureDependencies() async {
       AppCubit(
         locale: LocalizationsConfig.defaultLocale,
         primaryColor: Colors.red,
+        secondaryColor: Colors.amber,
       ),
     );
 

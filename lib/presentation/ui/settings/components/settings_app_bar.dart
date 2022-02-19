@@ -9,7 +9,9 @@ class SettingsAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(AppLocalizationsWrapper.of(context).settings),
+      title: Text(
+        AppLocalizationsWrapper.of(context).settings,
+      ),
     );
   }
 }

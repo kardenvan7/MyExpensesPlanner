@@ -9,12 +9,22 @@ class AppCubit extends Cubit<AppState> {
   AppCubit({
     required Locale locale,
     required Color primaryColor,
+    required Color secondaryColor,
   }) : super(
           AppState(
             locale: locale,
             primaryColor: primaryColor,
+            secondaryColor: secondaryColor,
           ),
         );
+
+  bool initialized = false;
+
+  Future<void> initialize() async {
+    if (!initialized) {
+      initialized = true;
+    }
+  }
 
   void setLocale(Locale locale) {
     emit(state.copyWith(locale: locale));
@@ -30,5 +40,9 @@ class AppCubit extends Cubit<AppState> {
 
   void setPrimaryColor(Color color) {
     emit(state.copyWith(primaryColor: color));
+  }
+
+  void setSecondaryColor(Color color) {
+    emit(state.copyWith(secondaryColor: color));
   }
 }
