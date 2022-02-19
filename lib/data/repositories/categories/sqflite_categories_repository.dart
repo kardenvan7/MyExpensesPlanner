@@ -32,6 +32,22 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
   }
 
   @override
+  Future<TransactionCategory?> getCategoryByUuid(String uuid) async {
+    final List<Map<String, dynamic>> _categoryMapList =
+        await _dbWrapper.rawQuery(
+      'SELECT * FROM $tableName '
+      'WHERE ${CategoriesTableColumns.uuid.code} = $uuid '
+      'LIMIT 1',
+    );
+
+    if (_categoryMapList.isEmpty) {
+      return null;
+    }
+
+    return TransactionCategory.fromMap(_categoryMapList.first);
+  }
+
+  @override
   Future<void> save(TransactionCategory category) async {
     final int id = await _dbWrapper.insert(
       tableName,

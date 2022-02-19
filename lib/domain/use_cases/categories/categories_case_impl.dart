@@ -35,6 +35,18 @@ class CategoriesCaseImpl implements ICategoriesCase {
   }
 
   @override
+  Future<TransactionCategory?> getCategoryByUuid(String uuid) async {
+    final data.TransactionCategory? _category =
+        await _categoriesRepository.getCategoryByUuid(uuid);
+
+    if (_category == null) {
+      return null;
+    }
+
+    return TransactionCategory.fromDataTransactionCategory(_category);
+  }
+
+  @override
   Future<void> save(TransactionCategory category) async {
     await _categoriesRepository.save(
       category.toDataTransactionCategory(),

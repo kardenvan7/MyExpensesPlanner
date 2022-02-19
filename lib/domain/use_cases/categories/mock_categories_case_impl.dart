@@ -30,4 +30,10 @@ class MockCategoriesCaseImpl implements ICategoriesCase {
   @override
   // TODO: implement stream
   Stream<CategoriesChangeData> get stream => throw UnimplementedError();
+
+  @override
+  Future<TransactionCategory?> getCategoryByUuid(String uuid) {
+    // TODO: implement getCategoryByUuid
+    throw UnimplementedError();
+  }
 }
