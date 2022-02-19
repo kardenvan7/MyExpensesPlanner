@@ -6,13 +6,18 @@ import 'package:my_expenses_planner/core/extensions/locale_extension.dart';
 part 'app_state.dart';
 
 class AppCubit extends Cubit<AppState> {
-  AppCubit({required Locale defaultLocale})
-      : super(AppState(
-          locale: defaultLocale,
-        ));
+  AppCubit({
+    required Locale locale,
+    required Color primaryColor,
+  }) : super(
+          AppState(
+            locale: locale,
+            primaryColor: primaryColor,
+          ),
+        );
 
   void setLocale(Locale locale) {
-    emit(AppState(locale: locale));
+    emit(state.copyWith(locale: locale));
   }
 
   void switchLanguage() {
@@ -21,5 +26,9 @@ class AppCubit extends Cubit<AppState> {
           ? SupportedLocales.russian
           : SupportedLocales.english,
     );
+  }
+
+  void setPrimaryColor(Color color) {
+    emit(state.copyWith(primaryColor: color));
   }
 }

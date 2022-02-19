@@ -10,6 +10,8 @@ import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/date_input.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/title_input.dart';
 
+part './components/category_pick_field.dart';
+
 class EditTransactionScreen extends StatelessWidget {
   const EditTransactionScreen({this.transaction, Key? key}) : super(key: key);
 

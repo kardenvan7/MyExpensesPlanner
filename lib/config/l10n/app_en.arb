@@ -18,5 +18,6 @@
   "without_category": "No category",
 
   "settings": "Settings",
-  "app_language": "App language"
+  "app_language": "App language",
+  "app_primary_color": "Primary color"
 }

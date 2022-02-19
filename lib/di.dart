@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
@@ -54,7 +55,8 @@ Future<void> configureDependencies() async {
     )
     ..registerSingleton<AppCubit>(
       AppCubit(
-        defaultLocale: LocalizationsConfig.defaultLocale,
+        locale: LocalizationsConfig.defaultLocale,
+        primaryColor: Colors.red,
       ),
     );
 

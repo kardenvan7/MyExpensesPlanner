@@ -18,5 +18,6 @@
   "yesterday": "Вчера",
 
   "settings": "Настройки",
-  "app_language": "Язык приложения"
+  "app_language": "Язык приложения",
+  "app_primary_color": "Основной цвет"
 }

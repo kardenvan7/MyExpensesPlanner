@@ -13,6 +13,7 @@ import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
+import 'package:my_expenses_planner/presentation/ui/core/widgets/color_picker_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/main/main_screen.dart';
@@ -60,14 +61,14 @@ class MyExpensesPlanner extends StatelessWidget {
           value: getIt<CategoryListCubit>()..initialize(),
         ),
         BlocProvider<AppCubit>.value(
-          value: getIt<AppCubit>()..setLocale(SupportedLocales.english),
+          value: getIt<AppCubit>(),
         ),
       ],
       child: BlocBuilder<AppCubit, AppState>(
-        builder: (context, state) {
+        builder: (context, appState) {
           return MaterialApp(
             localizationsDelegates: const [
-              AppLocalizations.delegate, // Add this line
+              AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
@@ -76,7 +77,7 @@ class MyExpensesPlanner extends StatelessWidget {
               SupportedLocales.english,
               SupportedLocales.russian,
             ],
-            locale: state.locale,
+            locale: appState.locale,
             // localizationsDelegates: context.localizationDelegates,
             // supportedLocales: context.supportedLocales,
             // locale: state.locale,
@@ -106,7 +107,7 @@ class MyExpensesPlanner extends StatelessWidget {
                         ),
                       ),
               colorScheme: Theme.of(context).colorScheme.copyWith(
-                    primary: Colors.purple,
+                    primary: appState.primaryColor,
                     secondary: Colors.orangeAccent,
                     error: Colors.red,
                   ),
@@ -152,6 +153,15 @@ Route _onGenerateRoute(RouteSettings settings) {
     case SettingsScreen.routeName:
       return MaterialPageRoute(
         builder: (_) => const SettingsScreen(),
+      );
+
+    case ColorPickerScreen.routeName:
+      final Color? initialColor = settings.arguments as Color?;
+
+      return MaterialPageRoute(
+        builder: (_) => ColorPickerScreen(
+          initialColor: initialColor ?? Colors.white,
+        ),
       );
 
     default:
