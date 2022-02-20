@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
+import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
+import 'package:my_expenses_planner/data/local_storage/secure_storage.dart';
+import 'package:my_expenses_planner/data/repositories/app_settings/app_settings_repository.dart';
+import 'package:my_expenses_planner/data/repositories/app_settings/i_app_settings_repository.dart';
 import 'package:my_expenses_planner/data/repositories/categories/i_categories_repository.dart';
 import 'package:my_expenses_planner/data/repositories/categories/sqflite_categories_repository.dart';
 import 'package:my_expenses_planner/data/repositories/transactions/i_transactions_repository.dart';
 import 'package:my_expenses_planner/data/repositories/transactions/sqflite_transactions_repository.dart';
+import 'package:my_expenses_planner/domain/use_cases/app_settings/app_settings_case_impl.dart';
+import 'package:my_expenses_planner/domain/use_cases/app_settings/i_app_settings_case.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/categories_case_impl.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
@@ -20,10 +27,15 @@ final GetIt getIt = GetIt.instance;
 Future<void> configureDependencies() async {
   getIt
 
-    /// sqflite db and repos
+    /// dbs, storages and repos
     ..registerSingleton<DatabaseWrapper>(
       DatabaseWrapper(
         SqfliteDatabaseProvider(),
+      ),
+    )
+    ..registerSingleton<ILocalStorage>(
+      SecureStorage(
+        const FlutterSecureStorage(),
       ),
     )
     ..registerSingleton<ICategoriesRepository>(
@@ -32,6 +44,11 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<ITransactionsRepository>(
       () => SqfliteTransactionsRepository(
         dbWrapper: getIt<DatabaseWrapper>(),
+      ),
+    )
+    ..registerLazySingleton<IAppSettingsRepository>(
+      () => AppSettingsRepository(
+        getIt<ILocalStorage>(),
       ),
     )
 
@@ -46,6 +63,11 @@ Future<void> configureDependencies() async {
         categoriesRepository: getIt<ICategoriesRepository>(),
       ),
     )
+    ..registerLazySingleton<IAppSettingsCase>(
+      () => AppSettingsCaseImpl(
+        getIt<IAppSettingsRepository>(),
+      ),
+    )
 
     /// Global singletons
     ..registerLazySingleton<CategoryListCubit>(
@@ -53,8 +75,9 @@ Future<void> configureDependencies() async {
         categoriesCaseImpl: getIt<ICategoriesCase>(),
       ),
     )
-    ..registerSingleton<AppCubit>(
-      AppCubit(
+    ..registerLazySingleton<AppCubit>(
+      () => AppCubit(
+        appSettingsCase: getIt<IAppSettingsCase>(),
         locale: LocalizationsConfig.defaultLocale,
         primaryColor: Colors.red,
         secondaryColor: Colors.amber,
