@@ -1,5 +1,6 @@
 import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
+import 'package:my_expenses_planner/domain/models/transaction.dart' as domain;
 
 class Transaction {
   Transaction({
@@ -19,6 +20,16 @@ class Transaction {
         map[TransactionsTableColumns.date.code] as int,
       ),
       categoryUuid: map['category_uuid'] as String?,
+    );
+  }
+
+  factory Transaction.fromDomainTransaction(domain.Transaction _transaction) {
+    return Transaction(
+      uuid: _transaction.uuid,
+      amount: _transaction.amount,
+      title: _transaction.title,
+      date: _transaction.date,
+      categoryUuid: _transaction.categoryUuid,
     );
   }
 
@@ -53,5 +64,15 @@ class Transaction {
       TransactionsTableColumns.date.code: date.millisecondsSinceEpoch,
       TransactionsTableColumns.categoryUuid.code: categoryUuid,
     };
+  }
+
+  domain.Transaction toDataTransaction() {
+    return domain.Transaction(
+      uuid: uuid,
+      amount: amount,
+      title: title,
+      date: date,
+      categoryUuid: categoryUuid,
+    );
   }
 }

@@ -1,7 +1,5 @@
-import 'dart:ui';
-
-import 'package:flutter/src/material/app.dart';
-import 'package:my_expenses_planner/data/repositories/app_settings/i_app_settings_repository.dart';
+import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/domain/repositories_interfaces/i_app_settings_repository.dart';
 import 'package:my_expenses_planner/domain/use_cases/app_settings/i_app_settings_case.dart';
 
 class AppSettingsCaseImpl implements IAppSettingsCase {

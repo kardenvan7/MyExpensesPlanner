@@ -2,8 +2,9 @@ import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
 import 'package:my_expenses_planner/data/local_db/config.dart';
 import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
-import 'package:my_expenses_planner/data/models/transaction_category.dart';
-import 'package:my_expenses_planner/data/repositories/categories/i_categories_repository.dart';
+import 'package:my_expenses_planner/domain/models/transaction_category.dart'
+    as domain;
+import 'package:my_expenses_planner/domain/repositories_interfaces/i_categories_repository.dart';
 
 class SqfliteCategoriesRepository implements ICategoriesRepository {
   SqfliteCategoriesRepository(this._dbWrapper);
@@ -13,18 +14,18 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
   final DatabaseWrapper _dbWrapper;
 
   @override
-  Future<List<TransactionCategory>> getCategories() async {
+  Future<List<domain.TransactionCategory>> getCategories() async {
     final List<Map<String, dynamic>> categoriesMapList =
         await _dbWrapper.rawQuery(
       'SELECT *'
       'FROM $tableName',
     );
 
-    final List<TransactionCategory> categoriesList = [];
+    final List<domain.TransactionCategory> categoriesList = [];
 
     for (final Map<String, dynamic> categoryMap in categoriesMapList) {
       categoriesList.add(
-        TransactionCategory.fromMap(categoryMap),
+        domain.TransactionCategory.fromMap(categoryMap),
       );
     }
 
@@ -32,7 +33,7 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
   }
 
   @override
-  Future<TransactionCategory?> getCategoryByUuid(String uuid) async {
+  Future<domain.TransactionCategory?> getCategoryByUuid(String uuid) async {
     final List<Map<String, dynamic>> _categoryMapList =
         await _dbWrapper.rawQuery(
       'SELECT * FROM $tableName '
@@ -44,11 +45,11 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
       return null;
     }
 
-    return TransactionCategory.fromMap(_categoryMapList.first);
+    return domain.TransactionCategory.fromMap(_categoryMapList.first);
   }
 
   @override
-  Future<void> save(TransactionCategory category) async {
+  Future<void> save(domain.TransactionCategory category) async {
     final int id = await _dbWrapper.insert(
       tableName,
       _getMapForDb(category),
@@ -60,7 +61,8 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
   }
 
   @override
-  Future<void> update(String uuid, TransactionCategory newCategory) async {
+  Future<void> update(
+      String uuid, domain.TransactionCategory newCategory) async {
     final Map<String, Object?> newCategoryMap = _getMapForDb(newCategory);
 
     final int rowsChangedCount = await _dbWrapper.update(
@@ -74,7 +76,7 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
     }
   }
 
-  Map<String, Object?> _getMapForDb(TransactionCategory category) {
+  Map<String, Object?> _getMapForDb(domain.TransactionCategory category) {
     final Map<String, Object?> map = category.toMap();
     map[CategoriesTableColumns.color.code] = category.color.toHexString();
 

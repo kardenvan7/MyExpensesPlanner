@@ -1,5 +1,4 @@
 import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
-import 'package:my_expenses_planner/data/models/transaction.dart' as data;
 
 import './transaction_category.dart';
 
@@ -24,31 +23,11 @@ class Transaction {
     );
   }
 
-  factory Transaction.fromDataTransaction(data.Transaction _transaction) {
-    return Transaction(
-      uuid: _transaction.uuid,
-      amount: _transaction.amount,
-      title: _transaction.title,
-      date: _transaction.date,
-      categoryUuid: _transaction.categoryUuid,
-    );
-  }
-
   final String uuid;
   final DateTime date;
   final String title;
   final double amount;
   final String? categoryUuid;
-
-  data.Transaction toDataTransaction() {
-    return data.Transaction(
-      uuid: uuid,
-      amount: amount,
-      title: title,
-      date: date,
-      categoryUuid: categoryUuid,
-    );
-  }
 
   Map<String, Object?> toMap() {
     return {

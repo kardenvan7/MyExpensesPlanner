@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
-import 'package:my_expenses_planner/data/repositories/app_settings/i_app_settings_repository.dart';
+import 'package:my_expenses_planner/domain/repositories_interfaces/i_app_settings_repository.dart';
 
 class AppSettingsRepository implements IAppSettingsRepository {
   AppSettingsRepository(this._localStorage);

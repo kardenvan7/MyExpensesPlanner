@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
-import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
-import 'package:my_expenses_planner/data/models/transaction_category.dart'
-    as data;
 
 class TransactionCategory {
   final String uuid;
@@ -17,31 +14,13 @@ class TransactionCategory {
 
   factory TransactionCategory.fromMap(Map map) {
     return TransactionCategory(
-      uuid: map[CategoriesTableColumns.uuid.code],
-      color: map[CategoriesTableColumns.color.code] is Color
-          ? map[CategoriesTableColumns.color.code]
-          : map[CategoriesTableColumns.color.code] is String
-              ? HexColor.fromHex(map[CategoriesTableColumns.color.code])
+      uuid: map['uuid'],
+      color: map['color'] is Color
+          ? map['color']
+          : map['color'] is String
+              ? HexColor.fromHex(map['color'])
               : null,
-      name: map[CategoriesTableColumns.name.code],
-    );
-  }
-
-  factory TransactionCategory.fromDataTransactionCategory(
-    data.TransactionCategory _category,
-  ) {
-    return TransactionCategory(
-      uuid: _category.uuid,
-      color: _category.color,
-      name: _category.name,
-    );
-  }
-
-  data.TransactionCategory toDataTransactionCategory() {
-    return data.TransactionCategory(
-      uuid: uuid,
-      color: color,
-      name: name,
+      name: map['name'],
     );
   }
 

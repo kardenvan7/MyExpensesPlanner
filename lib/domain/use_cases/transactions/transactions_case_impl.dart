@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:my_expenses_planner/data/models/transaction.dart' as data;
-import 'package:my_expenses_planner/data/repositories/transactions/i_transactions_repository.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
+import 'package:my_expenses_planner/domain/repositories_interfaces/i_transactions_repository.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 
 class TransactionsCaseImpl implements ITransactionsCase {
@@ -24,17 +23,9 @@ class TransactionsCaseImpl implements ITransactionsCase {
     int limit = 40,
     int offset = 0,
   }) async {
-    final List<data.Transaction> _transactions =
-        await _transactionsRepository.getTransactions(
+    return _transactionsRepository.getTransactions(
       limit: limit,
       offset: offset,
-    );
-
-    return List.generate(
-      _transactions.length,
-      (index) => Transaction.fromDataTransaction(
-        _transactions[index],
-      ),
     );
   }
 
@@ -45,7 +36,7 @@ class TransactionsCaseImpl implements ITransactionsCase {
   }) async {
     _transactionsRepository.edit(
       transactionId: transactionId,
-      newTransaction: newTransaction.toDataTransaction(),
+      newTransaction: newTransaction,
     );
 
     streamController.add(
@@ -62,7 +53,7 @@ class TransactionsCaseImpl implements ITransactionsCase {
     required Transaction transaction,
   }) async {
     _transactionsRepository.save(
-      transaction: transaction.toDataTransaction(),
+      transaction: transaction,
     );
 
     streamController.add(
@@ -104,16 +95,8 @@ class TransactionsCaseImpl implements ITransactionsCase {
       ),
     );
 
-    final List<data.Transaction> _transactions =
-        await _transactionsRepository.getTransactionsFromPeriod(
+    return _transactionsRepository.getTransactionsFromPeriod(
       startDate: _startDate,
-    );
-
-    return List.generate(
-      _transactions.length,
-      (index) => Transaction.fromDataTransaction(
-        _transactions[index],
-      ),
     );
   }
 }

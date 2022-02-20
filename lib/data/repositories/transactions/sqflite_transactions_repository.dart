@@ -1,8 +1,9 @@
+import 'package:my_expenses_planner/domain/models/transaction.dart' as domain;
+
+import '../../../domain/repositories_interfaces/i_transactions_repository.dart';
 import '../../local_db/config.dart';
 import '../../local_db/database_wrapper.dart';
 import '../../local_db/sqflite_local_db.dart';
-import '../../models/transaction.dart';
-import '../../repositories/transactions/i_transactions_repository.dart';
 
 class SqfliteTransactionsRepository implements ITransactionsRepository {
   SqfliteTransactionsRepository({
@@ -14,7 +15,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   final DatabaseWrapper _dbWrapper;
 
   @override
-  Future<List<Transaction>> getTransactions({
+  Future<List<domain.Transaction>> getTransactions({
     int limit = 40,
     int offset = 0,
   }) async {
@@ -24,11 +25,11 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
       'ORDER BY date DESC LIMIT $offset, $limit;',
     );
 
-    final List<Transaction> transactions = [];
+    final List<domain.Transaction> transactions = [];
 
     for (final Map<String, Object?> transactionMap in transactionsMapsList) {
       transactions.add(
-        Transaction.fromMap(transactionMap),
+        domain.Transaction.fromMap(transactionMap),
       );
     }
 
@@ -38,7 +39,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   @override
   Future<void> edit({
     required String transactionId,
-    required Transaction newTransaction,
+    required domain.Transaction newTransaction,
   }) async {
     final Map<String, dynamic> transactionMap = newTransaction.toMap();
 
@@ -55,7 +56,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
 
   @override
   Future<void> save({
-    required Transaction transaction,
+    required domain.Transaction transaction,
   }) async {
     final int id = await _dbWrapper.insert(
       _tableName,
@@ -82,7 +83,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   }
 
   @override
-  Future<List<Transaction>> getTransactionsFromPeriod({
+  Future<List<domain.Transaction>> getTransactionsFromPeriod({
     required DateTime startDate,
     DateTime? endDate,
   }) async {
@@ -104,7 +105,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
 
     return List.generate(
       _transactionsJsonList.length,
-      (index) => Transaction.fromMap(
+      (index) => domain.Transaction.fromMap(
         _transactionsJsonList[index],
       ),
     );
