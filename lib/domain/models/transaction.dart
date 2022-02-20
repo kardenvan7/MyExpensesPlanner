@@ -33,7 +33,7 @@ class Transaction {
     return {
       'uuid': uuid,
       'title': title,
-      'code': amount,
+      'amount': amount,
       'date': date.millisecondsSinceEpoch,
       'category_uuid': categoryUuid,
     };
