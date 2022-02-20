@@ -7,31 +7,30 @@ class MainScreenDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 10,
-      ),
-      width: MediaQuery.of(context).size.width * 0.6,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          ListView(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              ListTile(
-                leading: const Icon(Icons.settings),
-                title: Text(AppLocalizationsWrapper.of(context).settings),
-                onTap: () {
-                  Navigator.of(context).pushNamed(SettingsScreen.routeName);
-                },
-              ),
-            ],
-          ),
-        ],
+    return Drawer(
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 10,
+        ),
+        width: MediaQuery.of(context).size.width * 0.6,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: Text(AppLocalizationsWrapper.of(context).settings),
+                  onTap: () {
+                    Navigator.of(context).pushNamed(SettingsScreen.routeName);
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -12,6 +12,7 @@
   "without_category": "Без категории",
   "add_category": "Добавить категорию",
   "edit_category": "Изменить категорию",
+  "delete_category_confirmation_question": "Вы уверены, что хотите удалить категорию? Это действие нельзя будет отменить",
 
   "empty_transaction_list_placeholder_text": "Список транзакций пуст.\n\nНажмите на значок \"+\" в правом верхнем углу, чтобы создать транзакцию",
   "today": "Сегодня",
@@ -19,5 +20,7 @@
 
   "settings": "Настройки",
   "app_language": "Язык приложения",
-  "app_primary_color": "Основной цвет"
+  "app_primary_color": "Основной цвет",
+  "app_secondary_color": "Второстепенный цвет",
+  "app_dark_theme": "Темная тема"
 }

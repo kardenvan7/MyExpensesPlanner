@@ -1,14 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/assets/assets.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
-import 'package:my_expenses_planner/core/utils/print.dart';
 import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/core/widgets/color_picker_screen.dart';
 
 part './components/language_tile.dart';
 part './components/primary_color_tile.dart';
+part './components/secondary_color_tile.dart';
 part './components/settings_app_bar.dart';
+part './components/theme_picker.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -29,9 +31,11 @@ class SettingsScreen extends StatelessWidget {
             ListView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              children: [
-                const LanguageTile(),
-                const PrimaryColorTile(),
+              children: const [
+                LanguageTile(),
+                PrimaryColorTile(),
+                SecondaryColorTile(),
+                ThemePicker(),
               ],
             ),
           ],

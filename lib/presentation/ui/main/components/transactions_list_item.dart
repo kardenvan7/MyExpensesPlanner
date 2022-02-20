@@ -22,6 +22,7 @@ class TransactionsListItem extends StatelessWidget {
     return Slidable(
       child: Card(
         clipBehavior: Clip.hardEdge,
+        color: Theme.of(context).listTileTheme.tileColor,
         child: Row(
           children: [
             BlocBuilder<CategoryListCubit, CategoryListState>(

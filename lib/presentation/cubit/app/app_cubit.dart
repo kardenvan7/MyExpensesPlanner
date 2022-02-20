@@ -10,11 +10,13 @@ class AppCubit extends Cubit<AppState> {
     required Locale locale,
     required Color primaryColor,
     required Color secondaryColor,
+    required ThemeMode themeMode,
   }) : super(
           AppState(
             locale: locale,
             primaryColor: primaryColor,
             secondaryColor: secondaryColor,
+            themeMode: themeMode,
           ),
         );
 
@@ -44,5 +46,13 @@ class AppCubit extends Cubit<AppState> {
 
   void setSecondaryColor(Color color) {
     emit(state.copyWith(secondaryColor: color));
+  }
+
+  void switchTheme() {
+    emit(
+      state.copyWith(
+        themeMode: state.isLightTheme ? ThemeMode.dark : ThemeMode.light,
+      ),
+    );
   }
 }

@@ -94,10 +94,6 @@ class EditTransactionScreen extends StatelessWidget {
                     pickedCategoryUuid: state.categoryUuid,
                     onCategoryPicked: _cubit.setCategoryUuid,
                   ),
-                  // CategoriesDropdownField(
-                  //   initialCategoryUuid: state.categoryUuid,
-                  //   onCategoryPick: _cubit.setCategoryUuid,
-                  // ),
                 ],
               ),
             ),

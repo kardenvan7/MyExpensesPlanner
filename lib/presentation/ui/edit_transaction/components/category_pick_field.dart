@@ -35,7 +35,12 @@ class _CategoryPickFieldState extends State<CategoryPickField> {
             ),
             decoration: BoxDecoration(
               border: Border.all(
-                color: Colors.black,
+                color: Theme.of(context)
+                        .inputDecorationTheme
+                        .enabledBorder
+                        ?.borderSide
+                        .color ??
+                    Colors.black,
                 width: 1,
               ),
               borderRadius: BorderRadius.circular(4),
@@ -77,8 +82,7 @@ class _CategoryPickFieldState extends State<CategoryPickField> {
   Future<void> _onCategoryPick() async {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    final ValueWrapper<String>? _newCategoryUuid =
-        await showDialog<ValueWrapper<String>?>(
+    showDialog(
       context: context,
       builder: (builderContext) => AlertDialog(
         clipBehavior: Clip.hardEdge,
@@ -118,9 +122,6 @@ class PickCategoryModalSheet extends StatelessWidget {
 
         return Container(
           width: MediaQuery.of(context).size.width * 0.8,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -130,7 +131,7 @@ class PickCategoryModalSheet extends StatelessWidget {
                   horizontal: 10,
                 ),
                 alignment: Alignment.centerRight,
-                child: TextButton(
+                child: ElevatedButton(
                   child: Text(
                     AppLocalizationsWrapper.of(context).add_category,
                   ),
@@ -185,7 +186,7 @@ class PickCategoryModalSheet extends StatelessWidget {
                           children: [
                             IconButton(
                               onPressed: () {
-                                _onCategoryEdit(
+                                _onCategoryEditTap(
                                   context: context,
                                   category: _categoryList[_index],
                                 );
@@ -194,7 +195,7 @@ class PickCategoryModalSheet extends StatelessWidget {
                             ),
                             IconButton(
                               onPressed: () {
-                                _onCategoryDelete(
+                                _onCategoryDeleteTap(
                                   context,
                                   _categoryList[_index].uuid,
                                 );
@@ -232,7 +233,7 @@ class PickCategoryModalSheet extends StatelessWidget {
     Navigator.pop(context);
   }
 
-  void _onCategoryEdit({
+  void _onCategoryEditTap({
     required BuildContext context,
     TransactionCategory? category,
   }) {
@@ -248,14 +249,15 @@ class PickCategoryModalSheet extends StatelessWidget {
     );
   }
 
-  void _onCategoryDelete(BuildContext context, String categoryUuid) {
+  void _onCategoryDeleteTap(BuildContext context, String categoryUuid) {
     showDialog(
       context: context,
       builder: (BuildContext alertContext) {
         return AlertDialog(
-          title: const Text(
-            'Are you sure you want to delete the category?',
-          ), // TODO: localization
+          title: Text(
+            AppLocalizationsWrapper.of(context)
+                .delete_category_confirmation_question,
+          ),
           actions: [
             TextButton(
               onPressed: () {

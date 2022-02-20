@@ -29,7 +29,7 @@ class TitleInput extends StatelessWidget {
             ),
             enabledBorder: isErrorState
                 ? Theme.of(context).inputDecorationTheme.errorBorder
-                : const OutlineInputBorder(),
+                : Theme.of(context).inputDecorationTheme.enabledBorder,
           ),
           onChanged: onChanged,
           validator: (String? value) {

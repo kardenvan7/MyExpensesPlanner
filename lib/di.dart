@@ -58,6 +58,7 @@ Future<void> configureDependencies() async {
         locale: LocalizationsConfig.defaultLocale,
         primaryColor: Colors.red,
         secondaryColor: Colors.amber,
+        themeMode: ThemeMode.system,
       ),
     );
 

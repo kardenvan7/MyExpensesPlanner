@@ -27,8 +27,7 @@ class AmountInput extends StatelessWidget {
             label: Text(AppLocalizationsWrapper.of(context).amount_input_label),
             enabledBorder: isErrorState
                 ? Theme.of(context).inputDecorationTheme.errorBorder
-                : const OutlineInputBorder(),
-            errorBorder: Theme.of(context).inputDecorationTheme.errorBorder,
+                : Theme.of(context).inputDecorationTheme.enabledBorder,
           ),
           onChanged: onChanged,
         ),

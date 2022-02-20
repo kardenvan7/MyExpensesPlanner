@@ -19,6 +19,7 @@ class _DateInputState extends State<DateInput> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      tileColor: Colors.transparent,
       contentPadding: const EdgeInsets.only(
         top: 5,
         bottom: 5,
