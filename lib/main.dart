@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
+import 'package:my_expenses_planner/data/local_storage/hive_wrapper.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
@@ -28,6 +29,7 @@ void main() async {
         await configureDependencies();
         // await EasyLocalization.ensureInitialized();
         await getIt<DatabaseWrapper>().initDatabase();
+        await getIt<HiveWrapper>().initialize();
       } catch (e) {
         exit(1);
       }

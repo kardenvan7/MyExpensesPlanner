@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
-import 'package:my_expenses_planner/core/extensions/locale_extension.dart';
+import 'package:my_expenses_planner/core/extensions/locale_extensions.dart';
 import 'package:my_expenses_planner/domain/use_cases/app_settings/i_app_settings_case.dart';
 
 part 'app_state.dart';

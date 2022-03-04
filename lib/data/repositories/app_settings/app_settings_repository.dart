@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
+import 'package:my_expenses_planner/data/models/app_settings.dart';
+import 'package:my_expenses_planner/domain/models/app_settings.dart' as domain;
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_app_settings_repository.dart';
 
 class AppSettingsRepository implements IAppSettingsRepository {
@@ -45,5 +47,17 @@ class AppSettingsRepository implements IAppSettingsRepository {
   @override
   Future<void> saveTheme(ThemeMode theme) async {
     await _localStorage.saveTheme(theme);
+  }
+
+  @override
+  Future<domain.AppSettings?> getAppSettings() async {
+    final AppSettings? _dataAppSettings = await _localStorage.getAppSettings();
+
+    return domain.AppSettings(
+      locale: _dataAppSettings?.locale,
+      primaryColor: _dataAppSettings?.primaryColor,
+      secondaryColor: _dataAppSettings?.secondaryColor,
+      themeMode: _dataAppSettings?.themeMode,
+    );
   }
 }

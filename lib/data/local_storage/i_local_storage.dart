@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/data/models/app_settings.dart';
 
 abstract class ILocalStorage {
   /// App Settings
@@ -11,6 +12,7 @@ abstract class ILocalStorage {
   Future<Color?> getPrimaryColor();
   Future<Color?> getSecondaryColor();
   Future<ThemeMode?> getTheme();
+  Future<AppSettings?> getAppSettings();
 
   /// Other
 }

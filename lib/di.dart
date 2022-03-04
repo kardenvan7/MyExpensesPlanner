@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
+import 'package:my_expenses_planner/data/local_storage/hive_local_storage.dart';
+import 'package:my_expenses_planner/data/local_storage/hive_wrapper.dart';
 import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
-import 'package:my_expenses_planner/data/local_storage/secure_storage.dart';
 import 'package:my_expenses_planner/data/repositories/app_settings/app_settings_repository.dart';
 import 'package:my_expenses_planner/data/repositories/categories/sqflite_categories_repository.dart';
 import 'package:my_expenses_planner/data/repositories/transactions/sqflite_transactions_repository.dart';
@@ -33,10 +33,9 @@ Future<void> configureDependencies() async {
         SqfliteDatabaseProvider(),
       ),
     )
+    ..registerSingleton<HiveWrapper>(HiveWrapper())
     ..registerSingleton<ILocalStorage>(
-      SecureStorage(
-        const FlutterSecureStorage(),
-      ),
+      HiveLocalStorage(getIt<HiveWrapper>()),
     )
     ..registerSingleton<ICategoriesRepository>(
       SqfliteCategoriesRepository(getIt<DatabaseWrapper>()),

@@ -62,7 +62,9 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
 
   @override
   Future<void> update(
-      String uuid, domain.TransactionCategory newCategory) async {
+    String uuid,
+    domain.TransactionCategory newCategory,
+  ) async {
     final Map<String, Object?> newCategoryMap = _getMapForDb(newCategory);
 
     final int rowsChangedCount = await _dbWrapper.update(
