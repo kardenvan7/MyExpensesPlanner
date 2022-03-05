@@ -136,9 +136,10 @@ class PickCategoryModalSheet extends StatelessWidget {
                     AppLocalizationsWrapper.of(context).add_category,
                   ),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      EditCategoryScreen.routeName,
-                    );
+                    getIt<AppRouter>().pushNamed(EditCategoryScreen.routeName);
+                    // Navigator.of(context).pushNamed(
+                    //   EditCategoryScreen.routeName,
+                    // );
                   },
                 ),
               ),
@@ -237,16 +238,17 @@ class PickCategoryModalSheet extends StatelessWidget {
     required BuildContext context,
     TransactionCategory? category,
   }) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (editTransactionContext) {
-          return EditCategoryScreen(
-            category: category,
-          );
-        },
-      ),
-    );
+    getIt<AppRouter>().push(EditCategoryRoute(category: category));
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (editTransactionContext) {
+    //       return EditCategoryScreen(
+    //         category: category,
+    //       );
+    //     },
+    //   ),
+    // );
   }
 
   void _onCategoryDeleteTap(BuildContext context, String categoryUuid) {

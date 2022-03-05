@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
+import 'package:my_expenses_planner/di.dart';
+import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
 
 class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -15,7 +17,8 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, EditTransactionScreen.routeName);
+            getIt<AppRouter>().pushNamed(EditTransactionScreen.routeName);
+            // Navigator.pushNamed(context, EditTransactionScreen.routeName);
           },
           icon: const Icon(
             Icons.add,

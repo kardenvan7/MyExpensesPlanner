@@ -20,6 +20,7 @@ import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions
 import 'package:my_expenses_planner/domain/use_cases/transactions/transactions_case_impl.dart';
 import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
+import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 
 /// Syntax sugar. A shorter way for accessing [GetIt.instance].
 final GetIt getIt = GetIt.instance;
@@ -33,7 +34,9 @@ Future<void> configureDependencies() async {
         SqfliteDatabaseProvider(),
       ),
     )
-    ..registerSingleton<HiveWrapper>(HiveWrapper())
+    ..registerSingleton<HiveWrapper>(
+      HiveWrapper(),
+    )
     ..registerSingleton<ILocalStorage>(
       HiveLocalStorage(getIt<HiveWrapper>()),
     )
@@ -69,6 +72,9 @@ Future<void> configureDependencies() async {
     )
 
     /// Global singletons
+    ..registerSingleton<AppRouter>(
+      AppRouter(),
+    )
     ..registerLazySingleton<CategoryListCubit>(
       () => CategoryListCubit(
         categoriesCaseImpl: getIt<ICategoriesCase>(),

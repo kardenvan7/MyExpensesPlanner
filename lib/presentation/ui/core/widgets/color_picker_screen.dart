@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:my_expenses_planner/di.dart';
+import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 
 class ColorPickerScreen extends StatelessWidget {
   ColorPickerScreen({
@@ -36,7 +38,8 @@ class ColorPickerScreen extends StatelessWidget {
   }
 
   void _onSavePressed(BuildContext context) {
-    Navigator.of(context).pop(_controller.value);
+    getIt<AppRouter>().pop(_controller.value);
+    // Navigator.of(context).pop(_controller.value);
   }
 }
 

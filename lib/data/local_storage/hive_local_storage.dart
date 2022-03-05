@@ -26,7 +26,7 @@ class HiveLocalStorage implements ILocalStorage {
   Future<Locale?> getAppLanguage() async {
     final String? _appLang = box.get(appLangKey);
 
-    return _appLang != null ? Locale(_appLang) : null;
+    return _appLang != null ? LocaleFactory.fromLangString(_appLang) : null;
   }
 
   @override

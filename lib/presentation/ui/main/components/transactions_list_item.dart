@@ -4,12 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
+import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
+import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 
 import '../../../cubit/category_list/category_list_cubit.dart';
 import '../../../cubit/transaction_list/transaction_list_cubit.dart';
-import '../../../ui/edit_transaction/edit_transaction_screen.dart';
 
 class TransactionsListItem extends StatelessWidget {
   const TransactionsListItem({required this.transaction, Key? key})
@@ -78,11 +79,14 @@ class TransactionsListItem extends StatelessWidget {
             backgroundColor: Colors.orangeAccent,
             icon: Icons.edit,
             onPressed: (BuildContext context) async {
-              Navigator.pushNamed(
-                context,
-                EditTransactionScreen.routeName,
-                arguments: transaction,
+              getIt<AppRouter>().push(
+                EditTransactionRoute(transaction: transaction),
               );
+              // Navigator.pushNamed(
+              //   context,
+              //   EditTransactionScreen.routeName,
+              //   arguments: transaction,
+              // );
             },
           ),
           SlidableAction(

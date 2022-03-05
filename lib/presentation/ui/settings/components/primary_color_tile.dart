@@ -36,14 +36,17 @@ class PrimaryColorTile extends StatelessWidget {
   }
 
   Future<void> _onPressed(BuildContext context, Color color) async {
-    final Color? _pickedColor = await Navigator.push<Color?>(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ColorPickerScreen(
-          initialColor: color,
-        ),
-      ),
+    final Color? _pickedColor = await getIt<AppRouter>().push<Color?>(
+      ColorPickerRoute(initialColor: color),
     );
+    // Navigator.push<Color?>(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (_) => ColorPickerScreen(
+    //       initialColor: color,
+    //     ),
+    //   ),
+    // );
 
     if (_pickedColor != null) {
       BlocProvider.of<AppCubit>(context).setPrimaryColor(

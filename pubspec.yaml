@@ -27,6 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  auto_route: ^3.2.4
   auto_size_text: ^3.0.0
   flutter:
     sdk: flutter
@@ -50,9 +51,10 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
+  auto_route_generator: ^3.2.3
+  build_runner: null
   flutter_test:
     sdk: flutter
-  build_runner: null
   hive_generator: ^1.1.2
 
   # The "flutter_lints" package below contains a set of recommended lints to

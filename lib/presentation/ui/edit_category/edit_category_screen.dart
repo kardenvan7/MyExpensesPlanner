@@ -6,6 +6,7 @@ import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 import 'package:my_expenses_planner/presentation/cubit/edit_category/edit_category_cubit.dart';
+import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/components/title_input.dart';
 
 class EditCategoryScreen extends StatelessWidget {
@@ -32,7 +33,8 @@ class EditCategoryScreen extends StatelessWidget {
           if (state.popScreen) {
             onEditFinish?.call(state.uuid);
 
-            Navigator.of(context).pop();
+            getIt<AppRouter>().pop();
+            // Navigator.of(context).pop();
           }
         },
         buildWhen: (oldState, newState) {

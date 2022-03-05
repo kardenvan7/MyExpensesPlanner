@@ -3,11 +3,11 @@ import 'package:my_expenses_planner/config/l10n/localization.dart';
 
 extension LocaleExt on Locale {
   bool get isRussian {
-    return languageCode == SupportedLocales.russian.languageCode;
+    return toLangString() == SupportedLocales.russian.toLangString();
   }
 
   bool get isEnglish {
-    return languageCode == SupportedLocales.english.languageCode;
+    return toLangString() == SupportedLocales.english.toLangString();
   }
 }
 

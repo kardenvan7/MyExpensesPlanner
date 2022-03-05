@@ -27,19 +27,27 @@ class LanguageTile extends StatelessWidget {
               onPressed: () {
                 BlocProvider.of<AppCubit>(context).switchLanguage();
               },
-              icon: state.isEnglishLocale
-                  ? Assets.svg.englishFlag.svg(
-                      width: 35,
-                      fit: BoxFit.fill,
-                    )
-                  : Assets.svg.russianFlag.svg(
-                      width: 35,
-                      fit: BoxFit.fill,
-                    ),
+              icon: _getIconByState(state),
             );
           },
         ),
       ),
     );
+  }
+
+  Widget _getIconByState(AppState state) {
+    printWithBrackets(state.locale);
+
+    if (state.isEnglishLocale) {
+      return Assets.svg.englishFlag.svg(
+        width: 35,
+        fit: BoxFit.fill,
+      );
+    } else {
+      return Assets.svg.russianFlag.svg(
+        width: 35,
+        fit: BoxFit.fill,
+      );
+    }
   }
 }

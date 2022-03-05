@@ -9,6 +9,7 @@ import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/edit_transaction/edit_transaction_cubit.dart';
+import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/amount_input.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/date_input.dart';
@@ -43,7 +44,8 @@ class EditTransactionScreen extends StatelessWidget {
           }
 
           if (state.popScreen) {
-            Navigator.of(context).pop();
+            getIt<AppRouter>().pop();
+            // Navigator.of(context).pop();
           }
         },
         buildWhen: (oldState, newState) {
