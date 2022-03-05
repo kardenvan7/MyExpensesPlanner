@@ -14,7 +14,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   })  : _transactionsCaseImpl = transactionsCaseImpl,
         super(
           TransactionListState(
-            isLoading: false,
+            isLoading: true,
             transactions: [],
           ),
         );

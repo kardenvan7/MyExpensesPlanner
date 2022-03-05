@@ -24,6 +24,14 @@ class TransactionsList extends StatelessWidget {
       )..initialize(),
       child: BlocBuilder<TransactionListCubit, TransactionListState>(
         builder: (context, state) {
+          if (state.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            );
+          }
+
           return state.transactions.isNotEmpty
               ? ListView.builder(
                   padding: EdgeInsets.only(
