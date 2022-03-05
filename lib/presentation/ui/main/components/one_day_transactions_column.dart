@@ -151,17 +151,26 @@ class OneDayTransactionsColumn extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
-            height: 25,
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(5.0),
-              child: AutoSizeText(
-                amountForDay.toInt().toString(),
-                minFontSize: 8,
-                maxFontSize: 14,
-                softWrap: true,
-              ),
+          TweenAnimationBuilder<int>(
+            builder: (context, int value, child) {
+              return SizedBox(
+                height: 25,
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(5.0),
+                  child: AutoSizeText(
+                    value.toString(),
+                    minFontSize: 8,
+                    maxFontSize: 14,
+                    softWrap: true,
+                  ),
+                ),
+              );
+            },
+            duration: const Duration(seconds: 1),
+            tween: IntTween(
+              begin: 0,
+              end: amountForDay.toInt(),
             ),
           ),
         ],
