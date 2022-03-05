@@ -115,30 +115,40 @@ class OneDayTransactionsColumn extends StatelessWidget {
                                             amountForDay)
                                         .round();
 
-                                return Flexible(
-                                  flex: _curFraction,
-                                  child: Column(
-                                    children: [
-                                      const Divider(
-                                        color: Colors.black,
-                                        thickness: 1.2,
-                                        height: 0,
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          color: state.categories
-                                                  .firstWhereOrNull(
-                                                    (element) =>
-                                                        element.uuid ==
-                                                        _categoryTransactions
-                                                            .categoryUuid,
-                                                  )
-                                                  ?.color ??
-                                              Colors.grey,
-                                        ),
-                                      ),
-                                    ],
+                                return TweenAnimationBuilder<int>(
+                                  tween: IntTween(
+                                    begin: 1,
+                                    end: _curFraction,
                                   ),
+                                  duration: const Duration(seconds: 1),
+                                  builder: (context, value, child) {
+                                    return Flexible(
+                                      flex: value,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          const Divider(
+                                            color: Colors.black,
+                                            thickness: 1.2,
+                                            height: 0,
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              color: state.categories
+                                                      .firstWhereOrNull(
+                                                        (element) =>
+                                                            element.uuid ==
+                                                            _categoryTransactions
+                                                                .categoryUuid,
+                                                      )
+                                                      ?.color ??
+                                                  Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 );
                               },
                             ),
