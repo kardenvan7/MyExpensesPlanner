@@ -1,7 +1,8 @@
 part of './app_themes.dart';
 
 class _LightTheme {
-  static const Color mainColor = Color(0xFFFFFFFF);
+  static const Color primaryColor = Color(0xFFFFFFFF);
+  static const Color secondaryColor = Colors.black87;
   static const Color textColor = Colors.black;
 
   _LightTheme({
@@ -15,7 +16,7 @@ class _LightTheme {
 
   ThemeData get themeData {
     return ThemeData(
-      scaffoldBackgroundColor: mainColor,
+      scaffoldBackgroundColor: primaryColor,
       appBarTheme: _appBarTheme,
       textTheme: _textTheme,
       iconTheme: _iconThemeData,
@@ -29,20 +30,21 @@ class _LightTheme {
       cardTheme: _cardTheme,
       drawerTheme: _drawerThemeData,
       buttonTheme: _buttonThemeData,
+      textSelectionTheme: _textSelectionThemeData,
     );
   }
 
-  AppBarTheme get _appBarTheme => AppBarTheme(
+  AppBarTheme get _appBarTheme => const AppBarTheme(
         iconTheme: IconThemeData(
-          color: _appState.secondaryColor,
+          color: secondaryColor,
         ),
         titleTextStyle: TextStyle(
-          color: _appState.secondaryColor,
+          color: secondaryColor,
           fontSize: 21,
           fontWeight: FontWeight.w500,
         ),
         actionsIconTheme: IconThemeData(
-          color: _appState.secondaryColor,
+          color: secondaryColor,
         ),
       );
 
@@ -132,11 +134,16 @@ class _LightTheme {
                 color: textColor,
               ),
             ),
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(
+                color: textColor,
+              ),
+            ),
           );
 
   ColorScheme get _colorScheme => Theme.of(_context).colorScheme.copyWith(
-        primary: _appState.primaryColor,
-        secondary: _appState.secondaryColor,
+        primary: primaryColor,
+        secondary: secondaryColor,
         error: Colors.red,
       );
 
@@ -148,7 +155,7 @@ class _LightTheme {
 
   TextButtonThemeData get _textButtonThemeData => TextButtonThemeData(
         style: TextButton.styleFrom(
-          backgroundColor: _appState.secondaryColor,
+          backgroundColor: secondaryColor,
           textStyle: const TextStyle(
             color: textColor,
           ),
@@ -158,9 +165,9 @@ class _LightTheme {
   ElevatedButtonThemeData get _elevatedButtonThemeData =>
       ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          primary: _appState.secondaryColor,
-          onPrimary: Colors.black,
-          onSurface: Colors.black,
+          primary: secondaryColor,
+          onPrimary: primaryColor,
+          onSurface: primaryColor,
           textStyle: const TextStyle(
             color: textColor,
           ),
@@ -168,27 +175,33 @@ class _LightTheme {
       );
 
   FloatingActionButtonThemeData get _floatingActionButtonThemeData =>
-      FloatingActionButtonThemeData(
-        backgroundColor: _appState.secondaryColor,
+      const FloatingActionButtonThemeData(
+        backgroundColor: secondaryColor,
       );
 
   DialogTheme get _dialogTheme => const DialogTheme(
-        backgroundColor: mainColor,
+        backgroundColor: primaryColor,
       );
 
   CardTheme get _cardTheme => const CardTheme(
-        color: mainColor,
+        color: primaryColor,
       );
 
   DrawerThemeData get _drawerThemeData => const DrawerThemeData(
-        backgroundColor: mainColor,
+        backgroundColor: primaryColor,
       );
 
   ButtonThemeData get _buttonThemeData =>
       Theme.of(_context).buttonTheme.copyWith(
             colorScheme: Theme.of(_context).buttonTheme.colorScheme!.copyWith(
-                  primary: _appState.secondaryColor,
+                  primary: secondaryColor,
                 ),
-            buttonColor: _appState.secondaryColor,
+            buttonColor: secondaryColor,
           );
+
+  TextSelectionThemeData get _textSelectionThemeData => TextSelectionThemeData(
+        cursorColor: secondaryColor,
+        selectionColor: secondaryColor.withOpacity(0.3),
+        selectionHandleColor: secondaryColor.withOpacity(1),
+      );
 }
