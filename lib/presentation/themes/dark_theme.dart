@@ -177,6 +177,8 @@ class _DarkTheme {
 
   FloatingActionButtonThemeData get _floatingActionButtonThemeData =>
       const FloatingActionButtonThemeData(
+        shape: CircleBorder(),
+        foregroundColor: primaryColor,
         backgroundColor: secondaryColor,
       );
 

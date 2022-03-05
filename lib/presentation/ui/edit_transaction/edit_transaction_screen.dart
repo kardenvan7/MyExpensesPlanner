@@ -62,12 +62,10 @@ class EditTransactionScreen extends StatelessWidget {
                     : AppLocalizationsWrapper.of(context)
                         .edit_transaction_title,
               ),
-              actions: [
-                IconButton(
-                  onPressed: _cubit.submit,
-                  icon: const Icon(Icons.save),
-                ),
-              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              child: const Icon(Icons.save),
+              onPressed: _cubit.submit,
             ),
             body: Container(
               padding: const EdgeInsets.symmetric(horizontal: 15),

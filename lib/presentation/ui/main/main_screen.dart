@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/di.dart';
+import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
+import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/app_bar.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/drawer.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/last_week_transactions.dart';
@@ -14,6 +17,12 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       appBar: const MainScreenAppBar(),
       drawer: const MainScreenDrawer(),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          getIt<AppRouter>().pushNamed(EditTransactionScreen.routeName);
+        },
+      ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         margin: const EdgeInsets.only(top: 15),

@@ -50,6 +50,10 @@ class EditCategoryScreen extends StatelessWidget {
                     : AppLocalizationsWrapper.of(context).edit_category,
               ),
             ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: _cubit.submit,
+              child: const Icon(Icons.save),
+            ),
             body: SingleChildScrollView(
               child: Container(
                 padding:
@@ -72,17 +76,6 @@ class EditCategoryScreen extends StatelessWidget {
                         paletteType: PaletteType.hsv,
                         labelTypes: const [],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                          onPressed: _cubit.submit,
-                          child: Text(
-                            AppLocalizationsWrapper.of(context).submit,
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
