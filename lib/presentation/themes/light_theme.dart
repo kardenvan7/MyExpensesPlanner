@@ -176,6 +176,8 @@ class _LightTheme {
 
   FloatingActionButtonThemeData get _floatingActionButtonThemeData =>
       const FloatingActionButtonThemeData(
+        elevation: 0,
+        foregroundColor: primaryColor,
         backgroundColor: secondaryColor,
       );
 
