@@ -79,7 +79,9 @@ class TransactionsListItem extends StatelessWidget {
                     color: _category?.color,
                     child: Center(
                       child: AutoSizeText(
-                        _category?.name ?? '',
+                        _category?.name ??
+                            AppLocalizationsWrapper.of(context)
+                                .without_category,
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(
                               fontSize: 14,
                               color: _category?.color.isBright ?? true

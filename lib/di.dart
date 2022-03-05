@@ -16,7 +16,7 @@ import 'package:my_expenses_planner/domain/use_cases/categories/categories_case_
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/transactions_case_impl.dart';
-import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
 
 part './dark_theme.dart';
 part './light_theme.dart';

@@ -7,7 +7,7 @@ import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/data/local_storage/hive_wrapper.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/main.dart';
-import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
 
 class AppInitializer {
   Future<void> initialize() async {

@@ -103,7 +103,7 @@ class _LightTheme {
       );
 
   IconThemeData get _iconThemeData => const IconThemeData(
-        color: Colors.white70,
+        color: Colors.black,
       );
 
   InputDecorationTheme get _inputDecorationTheme =>

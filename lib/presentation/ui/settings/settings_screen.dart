@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/assets/assets.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
-import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
 
 part './components/language_tile.dart';
 part './components/settings_app_bar.dart';

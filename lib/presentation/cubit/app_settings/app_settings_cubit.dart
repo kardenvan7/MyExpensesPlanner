@@ -4,7 +4,7 @@ import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/locale_extensions.dart';
 import 'package:my_expenses_planner/domain/use_cases/app_settings/i_app_settings_case.dart';
 
-part 'app_state.dart';
+part 'app_settings_state.dart';
 
 class AppSettingsCubit extends Cubit<AppSettingsState> {
   AppSettingsCubit({
@@ -13,7 +13,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
         super(
           AppSettingsState(
             locale: SupportedLocales.english,
-            themeMode: ThemeMode.system,
+            themeMode: ThemeMode.dark,
           ),
         );
 

@@ -15,7 +15,7 @@ class ThemePicker extends StatelessWidget {
             onChanged: (bool value) {
               BlocProvider.of<AppSettingsCubit>(context).switchTheme();
             },
-            value: !state.isLightTheme,
+            value: state.isDarkTheme,
           );
         },
       ),
