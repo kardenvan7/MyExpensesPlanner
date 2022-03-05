@@ -22,10 +22,45 @@ class TransactionsListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Slidable(
-      child: Card(
-        clipBehavior: Clip.hardEdge,
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
         color: Theme.of(context).listTileTheme.tileColor,
+        borderRadius: BorderRadius.circular(6),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Slidable(
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          children: [
+            SlidableAction(
+              backgroundColor: Colors.orangeAccent,
+              icon: Icons.edit,
+              onPressed: (BuildContext context) async {
+                getIt<AppRouter>().push(
+                  EditTransactionRoute(transaction: transaction),
+                );
+              },
+            ),
+            SlidableAction(
+              backgroundColor: Colors.red,
+              icon: Icons.delete,
+              onPressed: (BuildContext onPressedContext) async {
+                await _onDelete(
+                  context: context,
+                  transaction: transaction,
+                );
+              },
+            ),
+          ],
+        ),
         child: Row(
           children: [
             BlocBuilder<CategoryListCubit, CategoryListState>(
@@ -77,30 +112,6 @@ class TransactionsListItem extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      endActionPane: ActionPane(
-        motion: const DrawerMotion(),
-        children: [
-          SlidableAction(
-            backgroundColor: Colors.orangeAccent,
-            icon: Icons.edit,
-            onPressed: (BuildContext context) async {
-              getIt<AppRouter>().push(
-                EditTransactionRoute(transaction: transaction),
-              );
-            },
-          ),
-          SlidableAction(
-            backgroundColor: Colors.red,
-            icon: Icons.delete,
-            onPressed: (BuildContext onPressedContext) async {
-              await _onDelete(
-                context: context,
-                transaction: transaction,
-              );
-            },
-          ),
-        ],
       ),
     );
   }

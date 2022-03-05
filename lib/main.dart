@@ -37,7 +37,7 @@ class MyExpensesPlanner extends StatelessWidget {
           value: getIt<AppSettingsCubit>()..initialize(),
         ),
       ],
-      child: BlocBuilder<AppSettingsCubit, AppState>(
+      child: BlocBuilder<AppSettingsCubit, AppSettingsState>(
         builder: (context, appState) {
           final AppThemes _themes = AppThemes()
             ..initialize(

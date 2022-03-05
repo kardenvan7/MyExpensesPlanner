@@ -30,7 +30,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
         _refreshWithNewData(newData);
       });
 
-      fetchLastTransactions();
+      await fetchLastTransactions();
 
       initialized = true;
     }
@@ -48,7 +48,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   }
 
   Future<void> refresh() async {
-    fetchLastTransactions();
+    await fetchLastTransactions();
   }
 
   Future<void> fetchLastTransactions() async {
@@ -90,7 +90,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   }
 
   Future<void> deleteTransaction(String txId) async {
-    _transactionsCaseImpl.delete(transactionId: txId);
+    await _transactionsCaseImpl.delete(transactionId: txId);
   }
 
   void _refreshWithNewData(TransactionsChangeData newData) {

@@ -6,12 +6,12 @@ class _DarkTheme {
   static const Color textColor = secondaryColor;
 
   _DarkTheme({
-    required AppState appState,
+    required AppSettingsState appState,
     required BuildContext context,
   })  : _appState = appState,
         _context = context;
 
-  final AppState _appState;
+  final AppSettingsState _appState;
   final BuildContext _context;
 
   ThemeData get themeData {

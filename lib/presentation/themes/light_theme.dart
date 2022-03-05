@@ -6,12 +6,12 @@ class _LightTheme {
   static const Color textColor = Colors.black;
 
   _LightTheme({
-    required AppState appState,
+    required AppSettingsState appState,
     required BuildContext context,
   })  : _appState = appState,
         _context = context;
 
-  final AppState _appState;
+  final AppSettingsState _appState;
   final BuildContext _context;
 
   ThemeData get themeData {

@@ -17,7 +17,7 @@ class LanguageTile extends StatelessWidget {
             ),
           ],
         ),
-        child: BlocBuilder<AppSettingsCubit, AppState>(
+        child: BlocBuilder<AppSettingsCubit, AppSettingsState>(
           builder: (context, state) {
             return IconButton(
               constraints: const BoxConstraints(
@@ -35,7 +35,7 @@ class LanguageTile extends StatelessWidget {
     );
   }
 
-  Widget _getIconByState(AppState state) {
+  Widget _getIconByState(AppSettingsState state) {
     if (state.isEnglishLocale) {
       return Assets.svg.englishFlag.svg(
         width: 35,

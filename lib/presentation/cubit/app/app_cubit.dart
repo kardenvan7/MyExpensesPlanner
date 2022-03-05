@@ -6,12 +6,12 @@ import 'package:my_expenses_planner/domain/use_cases/app_settings/i_app_settings
 
 part 'app_state.dart';
 
-class AppSettingsCubit extends Cubit<AppState> {
+class AppSettingsCubit extends Cubit<AppSettingsState> {
   AppSettingsCubit({
     required IAppSettingsCase appSettingsCase,
   })  : _appSettingsCase = appSettingsCase,
         super(
-          AppState(
+          AppSettingsState(
             locale: SupportedLocales.english,
             themeMode: ThemeMode.system,
           ),

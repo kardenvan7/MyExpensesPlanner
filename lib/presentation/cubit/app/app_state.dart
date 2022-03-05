@@ -1,7 +1,7 @@
 part of 'app_cubit.dart';
 
-class AppState {
-  AppState({
+class AppSettingsState {
+  AppSettingsState({
     required this.locale,
     required this.themeMode,
   });
@@ -15,13 +15,13 @@ class AppState {
   bool get isLightTheme => themeMode == ThemeMode.light;
   bool get isDarkTheme => themeMode == ThemeMode.dark;
 
-  AppState copyWith({
+  AppSettingsState copyWith({
     Locale? locale,
     Color? primaryColor,
     Color? secondaryColor,
     ThemeMode? themeMode,
   }) {
-    return AppState(
+    return AppSettingsState(
       locale: locale ?? this.locale,
       themeMode: themeMode ?? this.themeMode,
     );

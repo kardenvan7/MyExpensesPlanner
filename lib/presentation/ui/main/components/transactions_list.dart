@@ -33,12 +33,15 @@ class TransactionsList extends StatelessWidget {
           }
 
           return state.transactions.isNotEmpty
-              ? ListView.builder(
+              ? ListView.separated(
                   padding: EdgeInsets.only(
                     bottom: Platform.isIOS ? 30 : 10,
                   ),
                   shrinkWrap: true,
                   itemCount: state.sortedDates.length,
+                  separatorBuilder: (_, __) {
+                    return const SizedBox(height: 15);
+                  },
                   itemBuilder: (context, index) {
                     final _currentDate = state.sortedDates[index];
                     final List<Transaction> _currentDateTransactions =
@@ -60,13 +63,18 @@ class TransactionsList extends StatelessWidget {
                                       ).format(_currentDate),
                           ),
                         ),
-                        ListView.builder(
+                        ListView.separated(
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: _currentDateTransactions.length,
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
                             return TransactionsListItem(
                               transaction: _currentDateTransactions[index],
+                            );
+                          },
+                          separatorBuilder: (_, __) {
+                            return const SizedBox(
+                              height: 10,
                             );
                           },
                         ),

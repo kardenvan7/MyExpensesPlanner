@@ -31,7 +31,7 @@ class AppThemes {
   }
 
   void initialize({
-    required AppState appState,
+    required AppSettingsState appState,
     required BuildContext context,
   }) {
     if (!_initialized) {
