@@ -6,20 +6,14 @@ import 'package:my_expenses_planner/domain/use_cases/app_settings/i_app_settings
 
 part 'app_state.dart';
 
-class AppCubit extends Cubit<AppState> {
-  AppCubit({
+class AppSettingsCubit extends Cubit<AppState> {
+  AppSettingsCubit({
     required IAppSettingsCase appSettingsCase,
-    required Locale locale,
-    required Color primaryColor,
-    required Color secondaryColor,
-    required ThemeMode themeMode,
   })  : _appSettingsCase = appSettingsCase,
         super(
           AppState(
-            locale: locale,
-            primaryColor: primaryColor,
-            secondaryColor: secondaryColor,
-            themeMode: themeMode,
+            locale: SupportedLocales.english,
+            themeMode: ThemeMode.system,
           ),
         );
 
@@ -30,15 +24,11 @@ class AppCubit extends Cubit<AppState> {
   Future<void> initialize() async {
     if (!initialized) {
       final _locale = await _appSettingsCase.getAppLanguage();
-      final _primColor = await _appSettingsCase.getPrimaryColor();
-      final _secondColor = await _appSettingsCase.getSecondaryColor();
       final _theme = await _appSettingsCase.getTheme();
 
       emit(
         state.copyWith(
           locale: _locale,
-          primaryColor: _primColor,
-          secondaryColor: _secondColor,
           themeMode: _theme,
         ),
       );
@@ -61,22 +51,6 @@ class AppCubit extends Cubit<AppState> {
           ? SupportedLocales.russian
           : SupportedLocales.english,
     );
-  }
-
-  void setPrimaryColor(Color color) {
-    try {
-      _appSettingsCase.savePrimaryColor(color);
-    } catch (_) {}
-
-    emit(state.copyWith(primaryColor: color));
-  }
-
-  void setSecondaryColor(Color color) {
-    try {
-      _appSettingsCase.saveSecondaryColor(color);
-    } catch (_) {}
-
-    emit(state.copyWith(secondaryColor: color));
   }
 
   void switchTheme() {

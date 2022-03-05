@@ -3,14 +3,10 @@ part of 'app_cubit.dart';
 class AppState {
   AppState({
     required this.locale,
-    required this.primaryColor,
-    required this.secondaryColor,
     required this.themeMode,
   });
 
   final Locale locale;
-  final Color primaryColor;
-  final Color secondaryColor;
   final ThemeMode themeMode;
 
   bool get isEnglishLocale => locale.isEnglish;
@@ -27,8 +23,6 @@ class AppState {
   }) {
     return AppState(
       locale: locale ?? this.locale,
-      primaryColor: primaryColor ?? this.primaryColor,
-      secondaryColor: secondaryColor ?? this.secondaryColor,
       themeMode: themeMode ?? this.themeMode,
     );
   }

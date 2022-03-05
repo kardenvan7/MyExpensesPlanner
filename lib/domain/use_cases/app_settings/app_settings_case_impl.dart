@@ -13,16 +13,6 @@ class AppSettingsCaseImpl implements IAppSettingsCase {
   }
 
   @override
-  Future<Color?> getPrimaryColor() async {
-    return _appSettingsRepository.getPrimaryColor();
-  }
-
-  @override
-  Future<Color?> getSecondaryColor() async {
-    return _appSettingsRepository.getSecondaryColor();
-  }
-
-  @override
   Future<ThemeMode?> getTheme() async {
     return _appSettingsRepository.getTheme();
   }
@@ -30,16 +20,6 @@ class AppSettingsCaseImpl implements IAppSettingsCase {
   @override
   Future<void> saveAppLanguage(Locale locale) async {
     await _appSettingsRepository.saveAppLanguage(locale);
-  }
-
-  @override
-  Future<void> savePrimaryColor(Color color) async {
-    await _appSettingsRepository.savePrimaryColor(color);
-  }
-
-  @override
-  Future<void> saveSecondaryColor(Color color) async {
-    await _appSettingsRepository.saveSecondaryColor(color);
   }
 
   @override

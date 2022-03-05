@@ -12,7 +12,7 @@
   "edit_category": "Edit category",
   "delete_category_confirmation_question": "Are you sure you want to delete the category? This action can not be undone",
 
-  "empty_transaction_list_placeholder_text": "You have no transactions yet.\n\nGo ahead and add some by pressing \"+\" button in the top right corner of the screen",
+  "empty_transaction_list_placeholder_text": "You have no transactions yet.\n\nGo ahead and add some by pressing \"+\" button in the bottom right corner of the screen",
   "today": "Today",
   "yesterday": "Yesterday",
   "change_date": "Change date",

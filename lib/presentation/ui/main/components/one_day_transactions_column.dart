@@ -45,11 +45,11 @@ class OneDayTransactionsColumn extends StatelessWidget {
               child: FractionallySizedBox(
                 alignment: Alignment.bottomCenter,
                 heightFactor: maxAmount != 0 ? amountForDay / maxAmount : 0,
-                child: BlocBuilder<AppCubit, AppState>(
+                child: BlocBuilder<AppSettingsCubit, AppState>(
                   builder: (context, state) {
                     return Container(
                       decoration: BoxDecoration(
-                        color: state.secondaryColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         borderRadius: BorderRadius.only(
                           bottomLeft: const Radius.circular(8),
                           bottomRight: const Radius.circular(8),

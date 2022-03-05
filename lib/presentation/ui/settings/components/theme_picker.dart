@@ -9,11 +9,11 @@ class ThemePicker extends StatelessWidget {
       title: Text(
         AppLocalizationsWrapper.of(context).app_dark_theme,
       ),
-      trailing: BlocBuilder<AppCubit, AppState>(
+      trailing: BlocBuilder<AppSettingsCubit, AppState>(
         builder: (context, state) {
           return CupertinoSwitch(
             onChanged: (bool value) {
-              BlocProvider.of<AppCubit>(context).switchTheme();
+              BlocProvider.of<AppSettingsCubit>(context).switchTheme();
             },
             value: !state.isLightTheme,
           );

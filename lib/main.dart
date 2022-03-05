@@ -33,11 +33,11 @@ class MyExpensesPlanner extends StatelessWidget {
         BlocProvider<CategoryListCubit>.value(
           value: getIt<CategoryListCubit>()..initialize(),
         ),
-        BlocProvider<AppCubit>.value(
-          value: getIt<AppCubit>()..initialize(),
+        BlocProvider<AppSettingsCubit>.value(
+          value: getIt<AppSettingsCubit>()..initialize(),
         ),
       ],
-      child: BlocBuilder<AppCubit, AppState>(
+      child: BlocBuilder<AppSettingsCubit, AppState>(
         builder: (context, appState) {
           final AppThemes _themes = AppThemes()
             ..initialize(

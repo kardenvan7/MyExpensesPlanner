@@ -3,13 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/assets/assets.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
-import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
-import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 
 part './components/language_tile.dart';
-part './components/primary_color_tile.dart';
-part './components/secondary_color_tile.dart';
 part './components/settings_app_bar.dart';
 part './components/theme_picker.dart';
 
@@ -34,8 +30,6 @@ class SettingsScreen extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               children: const [
                 LanguageTile(),
-                // PrimaryColorTile(),
-                // SecondaryColorTile(),
                 ThemePicker(),
               ],
             ),

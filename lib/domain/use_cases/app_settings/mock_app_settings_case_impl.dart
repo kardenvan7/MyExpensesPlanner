@@ -9,18 +9,6 @@ class MockAppSettingsCaseImpl implements IAppSettingsCase {
   }
 
   @override
-  Future<Color?> getPrimaryColor() {
-    // TODO: implement getPrimaryColor
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Color?> getSecondaryColor() {
-    // TODO: implement getSecondaryColor
-    throw UnimplementedError();
-  }
-
-  @override
   Future<ThemeMode?> getTheme() {
     // TODO: implement getTheme
     throw UnimplementedError();
@@ -29,18 +17,6 @@ class MockAppSettingsCaseImpl implements IAppSettingsCase {
   @override
   Future<void> saveAppLanguage(Locale locale) {
     // TODO: implement saveAppLanguage
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> savePrimaryColor(Color color) {
-    // TODO: implement savePrimaryColor
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> saveSecondaryColor(Color color) {
-    // TODO: implement saveSecondaryColor
     throw UnimplementedError();
   }
 

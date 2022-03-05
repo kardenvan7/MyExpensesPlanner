@@ -10,7 +10,7 @@ class AppLocalizationsWrapper {
 }
 
 class LocalizationsConfig {
-  static const String pathToLocalizations = 'assets/translations';
+  static const String pathToLocalizations = 'assets/deprecated_translations';
   static const List<Locale> supportedLocalizations = <Locale>[
     SupportedLocales.english,
     SupportedLocales.russian,

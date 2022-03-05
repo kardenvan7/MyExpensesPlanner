@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
 import 'package:my_expenses_planner/data/local_storage/hive_local_storage.dart';
@@ -80,13 +78,9 @@ Future<void> configureDependencies() async {
         categoriesCaseImpl: getIt<ICategoriesCase>(),
       ),
     )
-    ..registerLazySingleton<AppCubit>(
-      () => AppCubit(
+    ..registerLazySingleton<AppSettingsCubit>(
+      () => AppSettingsCubit(
         appSettingsCase: getIt<IAppSettingsCase>(),
-        locale: LocalizationsConfig.defaultLocale,
-        primaryColor: Colors.red,
-        secondaryColor: Colors.amber,
-        themeMode: ThemeMode.system,
       ),
     );
 

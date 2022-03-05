@@ -17,7 +17,7 @@ class LanguageTile extends StatelessWidget {
             ),
           ],
         ),
-        child: BlocBuilder<AppCubit, AppState>(
+        child: BlocBuilder<AppSettingsCubit, AppState>(
           builder: (context, state) {
             return IconButton(
               constraints: const BoxConstraints(
@@ -25,7 +25,7 @@ class LanguageTile extends StatelessWidget {
               ),
               padding: EdgeInsets.zero,
               onPressed: () {
-                BlocProvider.of<AppCubit>(context).switchLanguage();
+                BlocProvider.of<AppSettingsCubit>(context).switchLanguage();
               },
               icon: _getIconByState(state),
             );
