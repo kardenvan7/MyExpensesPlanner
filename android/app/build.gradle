@@ -6,6 +6,22 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+def debugKeyProperties = new Properties()
+def debugKeyPropertiesFile = rootProject.file('debug.keystore.properties')
+if (debugKeyPropertiesFile.exists()) {
+    debugKeyPropertiesFile.withReader('UTF-8') { reader ->
+        debugKeyProperties.load(reader)
+    }
+}
+
+def releaseKeyProperties = new Properties()
+def releaseKeyPropertiesFile = rootProject.file('release.keystore.properties')
+if (releaseKeyPropertiesFile.exists()) {
+    releaseKeyPropertiesFile.withReader('UTF-8') { reader ->
+        releaseKeyProperties.load(reader)
+    }
+}
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -26,7 +42,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -45,16 +61,23 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.my_expenses_planner"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
     buildTypes {
+        debug {
+            keyAlias debugKeyProperties['keyAlias']
+            keyPassword debugKeyProperties['keyPassword']
+            storeFile debugKeyProperties['storeFile'] ? file(debugKeyProperties['storeFile']) : null
+            storePassword debugKeyProperties['storePassword']
+        }
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            keyAlias releaseKeyProperties['keyAlias']
+            keyPassword releaseKeyProperties['keyPassword']
+            storeFile releaseKeyProperties['storeFile'] ? file(releaseKeyProperties['storeFile']) : null
+            storePassword releaseKeyProperties['storePassword']
         }
     }
 }
