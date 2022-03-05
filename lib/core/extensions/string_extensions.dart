@@ -8,4 +8,12 @@ extension StringExt on String {
 
     return _buffer.toString();
   }
+
+  bool get isOneWord {
+    return wordCount == 1;
+  }
+
+  int get wordCount {
+    return trim().split(' ').length;
+  }
 }

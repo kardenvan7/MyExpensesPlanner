@@ -34,7 +34,6 @@ class EditCategoryScreen extends StatelessWidget {
             onEditFinish?.call(state.uuid);
 
             getIt<AppRouter>().pop();
-            // Navigator.of(context).pop();
           }
         },
         buildWhen: (oldState, newState) {
@@ -67,8 +66,11 @@ class EditCategoryScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 30),
                       padding: const EdgeInsets.symmetric(horizontal: 40),
                       child: ColorPicker(
+                        enableAlpha: false,
                         pickerColor: state.color,
                         onColorChanged: _cubit.setColor,
+                        paletteType: PaletteType.hsv,
+                        labelTypes: const [],
                       ),
                     ),
                     Row(

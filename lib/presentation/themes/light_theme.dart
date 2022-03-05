@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
+part of './app_themes.dart';
 
-class LightTheme {
+class _LightTheme {
   static const Color mainColor = Color(0xFFFFFFFF);
   static const Color textColor = Colors.black;
 
-  LightTheme({
+  _LightTheme({
     required AppState appState,
     required BuildContext context,
   })  : _appState = appState,

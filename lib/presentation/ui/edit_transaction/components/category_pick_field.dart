@@ -137,9 +137,6 @@ class PickCategoryModalSheet extends StatelessWidget {
                   ),
                   onPressed: () {
                     getIt<AppRouter>().pushNamed(EditCategoryScreen.routeName);
-                    // Navigator.of(context).pushNamed(
-                    //   EditCategoryScreen.routeName,
-                    // );
                   },
                 ),
               ),
@@ -231,7 +228,7 @@ class PickCategoryModalSheet extends StatelessWidget {
 
   void _onCategoryTap(BuildContext context, String? categoryUuid) {
     onCategoryUuidPicked(ValueWrapper(value: categoryUuid));
-    Navigator.pop(context);
+    getIt<AppRouter>().pop();
   }
 
   void _onCategoryEditTap({
@@ -239,16 +236,6 @@ class PickCategoryModalSheet extends StatelessWidget {
     TransactionCategory? category,
   }) {
     getIt<AppRouter>().push(EditCategoryRoute(category: category));
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (editTransactionContext) {
-    //       return EditCategoryScreen(
-    //         category: category,
-    //       );
-    //     },
-    //   ),
-    // );
   }
 
   void _onCategoryDeleteTap(BuildContext context, String categoryUuid) {
@@ -262,9 +249,7 @@ class PickCategoryModalSheet extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.pop(alertContext);
-              },
+              onPressed: getIt<AppRouter>().pop,
               child: Text(AppLocalizationsWrapper.of(context).no),
             ),
             TextButton(
@@ -276,7 +261,7 @@ class PickCategoryModalSheet extends StatelessWidget {
                   onCategoryUuidPicked(ValueWrapper(value: null));
                 }
 
-                Navigator.pop(alertContext);
+                getIt<AppRouter>().pop();
               },
               child: Text(AppLocalizationsWrapper.of(context).yes),
             ),

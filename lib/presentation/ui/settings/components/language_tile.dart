@@ -36,8 +36,6 @@ class LanguageTile extends StatelessWidget {
   }
 
   Widget _getIconByState(AppState state) {
-    printWithBrackets(state.locale);
-
     if (state.isEnglishLocale) {
       return Assets.svg.englishFlag.svg(
         width: 35,

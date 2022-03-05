@@ -39,7 +39,6 @@ class ColorPickerScreen extends StatelessWidget {
 
   void _onSavePressed(BuildContext context) {
     getIt<AppRouter>().pop(_controller.value);
-    // Navigator.of(context).pop(_controller.value);
   }
 }
 

@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/presentation/cubit/app/app_cubit.dart';
-import 'package:my_expenses_planner/presentation/themes/dark_theme.dart';
-import 'package:my_expenses_planner/presentation/themes/light_theme.dart';
+
+part './dark_theme.dart';
+part './light_theme.dart';
 
 class AppThemes {
   AppThemes();
@@ -35,12 +35,12 @@ class AppThemes {
     required BuildContext context,
   }) {
     if (!_initialized) {
-      _light = LightTheme(
+      _light = _LightTheme(
         appState: appState,
         context: context,
       ).themeData;
 
-      _dark = DarkTheme(
+      _dark = _DarkTheme(
         appState: appState,
         context: context,
       ).themeData;

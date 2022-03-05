@@ -1,9 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
+import 'package:my_expenses_planner/core/extensions/string_extensions.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
@@ -36,16 +38,20 @@ class TransactionsListItem extends StatelessWidget {
                 return Container(
                   width: 70,
                   height: 50,
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   color: _category?.color,
                   child: Center(
-                    child: Text(
+                    child: AutoSizeText(
                       _category?.name ?? '',
                       style: TextStyle(
                         color: _category?.color.isBright ?? true
                             ? Colors.black
                             : Colors.white,
                       ),
+                      minFontSize: 11,
+                      maxFontSize: 16,
                       textAlign: TextAlign.center,
+                      maxLines: _category?.name.wordCount,
                     ),
                   ),
                 );
@@ -82,11 +88,6 @@ class TransactionsListItem extends StatelessWidget {
               getIt<AppRouter>().push(
                 EditTransactionRoute(transaction: transaction),
               );
-              // Navigator.pushNamed(
-              //   context,
-              //   EditTransactionScreen.routeName,
-              //   arguments: transaction,
-              // );
             },
           ),
           SlidableAction(
@@ -118,14 +119,12 @@ class TransactionsListItem extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                _onDeleteDenied(dialogContext);
-              },
+              onPressed: _onDeleteDenied,
               child: Text(AppLocalizationsWrapper.of(context).no),
             ),
             TextButton(
               onPressed: () {
-                _onDeleteConfirmed(context, dialogContext);
+                _onDeleteConfirmed(context);
               },
               child: Text(
                 AppLocalizationsWrapper.of(context).yes,
@@ -139,14 +138,14 @@ class TransactionsListItem extends StatelessWidget {
 
   void _onDeleteConfirmed(
     BuildContext contextWithCubit,
-    BuildContext dialogContext,
   ) {
     BlocProvider.of<TransactionListCubit>(contextWithCubit)
         .deleteTransaction(transaction.uuid);
-    Navigator.of(dialogContext).pop();
+
+    getIt<AppRouter>().pop();
   }
 
-  void _onDeleteDenied(BuildContext context) {
-    Navigator.of(context).pop();
+  void _onDeleteDenied() {
+    getIt<AppRouter>().pop();
   }
 }

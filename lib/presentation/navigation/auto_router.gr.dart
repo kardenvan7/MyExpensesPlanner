@@ -56,7 +56,7 @@ class AppRouter extends _i6.RootStackRouter {
     ColorPickerRoute.name: (routeData) {
       final args = routeData.argsAs<ColorPickerRouteArgs>(
           orElse: () => const ColorPickerRouteArgs());
-      return _i6.MaterialPageX<dynamic>(
+      return _i6.MaterialPageX<_i7.Color?>(
           routeData: routeData,
           child: _i5.ColorPickerScreen(
               initialColor: args.initialColor, key: args.key));

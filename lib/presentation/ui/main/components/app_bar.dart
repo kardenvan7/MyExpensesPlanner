@@ -18,7 +18,6 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           onPressed: () {
             getIt<AppRouter>().pushNamed(EditTransactionScreen.routeName);
-            // Navigator.pushNamed(context, EditTransactionScreen.routeName);
           },
           icon: const Icon(
             Icons.add,

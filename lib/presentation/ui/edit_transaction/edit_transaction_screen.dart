@@ -45,7 +45,6 @@ class EditTransactionScreen extends StatelessWidget {
 
           if (state.popScreen) {
             getIt<AppRouter>().pop();
-            // Navigator.of(context).pop();
           }
         },
         buildWhen: (oldState, newState) {

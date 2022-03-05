@@ -27,7 +27,6 @@ class MainScreenDrawer extends StatelessWidget {
                   title: Text(AppLocalizationsWrapper.of(context).settings),
                   onTap: () {
                     getIt<AppRouter>().pushNamed(SettingsScreen.routeName);
-                    // Navigator.of(context).pushNamed(SettingsScreen.routeName);
                   },
                 ),
               ],

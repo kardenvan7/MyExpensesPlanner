@@ -29,7 +29,7 @@ class CategoryTitleInput extends StatelessWidget {
             ),
             enabledBorder: isErrorState
                 ? Theme.of(context).inputDecorationTheme.errorBorder
-                : const OutlineInputBorder(),
+                : Theme.of(context).inputDecorationTheme.enabledBorder,
           ),
         ),
         if (isErrorState)

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/presentation/ui/core/widgets/color_picker_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
@@ -27,7 +28,7 @@ import 'auto_router.gr.dart';
       path: SettingsScreen.routeName,
       page: SettingsScreen,
     ),
-    AutoRoute(
+    AutoRoute<Color?>(
       path: ColorPickerScreen.routeName,
       page: ColorPickerScreen,
     ),
