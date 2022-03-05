@@ -1,4 +1,4 @@
-package com.example.my_expenses_planner
+package com.kardenvan.my_expenses_planner
 
 import io.flutter.embedding.android.FlutterActivity
 
