@@ -26,6 +26,9 @@ class ColorPickerScreen extends StatelessWidget {
           onColorChanged: (Color color) {
             _controller.setColor(color);
           },
+          enableAlpha: false,
+          paletteType: PaletteType.hsv,
+          labelTypes: const [],
         ),
       ),
       floatingActionButton: FloatingActionButton(

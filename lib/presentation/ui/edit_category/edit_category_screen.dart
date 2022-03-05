@@ -66,9 +66,9 @@ class EditCategoryScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 30),
                       padding: const EdgeInsets.symmetric(horizontal: 40),
                       child: ColorPicker(
-                        enableAlpha: false,
                         pickerColor: state.color,
                         onColorChanged: _cubit.setColor,
+                        enableAlpha: false,
                         paletteType: PaletteType.hsv,
                         labelTypes: const [],
                       ),
