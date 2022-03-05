@@ -61,56 +61,66 @@ class TransactionsListItem extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          children: [
-            BlocBuilder<CategoryListCubit, CategoryListState>(
-              builder: (context, state) {
-                final TransactionCategory? _category =
-                    state.categories.firstWhereOrNull(
-                  (element) => element.uuid == transaction.categoryUuid,
-                );
+        child: SizedBox(
+          height: 50,
+          child: Row(
+            children: [
+              BlocBuilder<CategoryListCubit, CategoryListState>(
+                builder: (context, state) {
+                  final TransactionCategory? _category =
+                      state.categories.firstWhereOrNull(
+                    (element) => element.uuid == transaction.categoryUuid,
+                  );
 
-                return Container(
-                  width: 70,
-                  height: 50,
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  color: _category?.color,
-                  child: Center(
-                    child: AutoSizeText(
-                      _category?.name ?? '',
-                      style: TextStyle(
-                        color: _category?.color.isBright ?? true
-                            ? Colors.black
-                            : Colors.white,
+                  return Container(
+                    width: 90,
+                    height: 50,
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    color: _category?.color,
+                    child: Center(
+                      child: AutoSizeText(
+                        _category?.name ?? '',
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                              fontSize: 14,
+                              color: _category?.color.isBright ?? true
+                                  ? Colors.black
+                                  : Colors.white,
+                            ),
+                        minFontSize: 11,
+                        maxFontSize: 16,
+                        textAlign: TextAlign.center,
+                        maxLines: _category?.name.wordCount,
                       ),
-                      minFontSize: 11,
-                      maxFontSize: 16,
-                      textAlign: TextAlign.center,
-                      maxLines: _category?.name.wordCount,
                     ),
+                  );
+                },
+              ),
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.only(
+                    left: 10,
                   ),
-                );
-              },
-            ),
-            Expanded(
-              child: Container(
+                  child: Text(
+                    transaction.title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1
+                        ?.copyWith(fontSize: 14),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              Container(
                 margin: const EdgeInsets.only(
-                  left: 10,
+                  right: 10,
                 ),
                 child: Text(
-                  transaction.title,
+                  transaction.amount.toStringAsFixed(2),
                 ),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(
-                right: 10,
-              ),
-              child: Text(
-                transaction.amount.toStringAsFixed(2),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

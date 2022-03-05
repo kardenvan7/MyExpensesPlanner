@@ -1,7 +1,7 @@
 part of './app_themes.dart';
 
 class _LightTheme {
-  static const Color primaryColor = Color(0xFFFFFFFF);
+  static const Color primaryColor = Color(0xFFededed);
   static const Color secondaryColor = Colors.black87;
   static const Color textColor = Colors.black;
 
@@ -143,7 +143,9 @@ class _LightTheme {
 
   ColorScheme get _colorScheme => Theme.of(_context).colorScheme.copyWith(
         primary: primaryColor,
+        onPrimary: secondaryColor,
         secondary: secondaryColor,
+        onSurface: secondaryColor,
         error: Colors.red,
       );
 
@@ -182,7 +184,7 @@ class _LightTheme {
       );
 
   DialogTheme get _dialogTheme => const DialogTheme(
-        backgroundColor: primaryColor,
+        backgroundColor: Color(0xFFd4d4d4),
       );
 
   CardTheme get _cardTheme => const CardTheme(

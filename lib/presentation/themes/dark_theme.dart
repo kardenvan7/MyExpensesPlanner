@@ -183,7 +183,7 @@ class _DarkTheme {
       );
 
   DialogTheme get _dialogTheme => const DialogTheme(
-        backgroundColor: primaryColor,
+        backgroundColor: Color(0xFF333333),
       );
 
   CardTheme get _cardTheme => const CardTheme(

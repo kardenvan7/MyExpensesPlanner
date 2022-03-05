@@ -25,7 +25,7 @@ class OneDayTransactionsColumn extends StatelessWidget {
     );
   }
 
-  Map<String?, List<Transaction>> get transactionsByCategory {
+  Map<String?, List<Transaction>> get transactionsByCategoryMap {
     final Map<String?, List<Transaction>> _map = {};
 
     for (final Transaction tr in transactions) {
@@ -39,6 +39,24 @@ class OneDayTransactionsColumn extends StatelessWidget {
     }
 
     return _map;
+  }
+
+  List<CategoryTransactions> get transactionsByCategories {
+    final List<String?> _keys = transactionsByCategoryMap.keys.toList();
+    final List<CategoryTransactions> _transactionsByCategories = [];
+
+    for (final String? _key in _keys) {
+      _transactionsByCategories.add(
+        CategoryTransactions(
+          transactions: transactionsByCategoryMap[_key]!,
+          categoryUuid: _key,
+        ),
+      );
+    }
+
+    _transactionsByCategories.sort((a, b) => a.sum.compareTo(b.sum));
+
+    return _transactionsByCategories;
   }
 
   @override
@@ -84,32 +102,42 @@ class OneDayTransactionsColumn extends StatelessWidget {
                         builder: (context, state) {
                           return Column(
                             mainAxisSize: MainAxisSize.max,
-                            children: List.generate(
-                              transactionsByCategory.keys.toList().length,
+                            children: List<Widget>.generate(
+                              transactionsByCategories.length,
                               (index) {
-                                final _curCategoryUuid =
-                                    transactionsByCategory.keys.toList()[index];
-                                final int _amountOfCategory =
-                                    transactionsByCategory[_curCategoryUuid]!
-                                        .fold(
-                                  0,
-                                  (previousValue, element) =>
-                                      (element.amount + previousValue).toInt(),
-                                );
+                                final CategoryTransactions
+                                    _categoryTransactions =
+                                    transactionsByCategories[index];
 
                                 final int _curFraction =
-                                    (_amountOfCategory * 100 / amountForDay)
+                                    (_categoryTransactions.sum *
+                                            100 /
+                                            amountForDay)
                                         .round();
 
                                 return Flexible(
                                   flex: _curFraction,
-                                  child: Container(
-                                    color: state.categories
-                                            .firstWhereOrNull((element) =>
-                                                element.uuid ==
-                                                _curCategoryUuid)
-                                            ?.color ??
-                                        Colors.grey,
+                                  child: Column(
+                                    children: [
+                                      const Divider(
+                                        color: Colors.black,
+                                        thickness: 1.2,
+                                        height: 0,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          color: state.categories
+                                                  .firstWhereOrNull(
+                                                    (element) =>
+                                                        element.uuid ==
+                                                        _categoryTransactions
+                                                            .categoryUuid,
+                                                  )
+                                                  ?.color ??
+                                              Colors.grey,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 );
                               },
@@ -140,4 +168,23 @@ class OneDayTransactionsColumn extends StatelessWidget {
       ),
     );
   }
+}
+
+class CategoryTransactions {
+  CategoryTransactions({
+    required this.transactions,
+    required this.categoryUuid,
+  }) : assert(
+            transactions.firstWhereOrNull(
+                    (element) => element.categoryUuid != categoryUuid) ==
+                null,
+            'There are transactions in list that have another categoryUuid');
+
+  final List<Transaction> transactions;
+  final String? categoryUuid;
+
+  double get sum => transactions.fold<double>(
+        0,
+        (previousValue, element) => previousValue + element.amount,
+      );
 }
