@@ -115,7 +115,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
     _subscription.cancel();
     return super.close();
   }
