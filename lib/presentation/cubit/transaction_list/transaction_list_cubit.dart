@@ -22,6 +22,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
             canLoadMore: true,
             offset: 0,
             initialized: false,
+            showLoadingIndicator: true,
           ),
         );
 
@@ -53,9 +54,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   List<Transaction> _copyCurrentTransactions() {
     return List.generate(
       state.transactions.length,
-      (index) => state.transactions[index].copyWith(
-        uuid: state.transactions[index].uuid,
-      ),
+      (index) => state.transactions[index].copyWith(),
     );
   }
 
@@ -78,6 +77,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
       emit(
         state.copyWith(
           isLoading: true,
+          showLoadingIndicator: state.transactions.isEmpty,
         ),
       );
 
@@ -98,6 +98,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
       emit(
         state.copyWith(
           isLoading: false,
+          showLoadingIndicator: false,
           transactions: _currentTransactions,
           transactionsByDates: _transactionsByDates,
           sortedDates: _sortedDates,
@@ -107,7 +108,13 @@ class TransactionListCubit extends Cubit<TransactionListState> {
         ),
       );
     } catch (e, _) {
-      emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: e.toString(),
+          showLoadingIndicator: false,
+        ),
+      );
     }
   }
 
@@ -132,52 +139,114 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   void _refreshWithNewData(TransactionsChangeData newData) {
     final List<Transaction> _transactions = _copyCurrentTransactions();
 
-    _transactions.removeWhere(
-      (currentListElement) =>
-          newData.deletedTransactionsUuids.contains(currentListElement.uuid) ||
-          newData.editedTransactions.firstWhereOrNull(
-                (element) => element.uuid == currentListElement.uuid,
-              ) !=
-              null,
-    );
+    if (!newData.deletedAll) {
+      _transactions.removeWhere(
+        (currentListElement) =>
+            newData.deletedTransactionsUuids
+                .contains(currentListElement.uuid) ||
+            newData.editedTransactions.firstWhereOrNull(
+                  (element) => element.uuid == currentListElement.uuid,
+                ) !=
+                null,
+      );
 
-    _transactions.addAll(
-      newData.addedTransactions.followedBy(
-        newData.editedTransactions,
-      ),
-    );
+      _transactions.addAll(
+        newData.addedTransactions.followedBy(
+          newData.editedTransactions,
+        ),
+      );
 
-    final _transactionsByDates = _getTransactionsByDates(_transactions);
-    final _sortedDates = _getSortedDates(_transactionsByDates);
+      final _transactionsByDates = _getTransactionsByDates(_transactions);
+      final _sortedDates = _getSortedDates(_transactionsByDates);
 
+      emit(
+        state.copyWith(
+          transactions: _transactions,
+          showLoadingIndicator: false,
+          transactionsByDates: _transactionsByDates,
+          sortedDates: _sortedDates,
+          initialized: true,
+          isLoading: false,
+        ),
+      );
+    } else {
+      emitEmptyState();
+    }
+  }
+
+  void emitEmptyState() {
     emit(
       state.copyWith(
-        transactions: _transactions,
-        transactionsByDates: _transactionsByDates,
-        sortedDates: _sortedDates,
+        transactions: [],
+        transactionsByDates: {},
+        sortedDates: [],
+        initialized: true,
+        isLoading: false,
+        showLoadingIndicator: false,
       ),
     );
   }
 
   Future<void> fillWithMockTransactions() async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true, showLoadingIndicator: true));
 
     try {
-      final List<Transaction> _transactions = List.generate(
-        20,
-        (index) => Transaction(
-          uuid: DateTime.now().microsecondsSinceEpoch.toString(),
-          amount: ((index + 1) * 1.2).toInt().toDouble(),
-          title: 'Transaction',
-          date: DateTime.now(),
-        ),
-      );
+      final List<Transaction> _transactions = [];
+
+      for (int i = 1; i <= 20; i++) {
+        await Future.delayed(
+          const Duration(milliseconds: 100),
+          () {
+            _transactions.add(
+              Transaction(
+                uuid: DateTime.now().microsecondsSinceEpoch.toString(),
+                amount: (i * 1.2).toInt().toDouble(),
+                title: 'Transaction',
+                date: DateTime.now(),
+              ),
+            );
+          },
+        );
+      }
 
       await _transactionsCaseImpl.saveMultiple(transactions: _transactions);
 
-      emit(state.copyWith(isLoading: false));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          showLoadingIndicator: false,
+        ),
+      );
     } catch (e, _) {
-      emit(state.copyWith(errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          errorMessage: e.toString(),
+          showLoadingIndicator: false,
+        ),
+      );
+    }
+  }
+
+  Future<void> deleteAllTransactions() async {
+    emit(
+      state.copyWith(
+        isLoading: true,
+        showLoadingIndicator: true,
+      ),
+    );
+
+    try {
+      await _transactionsCaseImpl.deleteAll();
+
+      emitEmptyState();
+    } catch (e) {
+      emit(
+        state.copyWith(
+          showLoadingIndicator: false,
+          errorMessage: e.toString(),
+          isLoading: false,
+        ),
+      );
     }
   }
 

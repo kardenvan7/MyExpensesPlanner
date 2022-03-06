@@ -33,7 +33,7 @@ class TransactionsList extends StatelessWidget {
           );
         }
 
-        if (!state.initialized) {
+        if (state.showLoadingIndicator) {
           return Center(
             child: CircularProgressIndicator(
               color: Theme.of(context).colorScheme.secondary,

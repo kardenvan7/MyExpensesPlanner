@@ -137,6 +137,7 @@ class _LightTheme {
             focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(
                 color: textColor,
+                width: 2.5,
               ),
             ),
           );

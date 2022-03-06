@@ -5,6 +5,7 @@ class TransactionsChangeData {
     List<Transaction>? addedTransactions,
     List<Transaction>? editedTransactions,
     List<String>? deletedTransactionsUuids,
+    this.deletedAll = false,
   })  : addedTransactions = addedTransactions ?? [],
         editedTransactions = editedTransactions ?? [],
         deletedTransactionsUuids = deletedTransactionsUuids ?? [];
@@ -12,4 +13,5 @@ class TransactionsChangeData {
   final List<Transaction> addedTransactions;
   final List<Transaction> editedTransactions;
   final List<String> deletedTransactionsUuids;
+  final bool deletedAll;
 }

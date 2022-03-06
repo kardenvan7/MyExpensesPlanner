@@ -9,6 +9,7 @@ class TransactionListState {
     required this.canLoadMore,
     required this.offset,
     required this.initialized,
+    required this.showLoadingIndicator,
     this.errorMessage,
   });
 
@@ -19,6 +20,7 @@ class TransactionListState {
   final bool canLoadMore;
   final int offset;
   final bool initialized;
+  final bool showLoadingIndicator;
   final String? errorMessage;
 
   bool get hasError => errorMessage != null;
@@ -33,6 +35,7 @@ class TransactionListState {
     bool? canLoadMore,
     int? offset,
     bool? initialized,
+    bool? showLoadingIndicator,
     String? errorMessage,
   }) {
     return TransactionListState(
@@ -43,6 +46,7 @@ class TransactionListState {
       transactionsByDates: transactionsByDates ?? this.transactionsByDates,
       offset: offset ?? this.offset,
       initialized: initialized ?? this.initialized,
+      showLoadingIndicator: showLoadingIndicator ?? this.showLoadingIndicator,
       errorMessage: errorMessage,
     );
   }

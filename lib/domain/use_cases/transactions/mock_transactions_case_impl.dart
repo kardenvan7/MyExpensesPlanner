@@ -61,4 +61,10 @@ class MockTransactionsCaseImpl implements ITransactionsCase {
     // TODO: implement saveMultiple
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> deleteAll() {
+    // TODO: implement deleteAll
+    throw UnimplementedError();
+  }
 }

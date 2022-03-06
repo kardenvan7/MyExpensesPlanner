@@ -144,4 +144,13 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
       throw FormatException('Saving transaction $id failed');
     }
   }
+
+  @override
+  Future<void> deleteAll() async {
+    final int id = await _dbWrapper.delete(_tableName);
+
+    if (id == 0) {
+      throw const FormatException('Deleting all transactions failed');
+    }
+  }
 }

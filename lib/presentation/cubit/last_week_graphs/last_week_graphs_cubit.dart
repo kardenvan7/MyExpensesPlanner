@@ -61,22 +61,27 @@ class LastWeekGraphsCubit extends Cubit<LastWeekGraphsState> {
   void _refreshWithNewData(TransactionsChangeData newData) {
     final List<Transaction> _transactions = _copyCurrentTransactions();
 
-    _transactions.removeWhere(
-      (currentListElement) =>
-          newData.deletedTransactionsUuids.contains(currentListElement.uuid) ||
-          newData.editedTransactions.firstWhereOrNull(
-                (element) => element.uuid == currentListElement.uuid,
-              ) !=
-              null,
-    );
+    if (!newData.deletedAll) {
+      _transactions.removeWhere(
+        (currentListElement) =>
+            newData.deletedTransactionsUuids
+                .contains(currentListElement.uuid) ||
+            newData.editedTransactions.firstWhereOrNull(
+                  (element) => element.uuid == currentListElement.uuid,
+                ) !=
+                null,
+      );
 
-    _transactions.addAll(
-      newData.addedTransactions.followedBy(
-        newData.editedTransactions,
-      ),
-    );
+      _transactions.addAll(
+        newData.addedTransactions.followedBy(
+          newData.editedTransactions,
+        ),
+      );
 
-    emit(LastWeekGraphsState(transactions: _transactions));
+      emit(LastWeekGraphsState(transactions: _transactions));
+    } else {
+      emit(LastWeekGraphsState(transactions: []));
+    }
   }
 
   @override

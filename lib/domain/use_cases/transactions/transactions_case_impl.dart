@@ -103,5 +103,22 @@ class TransactionsCaseImpl implements ITransactionsCase {
   @override
   Future<void> saveMultiple({required List<Transaction> transactions}) async {
     await _transactionsRepository.saveMultiple(transactions: transactions);
+
+    streamController.add(
+      TransactionsChangeData(
+        addedTransactions: transactions,
+      ),
+    );
+  }
+
+  @override
+  Future<void> deleteAll() async {
+    await _transactionsRepository.deleteAll();
+
+    streamController.add(
+      TransactionsChangeData(
+        deletedAll: true,
+      ),
+    );
   }
 }

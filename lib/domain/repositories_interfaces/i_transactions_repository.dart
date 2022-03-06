@@ -20,4 +20,5 @@ abstract class ITransactionsRepository {
   });
 
   Future<void> delete({required String transactionId});
+  Future<void> deleteAll();
 }
