@@ -10,6 +10,7 @@ abstract class ITransactionsCase {
   Future<List<Transaction>> getLastWeekTransactions();
 
   Future<void> save({required Transaction transaction});
+  Future<void> saveMultiple({required List<Transaction> transactions});
 
   Future<void> edit({
     required String transactionId,

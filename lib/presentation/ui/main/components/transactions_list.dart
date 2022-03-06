@@ -5,9 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/datetime_extensions.dart';
-import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/transactions_list_item.dart';
 
@@ -18,82 +16,100 @@ class TransactionsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TransactionListCubit>(
-      create: (context) => TransactionListCubit(
-        transactionsCaseImpl: getIt<ITransactionsCase>(),
-      )..initialize(),
-      child: BlocBuilder<TransactionListCubit, TransactionListState>(
-        builder: (context, state) {
-          if (state.isLoading) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).colorScheme.secondary,
+    return BlocBuilder<TransactionListCubit, TransactionListState>(
+      builder: (context, state) {
+        if (state.errorWhileInitializing) {
+          return Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(state.errorMessage!),
+                ],
               ),
-            );
-          }
+            ),
+          );
+        }
 
-          return state.transactions.isNotEmpty
-              ? ListView.separated(
-                  padding: EdgeInsets.only(
-                    bottom: Platform.isIOS ? 30 : 10,
-                  ),
-                  shrinkWrap: true,
-                  itemCount: state.sortedDates.length,
-                  separatorBuilder: (_, __) {
-                    return const SizedBox(height: 15);
-                  },
-                  itemBuilder: (context, index) {
-                    final _currentDate = state.sortedDates[index];
-                    final List<Transaction> _currentDateTransactions =
-                        state.transactionsByDate[_currentDate]!;
+        if (!state.initialized) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+          );
+        }
 
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Chip(
-                          label: Text(
-                            _currentDate.isToday
-                                ? AppLocalizationsWrapper.of(context).today
-                                : _currentDate.isYesterday
-                                    ? AppLocalizationsWrapper.of(context)
-                                        .yesterday
-                                    : DateFormat.yMMMMd(
-                                        Localizations.localeOf(context)
-                                            .toLanguageTag(),
-                                      ).format(_currentDate),
-                          ),
+        return state.transactions.isNotEmpty
+            ? ListView.separated(
+                controller: BlocProvider.of<TransactionListCubit>(context)
+                    .scrollController,
+                padding: EdgeInsets.only(
+                  bottom: Platform.isIOS ? 30 : 10,
+                ),
+                shrinkWrap: true,
+                itemCount: state.sortedDates.length,
+                separatorBuilder: (_, __) {
+                  return const SizedBox(height: 15);
+                },
+                itemBuilder: (context, index) {
+                  final _currentDate = state.sortedDates[index];
+                  final List<Transaction> _currentDateTransactions =
+                      state.transactionsByDates[_currentDate]!;
+
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Chip(
+                        label: Text(
+                          _currentDate.isToday
+                              ? AppLocalizationsWrapper.of(context).today
+                              : _currentDate.isYesterday
+                                  ? AppLocalizationsWrapper.of(context)
+                                      .yesterday
+                                  : DateFormat.yMMMMd(
+                                      Localizations.localeOf(context)
+                                          .toLanguageTag(),
+                                    ).format(_currentDate),
                         ),
-                        ListView.separated(
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: _currentDateTransactions.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return TransactionsListItem(
-                              transaction: _currentDateTransactions[index],
-                            );
-                          },
-                          separatorBuilder: (_, __) {
-                            return const SizedBox(
-                              height: 10,
-                            );
-                          },
+                      ),
+                      ListView.separated(
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _currentDateTransactions.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return TransactionsListItem(
+                            transaction: _currentDateTransactions[index],
+                          );
+                        },
+                        separatorBuilder: (_, __) {
+                          return const SizedBox(
+                            height: 10,
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      if (state.hasError) Text(state.errorMessage!),
+                      if (state.isLoading)
+                        CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
-                      ],
-                    );
-                  },
-                )
-              : Container(
-                  margin: const EdgeInsets.only(bottom: kToolbarHeight),
-                  child: Center(
-                    child: Text(
-                      AppLocalizationsWrapper.of(context)
-                          .empty_transaction_list_placeholder_text,
-                      textAlign: TextAlign.center,
-                    ),
+                    ],
+                  );
+                },
+              )
+            : Container(
+                margin: const EdgeInsets.only(bottom: kToolbarHeight),
+                child: Center(
+                  child: Text(
+                    AppLocalizationsWrapper.of(context)
+                        .empty_transaction_list_placeholder_text,
+                    textAlign: TextAlign.center,
                   ),
-                );
-        },
-      ),
+                ),
+              );
+      },
     );
   }
 }

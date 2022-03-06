@@ -55,4 +55,10 @@ class MockTransactionsCaseImpl implements ITransactionsCase {
   @override
   // TODO: implement stream
   Stream<TransactionsChangeData> get stream => throw UnimplementedError();
+
+  @override
+  Future<void> saveMultiple({required List<Transaction> transactions}) {
+    // TODO: implement saveMultiple
+    throw UnimplementedError();
+  }
 }

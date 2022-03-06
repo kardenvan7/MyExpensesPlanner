@@ -1,62 +1,49 @@
 part of './transaction_list_cubit.dart';
 
 class TransactionListState {
-  final bool isLoading;
-  final List<Transaction> transactions;
-
   TransactionListState({
     required this.isLoading,
     required this.transactions,
+    required this.transactionsByDates,
+    required this.sortedDates,
+    required this.canLoadMore,
+    required this.offset,
+    required this.initialized,
+    this.errorMessage,
   });
+
+  final bool isLoading;
+  final List<Transaction> transactions;
+  final Map<DateTime, List<Transaction>> transactionsByDates;
+  final List<DateTime> sortedDates;
+  final bool canLoadMore;
+  final int offset;
+  final bool initialized;
+  final String? errorMessage;
+
+  bool get hasError => errorMessage != null;
+
+  bool get errorWhileInitializing => hasError && !initialized;
 
   TransactionListState copyWith({
     bool? isLoading,
     List<Transaction>? transactions,
+    List<DateTime>? sortedDates,
+    Map<DateTime, List<Transaction>>? transactionsByDates,
+    bool? canLoadMore,
+    int? offset,
+    bool? initialized,
+    String? errorMessage,
   }) {
     return TransactionListState(
       isLoading: isLoading ?? false,
       transactions: transactions ?? this.transactions,
+      canLoadMore: canLoadMore ?? this.canLoadMore,
+      sortedDates: sortedDates ?? this.sortedDates,
+      transactionsByDates: transactionsByDates ?? this.transactionsByDates,
+      offset: offset ?? this.offset,
+      initialized: initialized ?? this.initialized,
+      errorMessage: errorMessage,
     );
-  }
-
-  List<Transaction> get sortedByCreateDateTransactions {
-    final _list = [...transactions];
-
-    _list.sort(
-      (curElem, newElem) => int.parse(newElem.uuid).compareTo(
-        int.parse(curElem.uuid),
-      ),
-    );
-
-    return _list;
-  }
-
-  Map<DateTime, List<Transaction>> get transactionsByDate {
-    final Map<DateTime, List<Transaction>> _transactionsByDate = {};
-
-    for (final Transaction _transaction in sortedByCreateDateTransactions) {
-      final DateTime _date = DateTime(
-        _transaction.date.year,
-        _transaction.date.month,
-        _transaction.date.day,
-      );
-
-      if (_transactionsByDate.containsKey(_date)) {
-        _transactionsByDate[_date]!.add(_transaction);
-      } else {
-        _transactionsByDate[_date] = [_transaction];
-      }
-    }
-
-    return _transactionsByDate;
-  }
-
-  List<DateTime> get sortedDates {
-    return transactionsByDate.keys.toList()
-      ..sort(
-        (curDateTime, newDateTime) => newDateTime.compareTo(
-          curDateTime,
-        ),
-      );
   }
 }

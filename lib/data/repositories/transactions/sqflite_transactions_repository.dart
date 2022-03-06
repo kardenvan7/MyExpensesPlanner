@@ -110,4 +110,38 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
       ),
     );
   }
+
+  @override
+  Future<void> saveMultiple({
+    required List<domain.Transaction> transactions,
+  }) async {
+    String _queryString = 'INSERT INTO $_tableName '
+        '('
+        '${TransactionsTableColumns.uuid.code}, '
+        '${TransactionsTableColumns.title.code}, '
+        '${TransactionsTableColumns.amount.code}, '
+        '${TransactionsTableColumns.date.code}, '
+        '${TransactionsTableColumns.categoryUuid.code}'
+        ')'
+        ' VALUES ';
+
+    for (final _tr in transactions) {
+      _queryString += ''
+          '('
+          '"${_tr.uuid}", "${_tr.title}", ${_tr.amount}, '
+          '${_tr.date.millisecondsSinceEpoch}, ${_tr.categoryUuid}'
+          '), ';
+    }
+
+    _queryString = _queryString.substring(0, _queryString.length - 2);
+    _queryString += ';';
+
+    final int id = await _dbWrapper.rawInsert(
+      sql: _queryString,
+    );
+
+    if (id == 0) {
+      throw FormatException('Saving transaction $id failed');
+    }
+  }
 }

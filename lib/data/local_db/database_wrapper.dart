@@ -8,6 +8,8 @@ class DatabaseWrapper {
 
   final SqfliteDatabaseProvider _databaseProvider;
 
+  Database get _database => _databaseProvider.database;
+
   Future<void> initDatabase() async {
     await _databaseProvider.initDatabase();
   }
@@ -16,8 +18,7 @@ class DatabaseWrapper {
     String query, {
     List<Object?>? arguments,
   }) async {
-    final List<Map<String, dynamic>> _data =
-        await _databaseProvider.database.rawQuery(
+    final List<Map<String, dynamic>> _data = await _database.rawQuery(
       query,
       arguments,
     );
@@ -31,7 +32,7 @@ class DatabaseWrapper {
     String? nullColumnHack,
     ConflictAlgorithm? conflictAlgorithm,
   }) async {
-    final int _status = await _databaseProvider.database.insert(
+    final int _status = await _database.insert(
       table,
       values,
       nullColumnHack: nullColumnHack,
@@ -41,6 +42,18 @@ class DatabaseWrapper {
     return _status;
   }
 
+  Future<int> rawInsert({
+    required String sql,
+    List<Object?>? arguments,
+  }) async {
+    final int _lastInsertedId = await _database.rawInsert(
+      sql,
+      arguments,
+    );
+
+    return _lastInsertedId;
+  }
+
   Future<int> update(
     String table,
     Map<String, Object?> values, {
@@ -48,7 +61,7 @@ class DatabaseWrapper {
     List<Object?>? whereArgs,
     ConflictAlgorithm? conflictAlgorithm,
   }) async {
-    final int _status = await _databaseProvider.database.update(
+    final int _status = await _database.update(
       table,
       values,
       where: where,
@@ -64,7 +77,7 @@ class DatabaseWrapper {
     String? where,
     List? whereArgs,
   }) async {
-    final int _status = await _databaseProvider.database.delete(
+    final int _status = await _database.delete(
       table,
       where: where,
       whereArgs: whereArgs,

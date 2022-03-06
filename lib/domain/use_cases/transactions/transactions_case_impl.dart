@@ -99,4 +99,9 @@ class TransactionsCaseImpl implements ITransactionsCase {
       startDate: _startDate,
     );
   }
+
+  @override
+  Future<void> saveMultiple({required List<Transaction> transactions}) async {
+    await _transactionsRepository.saveMultiple(transactions: transactions);
+  }
 }

@@ -1,21 +1,22 @@
-import 'package:my_expenses_planner/domain/models/transaction.dart' as domain;
+import 'package:my_expenses_planner/domain/models/transaction.dart';
 
 abstract class ITransactionsRepository {
-  Future<List<domain.Transaction>> getTransactions({
+  Future<List<Transaction>> getTransactions({
     int limit = 40,
     int offset = 0,
   });
 
-  Future<List<domain.Transaction>> getTransactionsFromPeriod({
+  Future<List<Transaction>> getTransactionsFromPeriod({
     required DateTime startDate,
     DateTime? endDate,
   });
 
-  Future<void> save({required domain.Transaction transaction});
+  Future<void> save({required Transaction transaction});
+  Future<void> saveMultiple({required List<Transaction> transactions});
 
   Future<void> edit({
     required String transactionId,
-    required domain.Transaction newTransaction,
+    required Transaction newTransaction,
   });
 
   Future<void> delete({required String transactionId});
