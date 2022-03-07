@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
+import 'package:my_expenses_planner/presentation/ui/core/double_tween.dart';
 
 class OneDayTransactionsColumn extends StatelessWidget {
   const OneDayTransactionsColumn({
@@ -74,9 +75,7 @@ class OneDayTransactionsColumn extends StatelessWidget {
               margin: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Colors.black,
-                ),
+                border: Border.all(color: Colors.black),
               ),
               child: FractionallySizedBox(
                 alignment: Alignment.bottomCenter,
@@ -161,15 +160,15 @@ class OneDayTransactionsColumn extends StatelessWidget {
               ),
             ),
           ),
-          TweenAnimationBuilder<int>(
-            builder: (context, int value, child) {
+          TweenAnimationBuilder<double>(
+            builder: (context, double value, child) {
               return SizedBox(
                 height: 25,
                 child: Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(5.0),
                   child: AutoSizeText(
-                    value.toString(),
+                    value.toStringAsFixed(value < 99 ? 1 : 0),
                     minFontSize: 8,
                     maxFontSize: 14,
                     softWrap: true,
@@ -178,9 +177,9 @@ class OneDayTransactionsColumn extends StatelessWidget {
               );
             },
             duration: const Duration(seconds: 1),
-            tween: IntTween(
+            tween: DoubleTween(
               begin: 0,
-              end: amountForDay.toInt(),
+              end: amountForDay,
             ),
           ),
         ],

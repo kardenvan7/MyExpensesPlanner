@@ -118,7 +118,13 @@ class TransactionsListItem extends StatelessWidget {
                   right: 10,
                 ),
                 child: Text(
-                  transaction.amount.toStringAsFixed(2),
+                  transaction.amount.toStringAsFixed(
+                    transaction.amount < 99
+                        ? 2
+                        : transaction.amount < 999
+                            ? 1
+                            : 0,
+                  ),
                 ),
               ),
             ],

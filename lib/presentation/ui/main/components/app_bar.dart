@@ -12,20 +12,20 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(AppLocalizationsWrapper.of(context).main_app_bar_title),
       // actions: [
-      // IconButton(
-      //   onPressed: () {
-      //     BlocProvider.of<TransactionListCubit>(context)
-      //         .deleteAllTransactions();
-      //   },
-      //   icon: const Icon(Icons.delete),
-      // ),
-      // IconButton(
-      //   onPressed: () {
-      //     BlocProvider.of<TransactionListCubit>(context)
-      //         .fillWithMockTransactions();
-      //   },
-      //   icon: const Icon(Icons.add),
-      // ),
+      //   IconButton(
+      //     onPressed: () {
+      //       BlocProvider.of<TransactionListCubit>(context)
+      //           .deleteAllTransactions();
+      //     },
+      //     icon: const Icon(Icons.delete),
+      //   ),
+      //   IconButton(
+      //     onPressed: () {
+      //       BlocProvider.of<TransactionListCubit>(context)
+      //           .fillWithMockTransactions();
+      //     },
+      //     icon: const Icon(Icons.add),
+      //   ),
       // ],
     );
   }
