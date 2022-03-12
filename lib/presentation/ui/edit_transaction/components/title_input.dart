@@ -23,6 +23,7 @@ class TitleInput extends StatelessWidget {
         TextFormField(
           initialValue: value,
           textInputAction: TextInputAction.next,
+          textCapitalization: TextCapitalization.sentences,
           decoration: InputDecoration(
             label: Text(
               AppLocalizationsWrapper.of(context).title_input_label,

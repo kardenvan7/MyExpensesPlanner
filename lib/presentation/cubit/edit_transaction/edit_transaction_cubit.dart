@@ -30,7 +30,9 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
     if (_amount == null || _amount == '') {
       amountErrorText = 'Field must be filled';
     } else {
-      final double? parsedAmount = double.tryParse(_amount);
+      final double? parsedAmount = double.tryParse(
+        _amount.replaceFirst(',', '.'),
+      );
 
       if (parsedAmount == null) {
         amountErrorText = 'Invalid format';
@@ -66,7 +68,7 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
   Future<void> submit() async {
     if (_validateForm()) {
       final String title = state.title!;
-      final double amount = double.parse(state.amount!);
+      final double amount = double.parse(state.amount!.replaceFirst(',', '.'));
 
       final Transaction newTransaction = Transaction(
         uuid: isAdding

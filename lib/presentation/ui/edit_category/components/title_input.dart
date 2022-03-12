@@ -23,6 +23,7 @@ class CategoryTitleInput extends StatelessWidget {
         TextFormField(
           onChanged: onChange,
           initialValue: initialValue,
+          textCapitalization: TextCapitalization.sentences,
           decoration: InputDecoration(
             label: Text(
               AppLocalizationsWrapper.of(context).title_input_label,
