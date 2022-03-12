@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart' as domain;
 
 import '../../../domain/repositories_interfaces/i_transactions_repository.dart';
@@ -18,12 +19,32 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   Future<List<domain.Transaction>> getTransactions({
     int limit = 40,
     int offset = 0,
+    DateTimeRange? dateTimeRange,
+    String? categoryUuid,
   }) async {
+    String _query = 'SELECT * FROM $_tableName ';
+
+    if (dateTimeRange != null) {
+      _query += ' WHERE ${TransactionsTableColumns.date.code} '
+          '>= ${dateTimeRange.start.millisecondsSinceEpoch} '
+          'AND ${TransactionsTableColumns.date.code} <= ${dateTimeRange.end.millisecondsSinceEpoch}';
+    }
+
+    if (categoryUuid != null) {
+      if (dateTimeRange != null) {
+        _query +=
+            ' AND ${TransactionsTableColumns.categoryUuid.code} = $categoryUuid';
+      } else {
+        _query +=
+            ' WHERE ${TransactionsTableColumns.categoryUuid.code} = $categoryUuid';
+      }
+    }
+
+    _query +=
+        ' ORDER BY ${TransactionsTableColumns.date.code} DESC LIMIT $offset, $limit;';
+
     final List<Map<String, Object?>> transactionsMapsList =
-        await _dbWrapper.rawQuery(
-      'SELECT * FROM $_tableName '
-      'ORDER BY date DESC LIMIT $offset, $limit;',
-    );
+        await _dbWrapper.rawQuery(_query);
 
     final List<domain.Transaction> transactions = [];
 

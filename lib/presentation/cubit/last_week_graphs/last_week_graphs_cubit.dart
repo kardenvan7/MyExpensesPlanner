@@ -72,10 +72,21 @@ class LastWeekGraphsCubit extends Cubit<LastWeekGraphsState> {
                 null,
       );
 
+      final _now = DateTime.now();
+      final _weekAgo = DateTime(
+        _now.year,
+        _now.month,
+        _now.day,
+      ).subtract(const Duration(days: 6));
+
       _transactions.addAll(
-        newData.addedTransactions.followedBy(
-          newData.editedTransactions,
-        ),
+        newData.addedTransactions
+            .where((element) => element.date >= _weekAgo)
+            .followedBy(
+              newData.editedTransactions.where(
+                (element) => element.date >= _weekAgo,
+              ),
+            ),
       );
 
       emit(LastWeekGraphsState(transactions: _transactions));

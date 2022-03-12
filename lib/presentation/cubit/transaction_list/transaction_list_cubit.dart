@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
@@ -18,6 +20,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
             isLoading: true,
             transactions: [],
             transactionsByDates: {},
+            transactionsByCategories: {},
             sortedDates: [],
             canLoadMore: true,
             offset: 0,
@@ -30,13 +33,23 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   late final StreamSubscription _subscription;
   final ScrollController scrollController = ScrollController();
 
-  bool get _nearBottom =>
+  bool get _isScrollNearBottom =>
       scrollController.offset >=
           scrollController.position.maxScrollExtent - 300 &&
       !scrollController.position.outOfRange;
 
-  Future<void> initialize() async {
+  Future<void> initialize({
+    DateTimeRange? dateTimeRange,
+    String? categoryUuid,
+  }) async {
     if (!state.initialized) {
+      emit(
+        state.copyWith(
+          dateTimeRange: ValueWrapper(value: dateTimeRange),
+          categoryUuid: ValueWrapper(value: categoryUuid),
+        ),
+      );
+
       _subscription = _transactionsCaseImpl.stream.listen((
         TransactionsChangeData newData,
       ) {
@@ -66,6 +79,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
         sortedDates: [],
         offset: 0,
         canLoadMore: true,
+        triggerBuilder: false,
       ),
     );
 
@@ -87,6 +101,8 @@ class TransactionListCubit extends Cubit<TransactionListState> {
           await _transactionsCaseImpl.getTransactions(
         limit: _loadLimit,
         offset: state.offset,
+        dateTimeRange: state.dateTimeRange,
+        categoryUuid: state.categoryUuid,
       );
 
       _currentTransactions.addAll(_fetchedTransactions);
@@ -94,6 +110,8 @@ class TransactionListCubit extends Cubit<TransactionListState> {
       final _transactionsByDates =
           _getTransactionsByDates(_currentTransactions);
       final _sortedDates = _getSortedDates(_transactionsByDates);
+      final _transactionsByCategories =
+          _getTransactionsByCategories(_currentTransactions);
 
       emit(
         state.copyWith(
@@ -101,6 +119,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
           showLoadingIndicator: false,
           transactions: _currentTransactions,
           transactionsByDates: _transactionsByDates,
+          transactionsByCategories: _transactionsByCategories,
           sortedDates: _sortedDates,
           canLoadMore: _fetchedTransactions.length == _loadLimit,
           offset: state.offset + _fetchedTransactions.length,
@@ -158,12 +177,15 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
       final _transactionsByDates = _getTransactionsByDates(_transactions);
       final _sortedDates = _getSortedDates(_transactionsByDates);
+      final _transactionsByCategories =
+          _getTransactionsByCategories(_transactions);
 
       emit(
         state.copyWith(
           transactions: _transactions,
           showLoadingIndicator: false,
           transactionsByDates: _transactionsByDates,
+          transactionsByCategories: _transactionsByCategories,
           sortedDates: _sortedDates,
           initialized: true,
           isLoading: false,
@@ -179,6 +201,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
       state.copyWith(
         transactions: [],
         transactionsByDates: {},
+        transactionsByCategories: {},
         sortedDates: [],
         initialized: true,
         isLoading: false,
@@ -287,9 +310,26 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   }
 
   Future<void> _scrollListener() async {
-    if (_nearBottom && state.canLoadMore && !state.isLoading) {
+    if (_isScrollNearBottom && state.canLoadMore && !state.isLoading) {
       fetchTransactions();
     }
+  }
+
+  Map<String?, List<Transaction>> _getTransactionsByCategories(
+      List<Transaction> transactions) {
+    final Map<String?, List<Transaction>> _map = {};
+
+    for (final Transaction _tr in transactions) {
+      final String? _categoryUuid = _tr.categoryUuid;
+
+      if (_map.containsKey(_categoryUuid)) {
+        _map[_categoryUuid]!.add(_tr);
+      } else {
+        _map[_categoryUuid] = [_tr];
+      }
+    }
+
+    return _map;
   }
 
   @override

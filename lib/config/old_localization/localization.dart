@@ -13,9 +13,9 @@ class ConfiguredEasyLocalization extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EasyLocalization(
-      path: LocalizationsConfig.pathToLocalizations,
-      supportedLocales: LocalizationsConfig.supportedLocalizations,
-      fallbackLocale: LocalizationsConfig.defaultLocale,
+      path: EasyLocalizationsConfig.pathToLocalizations,
+      supportedLocales: EasyLocalizationsConfig.supportedLocalizations,
+      fallbackLocale: EasyLocalizationsConfig.defaultLocale,
       // useOnlyLangCode: true,
       child: child,
     );

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
@@ -9,6 +10,8 @@ class MockTransactionsCaseImpl implements ITransactionsCase {
   Future<List<Transaction>> getTransactions({
     int limit = 40,
     int offset = 0,
+    DateTimeRange? dateTimeRange,
+    String? categoryUuid,
   }) async {
     return List.generate(
       limit,
@@ -65,6 +68,12 @@ class MockTransactionsCaseImpl implements ITransactionsCase {
   @override
   Future<void> deleteAll() {
     // TODO: implement deleteAll
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> fillWithMockTransactions() {
+    // TODO: implement fillWithMockTransactions
     throw UnimplementedError();
   }
 }

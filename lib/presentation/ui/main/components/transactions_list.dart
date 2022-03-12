@@ -5,18 +5,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/datetime_extensions.dart';
+import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
+import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/transactions_list_item.dart';
 
 class TransactionsList extends StatelessWidget {
   const TransactionsList({
+    this.dateTimeRange,
+    this.categoryUuid,
     Key? key,
   }) : super(key: key);
+
+  final DateTimeRange? dateTimeRange;
+  final String? categoryUuid;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TransactionListCubit, TransactionListState>(
+      buildWhen: (oldState, newState) {
+        return newState.triggerBuilder;
+      },
       builder: (context, state) {
         if (state.errorWhileInitializing) {
           return Center(
@@ -54,26 +64,38 @@ class TransactionsList extends StatelessWidget {
                   return const SizedBox(height: 15);
                 },
                 itemBuilder: (context, index) {
-                  final _currentDate = state.sortedDates[index];
+                  final DateTime _currentDate = state.sortedDates[index];
                   final List<Transaction> _currentDateTransactions =
                       state.transactionsByDates[_currentDate]!;
 
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Chip(
-                        label: Text(
-                          _currentDate.isToday
-                              ? AppLocalizationsWrapper.of(context).today
-                              : _currentDate.isYesterday
-                                  ? AppLocalizationsWrapper.of(context)
-                                      .yesterday
-                                  : DateFormat.yMMMMd(
-                                      Localizations.localeOf(context)
-                                          .toLanguageTag(),
-                                    ).format(_currentDate),
+                      if (!_isDatePicked(
+                        date: _currentDate,
+                        pickedRange: state.dateTimeRange,
+                      ))
+                        InkWell(
+                          onTap: () {
+                            _onDateChipTap(
+                              date: _currentDate,
+                              pickedRange: state.dateTimeRange,
+                            );
+                          },
+                          child: Chip(
+                            label: Text(
+                              _currentDate.isToday
+                                  ? AppLocalizationsWrapper.of(context).today
+                                  : _currentDate.isYesterday
+                                      ? AppLocalizationsWrapper.of(context)
+                                          .yesterday
+                                      : DateFormat.yMMMMd(
+                                          Localizations.localeOf(context)
+                                              .toLanguageTag(),
+                                        ).format(_currentDate),
+                            ),
+                          ),
                         ),
-                      ),
                       ListView.separated(
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: _currentDateTransactions.length,
@@ -111,5 +133,35 @@ class TransactionsList extends StatelessWidget {
               );
       },
     );
+  }
+
+  void _onDateChipTap({
+    required DateTime date,
+    required DateTimeRange? pickedRange,
+  }) {
+    if (!_isDatePicked(date: date, pickedRange: pickedRange)) {
+      getIt<AppRouter>().push(
+        PeriodStatisticsRoute(
+          dateTimeRange: DateTimeRange(
+            start: date,
+            end: date.add(const Duration(days: 1)).subtract(
+                  const Duration(milliseconds: 1),
+                ),
+          ),
+        ),
+      );
+    }
+  }
+
+  bool _isDatePicked({
+    required DateTime date,
+    required DateTimeRange? pickedRange,
+  }) {
+    if (pickedRange == null) {
+      return false;
+    }
+
+    return date.isSameDayWith(pickedRange.start) &&
+        date.isSameDayWith(pickedRange.end);
   }
 }

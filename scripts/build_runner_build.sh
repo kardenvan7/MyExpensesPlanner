@@ -1,1 +1,1 @@
-flutter packages pub run build_runner build
+cd ../ && flutter packages pub run build_runner build

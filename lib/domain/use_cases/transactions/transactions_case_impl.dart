@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_transactions_repository.dart';
@@ -22,10 +23,14 @@ class TransactionsCaseImpl implements ITransactionsCase {
   Future<List<Transaction>> getTransactions({
     int limit = 40,
     int offset = 0,
+    DateTimeRange? dateTimeRange,
+    String? categoryUuid,
   }) async {
     return _transactionsRepository.getTransactions(
       limit: limit,
       offset: offset,
+      dateTimeRange: dateTimeRange,
+      categoryUuid: categoryUuid,
     );
   }
 
@@ -118,6 +123,39 @@ class TransactionsCaseImpl implements ITransactionsCase {
     streamController.add(
       TransactionsChangeData(
         deletedAll: true,
+      ),
+    );
+  }
+
+  @override
+  Future<void> fillWithMockTransactions() async {
+    final List<Transaction> _transactions = [];
+
+    for (int i = 0; i < 40; i++) {
+      await Future.delayed(
+        const Duration(milliseconds: 200),
+        () {
+          final DateTime _date = DateTime.now().subtract(
+            Duration(hours: 12 * i),
+          );
+
+          _transactions.add(
+            Transaction(
+              uuid: _date.millisecondsSinceEpoch.toString(),
+              amount: (i + 1) * 10,
+              title: 'Transaction ${i + 1}',
+              date: _date,
+            ),
+          );
+        },
+      );
+    }
+
+    await _transactionsRepository.saveMultiple(transactions: _transactions);
+
+    streamController.add(
+      TransactionsChangeData(
+        addedTransactions: _transactions,
       ),
     );
   }

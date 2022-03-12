@@ -1,6 +1,18 @@
 extension DateTimeExt on DateTime {
   operator >(DateTime otherDate) {
-    return millisecondsSinceEpoch > otherDate.millisecondsSinceEpoch;
+    return microsecondsSinceEpoch > otherDate.microsecondsSinceEpoch;
+  }
+
+  operator >=(DateTime otherDate) {
+    return microsecondsSinceEpoch >= otherDate.microsecondsSinceEpoch;
+  }
+
+  operator <(DateTime otherDate) {
+    return microsecondsSinceEpoch < otherDate.microsecondsSinceEpoch;
+  }
+
+  operator <=(DateTime otherDate) {
+    return microsecondsSinceEpoch <= otherDate.microsecondsSinceEpoch;
   }
 
   bool get isToday {

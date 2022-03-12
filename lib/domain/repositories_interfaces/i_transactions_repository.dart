@@ -1,9 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 
 abstract class ITransactionsRepository {
   Future<List<Transaction>> getTransactions({
     int limit = 40,
     int offset = 0,
+    DateTimeRange? dateTimeRange,
+    String? categoryUuid,
   });
 
   Future<List<Transaction>> getTransactionsFromPeriod({

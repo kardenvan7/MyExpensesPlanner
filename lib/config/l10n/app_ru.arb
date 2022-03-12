@@ -8,8 +8,6 @@
   "no": "Нет",
   "delete_transaction_confirmation_question": "Вы уверены, что хотите удалить транзакцию? Это действие нельзя будет отменить",
   "submit": "Принять",
-  "change_date": "Изменить дату",
-  "without_category": "Без категории",
   "add_category": "Добавить категорию",
   "edit_category": "Изменить категорию",
   "delete_category_confirmation_question": "Вы уверены, что хотите удалить категорию? Это действие нельзя будет отменить",
@@ -17,6 +15,10 @@
   "empty_transaction_list_placeholder_text": "Список транзакций пуст.\n\nНажмите на значок \"+\" в правом нижнем углу, чтобы создать транзакцию",
   "today": "Сегодня",
   "yesterday": "Вчера",
+  "change_date": "Изменить дату",
+  "without_category": "Без категории",
+
+  "no_data_to_show": "Данные отсутствуют",
 
   "settings": "Настройки",
   "app_language": "Язык приложения",
