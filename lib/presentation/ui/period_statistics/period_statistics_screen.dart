@@ -4,7 +4,7 @@ import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
-import 'package:my_expenses_planner/presentation/ui/main/components/transactions_list.dart';
+import 'package:my_expenses_planner/presentation/ui/core/widgets/transactions_list.dart';
 import 'package:my_expenses_planner/presentation/ui/period_statistics/components/app_bar.dart';
 import 'package:my_expenses_planner/presentation/ui/period_statistics/components/pie_chart_section.dart';
 

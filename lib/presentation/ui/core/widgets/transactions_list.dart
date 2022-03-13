@@ -9,7 +9,7 @@ import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
-import 'package:my_expenses_planner/presentation/ui/main/components/transactions_list_item.dart';
+import 'package:my_expenses_planner/presentation/ui/core/widgets/transactions_list_item.dart';
 
 class TransactionsList extends StatelessWidget {
   const TransactionsList({
@@ -125,8 +125,8 @@ class TransactionsList extends StatelessWidget {
                 margin: const EdgeInsets.only(bottom: kToolbarHeight),
                 child: Center(
                   child: Text(
-                    AppLocalizationsWrapper.of(context)
-                        .empty_transaction_list_placeholder_text,
+                    AppLocalizationsWrapper
+                        .keys.empty_transaction_list_placeholder_text,
                     textAlign: TextAlign.center,
                   ),
                 ),

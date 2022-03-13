@@ -65,38 +65,58 @@ class TransactionsListItem extends StatelessWidget {
           height: 50,
           child: Row(
             children: [
-              BlocBuilder<CategoryListCubit, CategoryListState>(
-                builder: (context, state) {
-                  final TransactionCategory? _category =
-                      state.categories.firstWhereOrNull(
-                    (element) => element.uuid == transaction.categoryUuid,
-                  );
-
-                  return Container(
-                    width: 90,
-                    height: 50,
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    color: _category?.color,
-                    child: Center(
-                      child: AutoSizeText(
-                        _category?.name ??
-                            AppLocalizationsWrapper.of(context)
-                                .without_category,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                              fontSize: 14,
-                              color: _category?.color.isBright ?? true
-                                  ? Colors.black
-                                  : Colors.white,
-                            ),
-                        minFontSize: 11,
-                        maxFontSize: 16,
-                        textAlign: TextAlign.center,
-                        maxLines: _category?.name.wordCount,
-                      ),
+              if (transaction.isIncome)
+                Container(
+                  width: 90,
+                  height: 50,
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: Center(
+                    child: AutoSizeText(
+                      AppLocalizationsWrapper.of(context).income,
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                            fontSize: 14,
+                            color: Colors.green,
+                          ),
+                      minFontSize: 11,
+                      maxFontSize: 16,
+                      textAlign: TextAlign.center,
                     ),
-                  );
-                },
-              ),
+                  ),
+                )
+              else
+                BlocBuilder<CategoryListCubit, CategoryListState>(
+                  builder: (context, state) {
+                    final TransactionCategory? _category =
+                        state.categories.firstWhereOrNull(
+                      (element) => element.uuid == transaction.categoryUuid,
+                    );
+
+                    return Container(
+                      width: 90,
+                      height: 50,
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      color: _category?.color,
+                      child: Center(
+                        child: AutoSizeText(
+                          _category?.name ??
+                              AppLocalizationsWrapper.of(context)
+                                  .without_category,
+                          style:
+                              Theme.of(context).textTheme.bodyText1?.copyWith(
+                                    fontSize: 14,
+                                    color: _category?.color.isBright ?? true
+                                        ? Colors.black
+                                        : Colors.white,
+                                  ),
+                          minFontSize: 11,
+                          maxFontSize: 16,
+                          textAlign: TextAlign.center,
+                          maxLines: _category?.name.wordCount,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               Expanded(
                 child: Container(
                   margin: const EdgeInsets.only(
@@ -118,12 +138,12 @@ class TransactionsListItem extends StatelessWidget {
                   right: 10,
                 ),
                 child: Text(
-                  transaction.amount.toStringAsFixed(
-                    transaction.amount < 99
-                        ? 2
-                        : transaction.amount < 999
-                            ? 1
-                            : 0,
+                  _getAmountText(transaction: transaction),
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: transaction.type == TransactionType.income
+                        ? Colors.green
+                        : Colors.red,
                   ),
                 ),
               ),
@@ -132,6 +152,29 @@ class TransactionsListItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _getAmountText({required Transaction transaction}) {
+    final _sign = _getSignByType(type: transaction.type);
+
+    return '$_sign '
+        '${transaction.amount.toStringAsFixed(
+      transaction.amount < 99
+          ? 2
+          : transaction.amount < 999
+              ? 1
+              : 0,
+    )}';
+  }
+
+  String _getSignByType({required TransactionType type}) {
+    switch (type) {
+      case TransactionType.income:
+        return '+';
+
+      case TransactionType.expense:
+        return '-';
+    }
   }
 
   Future<bool?> _onDelete({
@@ -143,8 +186,8 @@ class TransactionsListItem extends StatelessWidget {
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(
-            AppLocalizationsWrapper.of(context)
-                .delete_transaction_confirmation_question,
+            AppLocalizationsWrapper
+                .keys.delete_transaction_confirmation_question,
           ),
           actions: [
             TextButton(

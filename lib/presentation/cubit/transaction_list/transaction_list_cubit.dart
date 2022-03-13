@@ -20,7 +20,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
             isLoading: true,
             transactions: [],
             transactionsByDates: {},
-            transactionsByCategories: {},
+            expensesByCategories: {},
             sortedDates: [],
             canLoadMore: true,
             offset: 0,
@@ -110,8 +110,8 @@ class TransactionListCubit extends Cubit<TransactionListState> {
       final _transactionsByDates =
           _getTransactionsByDates(_currentTransactions);
       final _sortedDates = _getSortedDates(_transactionsByDates);
-      final _transactionsByCategories =
-          _getTransactionsByCategories(_currentTransactions);
+      final _expensesByCategories =
+          _getExpensesByCategories(_currentTransactions);
 
       emit(
         state.copyWith(
@@ -119,7 +119,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
           showLoadingIndicator: false,
           transactions: _currentTransactions,
           transactionsByDates: _transactionsByDates,
-          transactionsByCategories: _transactionsByCategories,
+          expensesByCategories: _expensesByCategories,
           sortedDates: _sortedDates,
           canLoadMore: _fetchedTransactions.length == _loadLimit,
           offset: state.offset + _fetchedTransactions.length,
@@ -177,15 +177,14 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
       final _transactionsByDates = _getTransactionsByDates(_transactions);
       final _sortedDates = _getSortedDates(_transactionsByDates);
-      final _transactionsByCategories =
-          _getTransactionsByCategories(_transactions);
+      final _expenses = _getExpensesByCategories(_transactions);
 
       emit(
         state.copyWith(
           transactions: _transactions,
           showLoadingIndicator: false,
           transactionsByDates: _transactionsByDates,
-          transactionsByCategories: _transactionsByCategories,
+          expensesByCategories: _expenses,
           sortedDates: _sortedDates,
           initialized: true,
           isLoading: false,
@@ -201,7 +200,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
       state.copyWith(
         transactions: [],
         transactionsByDates: {},
-        transactionsByCategories: {},
+        expensesByCategories: {},
         sortedDates: [],
         initialized: true,
         isLoading: false,
@@ -226,6 +225,9 @@ class TransactionListCubit extends Cubit<TransactionListState> {
                 amount: (i * 1.2).toInt().toDouble(),
                 title: 'Transaction',
                 date: DateTime.now(),
+                type: i % 2 == 0
+                    ? TransactionType.expense
+                    : TransactionType.income,
               ),
             );
           },
@@ -315,11 +317,17 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     }
   }
 
-  Map<String?, List<Transaction>> _getTransactionsByCategories(
-      List<Transaction> transactions) {
+  Map<String?, List<Transaction>> _getExpensesByCategories(
+    List<Transaction> transactions,
+  ) {
     final Map<String?, List<Transaction>> _map = {};
+    final List<Transaction> expenses = transactions
+        .where(
+          (element) => element.type == TransactionType.expense,
+        )
+        .toList();
 
-    for (final Transaction _tr in transactions) {
+    for (final Transaction _tr in expenses) {
       final String? _categoryUuid = _tr.categoryUuid;
 
       if (_map.containsKey(_categoryUuid)) {

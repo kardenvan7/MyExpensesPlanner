@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_expenses_planner/main.dart';
 
 class AppLocalizationsWrapper {
   AppLocalizationsWrapper();
@@ -7,6 +8,14 @@ class AppLocalizationsWrapper {
   static AppLocalizations of(BuildContext context) {
     return AppLocalizations.of(context)!;
   }
+
+  static AppLocalizations ofGlobalContext() {
+    return AppLocalizations.of(NavigatorService.key.currentContext!)!;
+  }
+
+  static AppLocalizations keys = AppLocalizations.of(
+    NavigatorService.key.currentContext!,
+  )!;
 }
 
 class EasyLocalizationsConfig {

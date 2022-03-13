@@ -14,6 +14,7 @@ import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/amount_input.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/date_input.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/title_input.dart';
+import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/transaction_type_switch.dart';
 
 part './components/category_pick_field.dart';
 
@@ -89,10 +90,18 @@ class EditTransactionScreen extends StatelessWidget {
                     initialDate: state.date,
                     onDatePicked: _cubit.setDate,
                   ),
-                  CategoryPickField(
-                    pickedCategoryUuid: state.categoryUuid,
-                    onCategoryPicked: _cubit.setCategoryUuid,
+                  TransactionTypeSwitch(
+                    type: state.type!,
+                    onChanged: _cubit.setType,
                   ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  if (state.showCategoryField)
+                    CategoryPickField(
+                      pickedCategoryUuid: state.categoryUuid,
+                      onCategoryPicked: _cubit.setCategoryUuid,
+                    ),
                 ],
               ),
             ),

@@ -6,6 +6,7 @@ class EditTransactionState {
     this.date,
     this.amount,
     this.title,
+    this.type,
     this.categoryUuid,
     this.triggerBuilder = true,
     this.snackBarText,
@@ -19,6 +20,7 @@ class EditTransactionState {
       date: transaction.date,
       amount: transaction.amount.toString(),
       title: transaction.title,
+      type: transaction.type,
       categoryUuid: transaction.categoryUuid,
     );
   }
@@ -26,6 +28,7 @@ class EditTransactionState {
   factory EditTransactionState.initialAdding() {
     return EditTransactionState(
       date: DateTime.now(),
+      type: TransactionType.expense,
     );
   }
 
@@ -35,6 +38,7 @@ class EditTransactionState {
   final String? amount;
   final String? title;
   final String? categoryUuid;
+  final TransactionType? type;
 
   /// UI related
   final bool triggerBuilder;
@@ -44,10 +48,13 @@ class EditTransactionState {
 
   bool get showSnackBar => snackBarText != null;
 
+  bool get showCategoryField => type == TransactionType.expense;
+
   EditTransactionState copyWith({
     DateTime? date,
     String? amount,
     String? title,
+    TransactionType? type,
     ValueWrapper<String>? categoryUuid,
     bool? triggerBuilder,
     String? snackBarText,
@@ -59,6 +66,7 @@ class EditTransactionState {
       date: date ?? this.date,
       amount: amount ?? this.amount,
       title: title ?? this.title,
+      type: type ?? this.type,
       categoryUuid:
           categoryUuid == null ? this.categoryUuid : categoryUuid.value,
       triggerBuilder: triggerBuilder ?? true,

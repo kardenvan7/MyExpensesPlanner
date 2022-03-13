@@ -39,6 +39,7 @@ class MyExpensesPlanner extends StatelessWidget {
             );
 
           return MaterialApp.router(
+            scaffoldMessengerKey: NavigatorService.key,
             themeMode: appState.themeMode,
             theme: _themes.light,
             darkTheme: _themes.dark,
@@ -63,4 +64,9 @@ class MyExpensesPlanner extends StatelessWidget {
       ),
     );
   }
+}
+
+class NavigatorService {
+  static GlobalKey<ScaffoldMessengerState> key =
+      GlobalKey<ScaffoldMessengerState>();
 }

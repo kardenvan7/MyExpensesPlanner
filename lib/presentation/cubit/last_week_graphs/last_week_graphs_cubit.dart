@@ -24,19 +24,19 @@ class LastWeekGraphsCubit extends Cubit<LastWeekGraphsState> {
         _refreshWithNewData(newData);
       });
 
-      fetchLastWeekTransactions();
+      fetchLastWeekExpenses();
 
       initialized = true;
     }
   }
 
-  Future<void> fetchLastWeekTransactions() async {
+  Future<void> fetchLastWeekExpenses() async {
     emit(
       LastWeekGraphsState(isLoading: true),
     );
 
     final List<Transaction> _transactions =
-        await _transactionsCase.getLastWeekTransactions();
+        await _transactionsCase.getLastWeekExpenses();
 
     _transactions.sort(
       (current, next) => next.date.compareTo(current.date),
@@ -81,10 +81,16 @@ class LastWeekGraphsCubit extends Cubit<LastWeekGraphsState> {
 
       _transactions.addAll(
         newData.addedTransactions
-            .where((element) => element.date >= _weekAgo)
+            .where(
+              (element) =>
+                  element.date >= _weekAgo &&
+                  element.type == TransactionType.expense,
+            )
             .followedBy(
               newData.editedTransactions.where(
-                (element) => element.date >= _weekAgo,
+                (element) =>
+                    element.date >= _weekAgo &&
+                    element.type == TransactionType.expense,
               ),
             ),
       );

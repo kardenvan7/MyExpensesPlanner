@@ -1,13 +1,12 @@
 import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 
-import './transaction_category.dart';
-
 class Transaction {
   Transaction({
     required this.uuid,
     required this.amount,
     required this.title,
     required this.date,
+    required this.type,
     this.categoryUuid,
   });
 
@@ -19,6 +18,7 @@ class Transaction {
       date: DateTime.fromMillisecondsSinceEpoch(
         map['date'] as int,
       ),
+      type: TransactionTypeFactory.fromCode(map['type'] as String?),
       categoryUuid: map['category_uuid'] as String?,
     );
   }
@@ -27,7 +27,10 @@ class Transaction {
   final DateTime date;
   final String title;
   final double amount;
+  final TransactionType type;
   final String? categoryUuid;
+
+  bool get isIncome => type == TransactionType.income;
 
   Map<String, Object?> toMap() {
     return {
@@ -35,7 +38,8 @@ class Transaction {
       'title': title,
       'amount': amount,
       'date': date.millisecondsSinceEpoch,
-      'category_uuid': categoryUuid,
+      'type': type.name,
+      'category_uuid': isIncome ? null : categoryUuid,
     };
   }
 
@@ -44,7 +48,7 @@ class Transaction {
     String? title,
     double? amount,
     DateTime? date,
-    TransactionCategory? category,
+    TransactionType? type,
     ValueWrapper<String>? categoryUuid,
   }) {
     return Transaction(
@@ -52,8 +56,21 @@ class Transaction {
       amount: amount ?? this.amount,
       title: title ?? this.title,
       date: date ?? this.date,
+      type: type ?? this.type,
       categoryUuid:
           categoryUuid == null ? this.categoryUuid : categoryUuid.value,
     );
+  }
+}
+
+enum TransactionType { expense, income }
+
+extension TransactionTypeFactory on TransactionType {
+  static TransactionType fromCode(String? code) {
+    if (code == TransactionType.income.name) {
+      return TransactionType.income;
+    } else {
+      return TransactionType.expense;
+    }
   }
 }

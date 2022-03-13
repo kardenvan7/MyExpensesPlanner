@@ -21,6 +21,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     int offset = 0,
     DateTimeRange? dateTimeRange,
     String? categoryUuid,
+    domain.TransactionType? type,
   }) async {
     String _query = 'SELECT * FROM $_tableName ';
 
@@ -37,6 +38,15 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
       } else {
         _query +=
             ' WHERE ${TransactionsTableColumns.categoryUuid.code} = $categoryUuid';
+      }
+    }
+
+    if (type != null) {
+      if (categoryUuid == null && dateTimeRange == null) {
+        _query +=
+            ' WHERE ${TransactionsTableColumns.type.code} = "${type.name}"';
+      } else {
+        _query += ' AND ${TransactionsTableColumns.type.code} = "${type.name}"';
       }
     }
 

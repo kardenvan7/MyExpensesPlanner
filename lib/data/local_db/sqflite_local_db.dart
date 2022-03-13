@@ -10,7 +10,7 @@ class SqfliteDatabaseProvider {
   SqfliteDatabaseProvider._();
 
   static const String _dbFileName = 'myExpensesPlanner.db';
-  static const int _version = 1;
+  static const int _version = 2;
 
   static final SqfliteDatabaseProvider _instance = SqfliteDatabaseProvider._();
 
@@ -27,6 +27,14 @@ class SqfliteDatabaseProvider {
       onOpen: (Database db) async {
         db.execute('PRAGMA foreign_keys=ON');
       },
+      onUpgrade: (Database db, int oldVersion, int newVersion) async {
+        if (oldVersion == 1 && newVersion == 2) {
+          await db.execute(
+            'ALTER TABLE ${SqfliteDbConfig.transactionsTableName} '
+            'ADD COLUMN ${TransactionsTableColumns.type.code} TEXT DEFAULT "${TransactionType.expense.name}";',
+          );
+        }
+      },
       onCreate: (Database db, int version) async {
         await db.execute(
           'CREATE TABLE ${SqfliteDbConfig.transactionsTableName} ('
@@ -34,7 +42,8 @@ class SqfliteDatabaseProvider {
           '${TransactionsTableColumns.uuid.code} TEXT, '
           '${TransactionsTableColumns.title.code} TEXT, '
           '${TransactionsTableColumns.amount.code} REAL, '
-          '${TransactionsTableColumns.date.code} INT'
+          '${TransactionsTableColumns.date.code} INT, '
+          '${TransactionsTableColumns.type.code} TEXT'
           ');',
         );
 
@@ -64,7 +73,8 @@ class SqfliteDatabaseProvider {
   }
 }
 
-enum TransactionsTableColumns { uuid, title, amount, date, categoryUuid }
+enum TransactionsTableColumns { uuid, title, amount, date, categoryUuid, type }
+enum TransactionType { expense, income }
 enum CategoriesTableColumns { uuid, name, color }
 
 extension TransactionCategoriesTableColumnsCodes on CategoriesTableColumns {
@@ -93,6 +103,8 @@ extension TransactionsTableColumnsCodes on TransactionsTableColumns {
         return 'date';
       case TransactionsTableColumns.categoryUuid:
         return 'category_uuid';
+      case TransactionsTableColumns.type:
+        return 'type';
     }
   }
 }

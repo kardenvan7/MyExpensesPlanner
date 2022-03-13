@@ -8,9 +8,10 @@ abstract class ITransactionsCase {
     int offset = 0,
     DateTimeRange? dateTimeRange,
     String? categoryUuid,
+    TransactionType? type,
   });
 
-  Future<List<Transaction>> getLastWeekTransactions();
+  Future<List<Transaction>> getLastWeekExpenses();
 
   Future<void> save({required Transaction transaction});
   Future<void> saveMultiple({required List<Transaction> transactions});

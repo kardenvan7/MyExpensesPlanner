@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
@@ -77,7 +78,9 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
         title: title,
         amount: amount,
         date: state.date!,
-        categoryUuid: state.categoryUuid,
+        type: state.type!,
+        categoryUuid:
+            state.type == TransactionType.income ? null : state.categoryUuid,
       );
 
       if (isAdding) {
@@ -105,7 +108,8 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
     } catch (e) {
       emit(
         state.copyWith(
-          snackBarText: 'An error occurred while saving transaction',
+          snackBarText: AppLocalizationsWrapper.ofGlobalContext()
+              .error_while_creating_transaction,
         ),
       );
     }
@@ -125,7 +129,8 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
     } catch (e) {
       emit(
         state.copyWith(
-          snackBarText: 'An error occurred while saving changes',
+          snackBarText: AppLocalizationsWrapper.ofGlobalContext()
+              .error_while_changing_transaction,
         ),
       );
     }
@@ -167,5 +172,9 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
         triggerBuilder: false,
       ),
     );
+  }
+
+  void setType(TransactionType type) {
+    emit(state.copyWith(type: type));
   }
 }

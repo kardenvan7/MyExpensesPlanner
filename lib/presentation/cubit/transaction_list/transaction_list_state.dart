@@ -5,7 +5,7 @@ class TransactionListState {
     required this.isLoading,
     required this.transactions,
     required this.transactionsByDates,
-    required this.transactionsByCategories,
+    required this.expensesByCategories,
     required this.sortedDates,
     required this.canLoadMore,
     required this.offset,
@@ -20,7 +20,7 @@ class TransactionListState {
   final bool isLoading;
   final List<Transaction> transactions;
   final Map<DateTime, List<Transaction>> transactionsByDates;
-  final Map<String?, List<Transaction>> transactionsByCategories;
+  final Map<String?, List<Transaction>> expensesByCategories;
   final List<DateTime> sortedDates;
   final bool canLoadMore;
   final int offset;
@@ -40,7 +40,7 @@ class TransactionListState {
     List<Transaction>? transactions,
     List<DateTime>? sortedDates,
     Map<DateTime, List<Transaction>>? transactionsByDates,
-    Map<String?, List<Transaction>>? transactionsByCategories,
+    Map<String?, List<Transaction>>? expensesByCategories,
     bool? canLoadMore,
     int? offset,
     bool? initialized,
@@ -56,8 +56,7 @@ class TransactionListState {
       canLoadMore: canLoadMore ?? this.canLoadMore,
       sortedDates: sortedDates ?? this.sortedDates,
       transactionsByDates: transactionsByDates ?? this.transactionsByDates,
-      transactionsByCategories:
-          transactionsByCategories ?? this.transactionsByCategories,
+      expensesByCategories: expensesByCategories ?? this.expensesByCategories,
       offset: offset ?? this.offset,
       initialized: initialized ?? this.initialized,
       showLoadingIndicator: showLoadingIndicator ?? this.showLoadingIndicator,
@@ -73,9 +72,9 @@ class TransactionListState {
   Map<String?, double> get amountsByCategory {
     final Map<String?, double> _map = {};
 
-    for (final String? categoryUuid in transactionsByCategories.keys.toList()) {
+    for (final String? categoryUuid in expensesByCategories.keys.toList()) {
       final double _amountByCategory =
-          transactionsByCategories[categoryUuid]!.fold<double>(
+          expensesByCategories[categoryUuid]!.fold<double>(
         0,
         (previousValue, element) => previousValue + element.amount,
       );

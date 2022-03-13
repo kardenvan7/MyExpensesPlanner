@@ -25,12 +25,14 @@ class TransactionsCaseImpl implements ITransactionsCase {
     int offset = 0,
     DateTimeRange? dateTimeRange,
     String? categoryUuid,
+    TransactionType? type,
   }) async {
     return _transactionsRepository.getTransactions(
       limit: limit,
       offset: offset,
       dateTimeRange: dateTimeRange,
       categoryUuid: categoryUuid,
+      type: type,
     );
   }
 
@@ -39,7 +41,7 @@ class TransactionsCaseImpl implements ITransactionsCase {
     required String transactionId,
     required Transaction newTransaction,
   }) async {
-    _transactionsRepository.edit(
+    await _transactionsRepository.edit(
       transactionId: transactionId,
       newTransaction: newTransaction,
     );
@@ -57,7 +59,7 @@ class TransactionsCaseImpl implements ITransactionsCase {
   Future<void> save({
     required Transaction transaction,
   }) async {
-    _transactionsRepository.save(
+    await _transactionsRepository.save(
       transaction: transaction,
     );
 
@@ -74,7 +76,7 @@ class TransactionsCaseImpl implements ITransactionsCase {
   Future<void> delete({
     required String transactionId,
   }) async {
-    _transactionsRepository.delete(
+    await _transactionsRepository.delete(
       transactionId: transactionId,
     );
 
@@ -88,7 +90,7 @@ class TransactionsCaseImpl implements ITransactionsCase {
   }
 
   @override
-  Future<List<Transaction>> getLastWeekTransactions() async {
+  Future<List<Transaction>> getLastWeekExpenses() async {
     final DateTime _now = DateTime.now();
     final DateTime _startDate = DateTime(
       _now.year,
@@ -100,8 +102,9 @@ class TransactionsCaseImpl implements ITransactionsCase {
       ),
     );
 
-    return _transactionsRepository.getTransactionsFromPeriod(
-      startDate: _startDate,
+    return _transactionsRepository.getTransactions(
+      dateTimeRange: DateTimeRange(start: _startDate, end: _now),
+      type: TransactionType.expense,
     );
   }
 
@@ -145,6 +148,8 @@ class TransactionsCaseImpl implements ITransactionsCase {
               amount: (i + 1) * 10,
               title: 'Transaction ${i + 1}',
               date: _date,
+              type:
+                  i % 2 == 0 ? TransactionType.expense : TransactionType.income,
             ),
           );
         },

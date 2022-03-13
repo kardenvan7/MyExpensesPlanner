@@ -12,6 +12,7 @@ class MockTransactionsCaseImpl implements ITransactionsCase {
     int offset = 0,
     DateTimeRange? dateTimeRange,
     String? categoryUuid,
+    TransactionType? type,
   }) async {
     return List.generate(
       limit,
@@ -19,6 +20,7 @@ class MockTransactionsCaseImpl implements ITransactionsCase {
         uuid: DateTime.now().microsecondsSinceEpoch.toString(),
         amount: index * 2,
         title: 'Транзакция $index',
+        type: index % 2 == 0 ? TransactionType.income : TransactionType.expense,
         date: DateTime.now().subtract(
           Duration(
             days: Random().nextInt(1000),
@@ -50,7 +52,7 @@ class MockTransactionsCaseImpl implements ITransactionsCase {
   }
 
   @override
-  Future<List<Transaction>> getLastWeekTransactions() {
+  Future<List<Transaction>> getLastWeekExpenses() {
     // TODO: implement getLastWeekTransactions
     throw UnimplementedError();
   }

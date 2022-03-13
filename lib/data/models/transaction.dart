@@ -8,6 +8,7 @@ class Transaction {
     required this.amount,
     required this.title,
     required this.date,
+    required this.type,
     this.categoryUuid,
   });
 
@@ -19,7 +20,10 @@ class Transaction {
       date: DateTime.fromMillisecondsSinceEpoch(
         map[TransactionsTableColumns.date.code] as int,
       ),
-      categoryUuid: map['category_uuid'] as String?,
+      type: TransactionTypeFactory.fromCode(
+        map[TransactionsTableColumns.type.code] as String?,
+      ),
+      categoryUuid: map[TransactionsTableColumns.categoryUuid.code] as String?,
     );
   }
 
@@ -29,6 +33,7 @@ class Transaction {
       amount: _transaction.amount,
       title: _transaction.title,
       date: _transaction.date,
+      type: TransactionTypeFactory.fromCode(_transaction.type.name),
       categoryUuid: _transaction.categoryUuid,
     );
   }
@@ -37,6 +42,7 @@ class Transaction {
   final DateTime date;
   final String title;
   final double amount;
+  final TransactionType type;
   final String? categoryUuid;
 
   Transaction copyWith({
@@ -44,6 +50,7 @@ class Transaction {
     String? title,
     double? amount,
     DateTime? date,
+    TransactionType? type,
     ValueWrapper<String>? categoryUuid,
   }) {
     return Transaction(
@@ -51,6 +58,7 @@ class Transaction {
       amount: amount ?? this.amount,
       title: title ?? this.title,
       date: date ?? this.date,
+      type: type ?? this.type,
       categoryUuid:
           categoryUuid == null ? this.categoryUuid : categoryUuid.value,
     );
@@ -62,6 +70,7 @@ class Transaction {
       TransactionsTableColumns.title.code: title,
       TransactionsTableColumns.amount.code: amount,
       TransactionsTableColumns.date.code: date.millisecondsSinceEpoch,
+      TransactionsTableColumns.type.code: type.name,
       TransactionsTableColumns.categoryUuid.code: categoryUuid,
     };
   }
@@ -72,7 +81,20 @@ class Transaction {
       amount: amount,
       title: title,
       date: date,
+      type: domain.TransactionTypeFactory.fromCode(type.name),
       categoryUuid: categoryUuid,
     );
+  }
+}
+
+enum TransactionType { expense, income }
+
+extension TransactionTypeFactory on TransactionType {
+  static TransactionType fromCode(String? code) {
+    if (code == TransactionType.income.name) {
+      return TransactionType.income;
+    } else {
+      return TransactionType.expense;
+    }
   }
 }

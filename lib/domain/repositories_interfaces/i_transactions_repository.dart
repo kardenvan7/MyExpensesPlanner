@@ -7,6 +7,7 @@ abstract class ITransactionsRepository {
     int offset = 0,
     DateTimeRange? dateTimeRange,
     String? categoryUuid,
+    TransactionType? type,
   });
 
   Future<List<Transaction>> getTransactionsFromPeriod({
