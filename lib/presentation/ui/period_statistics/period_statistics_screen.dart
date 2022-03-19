@@ -27,16 +27,18 @@ class PeriodStatisticsScreen extends StatelessWidget {
       )..initialize(
           dateTimeRange: dateTimeRange,
         ),
-      child: Scaffold(
-        appBar: const PeriodStatisticsAppBar(),
-        body: Container(
-          padding: const EdgeInsets.only(left: 16, right: 16, top: 20),
-          child: BlocBuilder<TransactionListCubit, TransactionListState>(
-            buildWhen: (oldState, newState) {
-              return newState.triggerBuilder;
-            },
-            builder: (context, state) {
-              return Column(
+      child: BlocBuilder<TransactionListCubit, TransactionListState>(
+        buildWhen: (oldState, newState) {
+          return newState.triggerBuilder;
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: PeriodStatisticsAppBar(
+              dateTimeRange: state.dateTimeRange!,
+            ),
+            body: Container(
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 20),
+              child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -56,10 +58,10 @@ class PeriodStatisticsScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

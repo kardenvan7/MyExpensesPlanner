@@ -13,11 +13,13 @@ part './transaction_list_state.dart';
 class TransactionListCubit extends Cubit<TransactionListState> {
   TransactionListCubit({
     required ITransactionsCase transactionsCaseImpl,
+    int? loadLimit,
   })  : _transactionsCaseImpl = transactionsCaseImpl,
         super(
           TransactionListState(
             isLoading: true,
             transactions: [],
+            loadLimit: loadLimit,
             canLoadMore: true,
             offset: 0,
             initialized: false,
@@ -25,7 +27,6 @@ class TransactionListCubit extends Cubit<TransactionListState> {
           ),
         );
 
-  static const int _loadLimit = 40;
   late final StreamSubscription _subscription;
   final ScrollController scrollController = ScrollController();
 
@@ -93,7 +94,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
       final List<Transaction> _fetchedTransactions =
           await _transactionsCaseImpl.getTransactions(
-        limit: _loadLimit,
+        limit: state.loadLimit,
         offset: state.offset,
         dateTimeRange: state.dateTimeRange,
         categoryUuid: state.categoryUuid,
@@ -106,7 +107,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
           isLoading: false,
           showLoadingIndicator: false,
           transactions: _currentTransactions,
-          canLoadMore: _fetchedTransactions.length == _loadLimit,
+          canLoadMore: _fetchedTransactions.length == state.loadLimit,
           offset: state.offset + _fetchedTransactions.length,
           initialized: true,
         ),

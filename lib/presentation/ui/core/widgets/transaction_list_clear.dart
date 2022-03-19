@@ -12,7 +12,7 @@ class TransactionListClear extends StatefulWidget {
     required this.transactions,
     required this.onTransactionEditTap,
     required this.onTransactionDeleteTap,
-    this.lazyLoadErrorMessage,
+    this.errorMessage,
     this.onDateChipTap,
     this.showDateChips = true,
     this.showLoadingIndicator = false,
@@ -28,7 +28,7 @@ class TransactionListClear extends StatefulWidget {
   final bool isLazyLoading;
   final bool showDateChips;
   final void Function(DateTime date)? onDateChipTap;
-  final String? lazyLoadErrorMessage;
+  final String? errorMessage;
   final ScrollController? scrollController;
 
   @override
@@ -38,6 +38,7 @@ class TransactionListClear extends StatefulWidget {
 class _TransactionListClearState extends State<TransactionListClear> {
   List<DateTime> sortedDates = [];
   Map<DateTime, List<Transaction>> transactionsByDates = {};
+  String? errorMessage;
 
   bool showLoadingIndicator = true;
 
@@ -73,6 +74,7 @@ class _TransactionListClearState extends State<TransactionListClear> {
       transactionsByDates = _transactionsByDates;
       sortedDates = _sortedDates;
       showLoadingIndicator = false;
+      errorMessage = widget.errorMessage;
     });
   }
 
@@ -93,11 +95,23 @@ class _TransactionListClearState extends State<TransactionListClear> {
               bottom: Platform.isIOS ? 30 : 10,
             ),
             shrinkWrap: true,
-            itemCount: sortedDates.length,
+            itemCount: sortedDates.length + 1,
             separatorBuilder: (_, __) {
               return const SizedBox(height: 15);
             },
             itemBuilder: (context, index) {
+              if (index == sortedDates.length) {
+                return Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    if (errorMessage != null) Text(widget.errorMessage!),
+                    if (widget.isLazyLoading)
+                      CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                  ],
+                );
+              }
               final DateTime _currentDate = sortedDates[index];
               final List<Transaction> _currentDateTransactions =
                   transactionsByDates[_currentDate]!;
@@ -141,13 +155,6 @@ class _TransactionListClearState extends State<TransactionListClear> {
                       );
                     },
                   ),
-                  const SizedBox(height: 10),
-                  if (widget.lazyLoadErrorMessage != null)
-                    Text(widget.lazyLoadErrorMessage!),
-                  if (widget.isLazyLoading)
-                    CircularProgressIndicator(
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
                 ],
               );
             },

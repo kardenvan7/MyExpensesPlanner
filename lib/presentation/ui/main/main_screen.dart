@@ -20,6 +20,7 @@ class MainScreen extends StatelessWidget {
     return BlocProvider<TransactionListCubit>(
       create: (context) => TransactionListCubit(
         transactionsCaseImpl: getIt<ITransactionsCase>(),
+        loadLimit: 40,
       )..initialize(),
       child: Scaffold(
         appBar: const MainScreenAppBar(),

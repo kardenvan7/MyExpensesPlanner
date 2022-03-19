@@ -10,6 +10,7 @@ class TransactionListState {
     required this.showLoadingIndicator,
     this.triggerBuilder = true,
     this.dateTimeRange,
+    this.loadLimit,
     this.categoryUuid,
     this.errorMessage,
   });
@@ -22,6 +23,7 @@ class TransactionListState {
   final bool showLoadingIndicator;
   final bool triggerBuilder;
   final DateTimeRange? dateTimeRange;
+  final int? loadLimit;
   final String? categoryUuid;
   final String? errorMessage;
 
@@ -37,6 +39,7 @@ class TransactionListState {
     bool? initialized,
     bool? showLoadingIndicator,
     bool? triggerBuilder,
+    int? loadLimit,
     String? errorMessage,
     ValueWrapper<DateTimeRange>? dateTimeRange,
     ValueWrapper<String>? categoryUuid,
@@ -50,6 +53,7 @@ class TransactionListState {
       showLoadingIndicator: showLoadingIndicator ?? this.showLoadingIndicator,
       triggerBuilder: triggerBuilder ?? true,
       errorMessage: errorMessage,
+      loadLimit: loadLimit ?? this.loadLimit,
       dateTimeRange:
           dateTimeRange != null ? dateTimeRange.value : this.dateTimeRange,
       categoryUuid:

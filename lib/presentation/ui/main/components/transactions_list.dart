@@ -54,7 +54,7 @@ class TransactionsList extends StatelessWidget {
                     .scrollController,
                 transactions: state.transactions,
                 isLazyLoading: state.isLoading,
-                lazyLoadErrorMessage: state.errorMessage,
+                errorMessage: state.errorMessage,
                 onDateChipTap: (DateTime date) {
                   _onDateChipTap(
                     date: date,
