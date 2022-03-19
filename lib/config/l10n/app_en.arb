@@ -30,5 +30,7 @@
   "app_language": "App language",
   "app_primary_color": "Primary color",
   "app_secondary_color": "Secondary color",
-  "app_dark_theme": "Dark theme"
+  "app_dark_theme": "Dark theme",
+
+  "statistics": "Statistics"
 }

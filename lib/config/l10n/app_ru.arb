@@ -30,5 +30,7 @@
   "app_language": "Язык приложения",
   "app_primary_color": "Основной цвет",
   "app_secondary_color": "Второстепенный цвет",
-  "app_dark_theme": "Темная тема"
+  "app_dark_theme": "Темная тема",
+
+  "statistics": "Статистика"
 }

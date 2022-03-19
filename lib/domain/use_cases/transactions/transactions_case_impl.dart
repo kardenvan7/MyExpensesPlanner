@@ -21,8 +21,8 @@ class TransactionsCaseImpl implements ITransactionsCase {
 
   @override
   Future<List<Transaction>> getTransactions({
-    int limit = 40,
-    int offset = 0,
+    int? limit,
+    int? offset,
     DateTimeRange? dateTimeRange,
     String? categoryUuid,
     TransactionType? type,

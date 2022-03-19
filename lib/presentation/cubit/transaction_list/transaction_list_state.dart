@@ -4,9 +4,6 @@ class TransactionListState {
   TransactionListState({
     required this.isLoading,
     required this.transactions,
-    required this.transactionsByDates,
-    required this.expensesByCategories,
-    required this.sortedDates,
     required this.canLoadMore,
     required this.offset,
     required this.initialized,
@@ -19,9 +16,6 @@ class TransactionListState {
 
   final bool isLoading;
   final List<Transaction> transactions;
-  final Map<DateTime, List<Transaction>> transactionsByDates;
-  final Map<String?, List<Transaction>> expensesByCategories;
-  final List<DateTime> sortedDates;
   final bool canLoadMore;
   final int offset;
   final bool initialized;
@@ -38,9 +32,6 @@ class TransactionListState {
   TransactionListState copyWith({
     bool? isLoading,
     List<Transaction>? transactions,
-    List<DateTime>? sortedDates,
-    Map<DateTime, List<Transaction>>? transactionsByDates,
-    Map<String?, List<Transaction>>? expensesByCategories,
     bool? canLoadMore,
     int? offset,
     bool? initialized,
@@ -54,9 +45,6 @@ class TransactionListState {
       isLoading: isLoading ?? false,
       transactions: transactions ?? this.transactions,
       canLoadMore: canLoadMore ?? this.canLoadMore,
-      sortedDates: sortedDates ?? this.sortedDates,
-      transactionsByDates: transactionsByDates ?? this.transactionsByDates,
-      expensesByCategories: expensesByCategories ?? this.expensesByCategories,
       offset: offset ?? this.offset,
       initialized: initialized ?? this.initialized,
       showLoadingIndicator: showLoadingIndicator ?? this.showLoadingIndicator,
@@ -67,21 +55,5 @@ class TransactionListState {
       categoryUuid:
           categoryUuid != null ? categoryUuid.value : this.categoryUuid,
     );
-  }
-
-  Map<String?, double> get amountsByCategory {
-    final Map<String?, double> _map = {};
-
-    for (final String? categoryUuid in expensesByCategories.keys.toList()) {
-      final double _amountByCategory =
-          expensesByCategories[categoryUuid]!.fold<double>(
-        0,
-        (previousValue, element) => previousValue + element.amount,
-      );
-
-      _map[categoryUuid] = _amountByCategory;
-    }
-
-    return _map;
   }
 }

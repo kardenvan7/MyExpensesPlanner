@@ -6,19 +6,22 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/string_extensions.dart';
-import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
-import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 
 import '../../../cubit/category_list/category_list_cubit.dart';
-import '../../../cubit/transaction_list/transaction_list_cubit.dart';
 
 class TransactionsListItem extends StatelessWidget {
-  const TransactionsListItem({required this.transaction, Key? key})
-      : super(key: key);
+  const TransactionsListItem({
+    required this.transaction,
+    required this.onEditTap,
+    required this.onDeleteTap,
+    Key? key,
+  }) : super(key: key);
 
   final Transaction transaction;
+  final void Function(Transaction transaction) onEditTap;
+  final void Function(String id) onDeleteTap;
 
   @override
   Widget build(BuildContext context) {
@@ -44,19 +47,14 @@ class TransactionsListItem extends StatelessWidget {
               backgroundColor: Colors.orangeAccent,
               icon: Icons.edit,
               onPressed: (BuildContext context) async {
-                getIt<AppRouter>().push(
-                  EditTransactionRoute(transaction: transaction),
-                );
+                onEditTap(transaction);
               },
             ),
             SlidableAction(
               backgroundColor: Colors.red,
               icon: Icons.delete,
               onPressed: (BuildContext onPressedContext) async {
-                await _onDelete(
-                  context: context,
-                  transaction: transaction,
-                );
+                onDeleteTap(transaction.uuid);
               },
             ),
           ],
@@ -175,49 +173,5 @@ class TransactionsListItem extends StatelessWidget {
       case TransactionType.expense:
         return '-';
     }
-  }
-
-  Future<bool?> _onDelete({
-    required BuildContext context,
-    required Transaction transaction,
-  }) async {
-    return await showDialog(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(
-            AppLocalizationsWrapper
-                .keys.delete_transaction_confirmation_question,
-          ),
-          actions: [
-            TextButton(
-              onPressed: _onDeleteDenied,
-              child: Text(AppLocalizationsWrapper.of(context).no),
-            ),
-            TextButton(
-              onPressed: () {
-                _onDeleteConfirmed(context);
-              },
-              child: Text(
-                AppLocalizationsWrapper.of(context).yes,
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _onDeleteConfirmed(
-    BuildContext contextWithCubit,
-  ) {
-    BlocProvider.of<TransactionListCubit>(contextWithCubit)
-        .deleteTransaction(transaction.uuid);
-
-    getIt<AppRouter>().pop();
-  }
-
-  void _onDeleteDenied() {
-    getIt<AppRouter>().pop();
   }
 }

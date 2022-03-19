@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:my_expenses_planner/core/extensions/datetime_extensions.dart';
+import 'package:my_expenses_planner/core/extensions/date_time_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/string_extensions.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
@@ -25,10 +25,14 @@ class LastWeekTransactions extends StatelessWidget {
       child: BlocBuilder<LastWeekGraphsCubit, LastWeekGraphsState>(
         builder: (context, state) {
           if (state.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             );
           } else {
+            final _now = DateTime.now();
+
             return Container(
               clipBehavior: Clip.hardEdge,
               width: size.width,
@@ -41,14 +45,16 @@ class LastWeekTransactions extends StatelessWidget {
                 ),
               ),
               child: state.isLoading
-                  ? const CircularProgressIndicator()
+                  ? CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.secondary,
+                    )
                   : Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List<Widget>.generate(
                         7,
                         (int index) {
-                          final DateTime date = DateTime.now().subtract(
+                          final DateTime date = _now.subtract(
                             Duration(
                               days: index,
                             ),

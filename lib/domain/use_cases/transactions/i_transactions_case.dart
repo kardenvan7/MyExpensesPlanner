@@ -4,8 +4,8 @@ import 'package:my_expenses_planner/domain/models/transactions_change_data.dart'
 
 abstract class ITransactionsCase {
   Future<List<Transaction>> getTransactions({
-    int limit = 40,
-    int offset = 0,
+    int? limit,
+    int? offset,
     DateTimeRange? dateTimeRange,
     String? categoryUuid,
     TransactionType? type,

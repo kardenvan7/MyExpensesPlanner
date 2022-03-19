@@ -4,11 +4,11 @@ import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
-import 'package:my_expenses_planner/presentation/ui/core/widgets/transactions_list.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/app_bar.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/drawer.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/last_week_transactions.dart';
+import 'package:my_expenses_planner/presentation/ui/main/components/transactions_list.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);

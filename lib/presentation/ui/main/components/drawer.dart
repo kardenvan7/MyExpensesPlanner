@@ -16,18 +16,50 @@ class MainScreenDrawer extends StatelessWidget {
         ),
         width: MediaQuery.of(context).size.width * 0.6,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
+            Container(
+              margin: const EdgeInsets.only(top: 50),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      ListTile(
+                        leading: const Icon(Icons.stacked_bar_chart),
+                        title: Text(
+                          AppLocalizationsWrapper.of(context).statistics,
+                        ),
+                        onTap: () {
+                          getIt<AppRouter>().push(
+                            PeriodStatisticsRoute(),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                ListTile(
-                  leading: const Icon(Icons.settings),
-                  title: Text(AppLocalizationsWrapper.of(context).settings),
-                  onTap: () {
-                    getIt<AppRouter>().pushNamed(SettingsScreen.routeName);
-                  },
+                ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.settings),
+                      title: Text(AppLocalizationsWrapper.of(context).settings),
+                      onTap: () {
+                        getIt<AppRouter>().pushNamed(SettingsScreen.routeName);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

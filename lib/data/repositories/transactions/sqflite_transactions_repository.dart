@@ -17,8 +17,8 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
 
   @override
   Future<List<domain.Transaction>> getTransactions({
-    int limit = 40,
-    int offset = 0,
+    int? limit,
+    int? offset,
     DateTimeRange? dateTimeRange,
     String? categoryUuid,
     domain.TransactionType? type,
@@ -26,7 +26,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     String _query = 'SELECT * FROM $_tableName ';
 
     if (dateTimeRange != null) {
-      _query += ' WHERE ${TransactionsTableColumns.date.code} '
+      _query += 'WHERE ${TransactionsTableColumns.date.code} '
           '>= ${dateTimeRange.start.millisecondsSinceEpoch} '
           'AND ${TransactionsTableColumns.date.code} <= ${dateTimeRange.end.millisecondsSinceEpoch}';
     }
@@ -50,8 +50,13 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
       }
     }
 
-    _query +=
-        ' ORDER BY ${TransactionsTableColumns.date.code} DESC LIMIT $offset, $limit;';
+    _query += ' ORDER BY ${TransactionsTableColumns.date.code} DESC';
+
+    if (limit != null && offset != null) {
+      _query += ' LIMIT $limit OFFSET $offset';
+    }
+
+    _query += ';';
 
     final List<Map<String, Object?>> transactionsMapsList =
         await _dbWrapper.rawQuery(_query);
@@ -114,35 +119,6 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   }
 
   @override
-  Future<List<domain.Transaction>> getTransactionsFromPeriod({
-    required DateTime startDate,
-    DateTime? endDate,
-  }) async {
-    String _query = 'SELECT * FROM $_tableName '
-        'WHERE '
-        '${TransactionsTableColumns.date.code} '
-        '>= ${startDate.millisecondsSinceEpoch}';
-
-    if (endDate != null) {
-      _query += ' AND '
-          '${TransactionsTableColumns.date.code} '
-          '< ${endDate.millisecondsSinceEpoch}';
-    }
-
-    _query += ';';
-
-    final List<Map<String, dynamic>> _transactionsJsonList =
-        await _dbWrapper.rawQuery(_query);
-
-    return List.generate(
-      _transactionsJsonList.length,
-      (index) => domain.Transaction.fromMap(
-        _transactionsJsonList[index],
-      ),
-    );
-  }
-
-  @override
   Future<void> saveMultiple({
     required List<domain.Transaction> transactions,
   }) async {
@@ -152,7 +128,8 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
         '${TransactionsTableColumns.title.code}, '
         '${TransactionsTableColumns.amount.code}, '
         '${TransactionsTableColumns.date.code}, '
-        '${TransactionsTableColumns.categoryUuid.code}'
+        '${TransactionsTableColumns.categoryUuid.code}, '
+        '${TransactionsTableColumns.type.code}'
         ')'
         ' VALUES ';
 
@@ -160,7 +137,8 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
       _queryString += ''
           '('
           '"${_tr.uuid}", "${_tr.title}", ${_tr.amount}, '
-          '${_tr.date.millisecondsSinceEpoch}, ${_tr.categoryUuid}'
+          '${_tr.date.millisecondsSinceEpoch}, ${_tr.categoryUuid}, '
+          '"${_tr.type.name}"'
           '), ';
     }
 

@@ -63,7 +63,8 @@ class AppRouter extends _i7.RootStackRouter {
               initialColor: args.initialColor, key: args.key));
     },
     PeriodStatisticsRoute.name: (routeData) {
-      final args = routeData.argsAs<PeriodStatisticsRouteArgs>();
+      final args = routeData.argsAs<PeriodStatisticsRouteArgs>(
+          orElse: () => const PeriodStatisticsRouteArgs());
       return _i7.MaterialPageX<dynamic>(
           routeData: routeData,
           child: _i6.PeriodStatisticsScreen(
@@ -182,8 +183,7 @@ class ColorPickerRouteArgs {
 /// [_i6.PeriodStatisticsScreen]
 class PeriodStatisticsRoute
     extends _i7.PageRouteInfo<PeriodStatisticsRouteArgs> {
-  PeriodStatisticsRoute(
-      {required _i8.DateTimeRange dateTimeRange, _i8.Key? key})
+  PeriodStatisticsRoute({_i8.DateTimeRange? dateTimeRange, _i8.Key? key})
       : super(PeriodStatisticsRoute.name,
             path: '/period_statistics',
             args: PeriodStatisticsRouteArgs(
@@ -193,9 +193,9 @@ class PeriodStatisticsRoute
 }
 
 class PeriodStatisticsRouteArgs {
-  const PeriodStatisticsRouteArgs({required this.dateTimeRange, this.key});
+  const PeriodStatisticsRouteArgs({this.dateTimeRange, this.key});
 
-  final _i8.DateTimeRange dateTimeRange;
+  final _i8.DateTimeRange? dateTimeRange;
 
   final _i8.Key? key;
 

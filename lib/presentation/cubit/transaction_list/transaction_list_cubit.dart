@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_expenses_planner/core/utils/print.dart';
 import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
@@ -19,9 +19,6 @@ class TransactionListCubit extends Cubit<TransactionListState> {
           TransactionListState(
             isLoading: true,
             transactions: [],
-            transactionsByDates: {},
-            expensesByCategories: {},
-            sortedDates: [],
             canLoadMore: true,
             offset: 0,
             initialized: false,
@@ -75,8 +72,6 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     emit(
       state.copyWith(
         transactions: [],
-        transactionsByDates: {},
-        sortedDates: [],
         offset: 0,
         canLoadMore: true,
         triggerBuilder: false,
@@ -107,20 +102,11 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
       _currentTransactions.addAll(_fetchedTransactions);
 
-      final _transactionsByDates =
-          _getTransactionsByDates(_currentTransactions);
-      final _sortedDates = _getSortedDates(_transactionsByDates);
-      final _expensesByCategories =
-          _getExpensesByCategories(_currentTransactions);
-
       emit(
         state.copyWith(
           isLoading: false,
           showLoadingIndicator: false,
           transactions: _currentTransactions,
-          transactionsByDates: _transactionsByDates,
-          expensesByCategories: _expensesByCategories,
-          sortedDates: _sortedDates,
           canLoadMore: _fetchedTransactions.length == _loadLimit,
           offset: state.offset + _fetchedTransactions.length,
           initialized: true,
@@ -158,6 +144,8 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   void _refreshWithNewData(TransactionsChangeData newData) {
     final List<Transaction> _transactions = _copyCurrentTransactions();
 
+    printWithBrackets('old transactions length: ${_transactions.length}');
+
     if (!newData.deletedAll) {
       _transactions.removeWhere(
         (currentListElement) =>
@@ -174,20 +162,15 @@ class TransactionListCubit extends Cubit<TransactionListState> {
           newData.editedTransactions,
         ),
       );
-
-      final _transactionsByDates = _getTransactionsByDates(_transactions);
-      final _sortedDates = _getSortedDates(_transactionsByDates);
-      final _expenses = _getExpensesByCategories(_transactions);
+      printWithBrackets('new transactions length: ${_transactions.length}');
 
       emit(
         state.copyWith(
           transactions: _transactions,
           showLoadingIndicator: false,
-          transactionsByDates: _transactionsByDates,
-          expensesByCategories: _expenses,
-          sortedDates: _sortedDates,
           initialized: true,
           isLoading: false,
+          triggerBuilder: true,
         ),
       );
     } else {
@@ -195,16 +178,14 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     }
   }
 
-  void emitEmptyState() {
+  void emitEmptyState({bool triggerBuilder = true}) {
     emit(
       state.copyWith(
         transactions: [],
-        transactionsByDates: {},
-        expensesByCategories: {},
-        sortedDates: [],
-        initialized: true,
+        offset: 0,
         isLoading: false,
         showLoadingIndicator: false,
+        triggerBuilder: triggerBuilder,
       ),
     );
   }
@@ -252,6 +233,19 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     }
   }
 
+  Future<void> onDateTimeRangeChange(DateTimeRange range) async {
+    emit(
+      state.copyWith(
+        dateTimeRange: ValueWrapper(value: range),
+        triggerBuilder: false,
+      ),
+    );
+
+    emitEmptyState(triggerBuilder: false);
+
+    fetchTransactions();
+  }
+
   Future<void> deleteAllTransactions() async {
     emit(
       state.copyWith(
@@ -275,69 +269,10 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     }
   }
 
-  Map<DateTime, List<Transaction>> _getTransactionsByDates(
-    List<Transaction> transactions,
-  ) {
-    final Map<DateTime, List<Transaction>> _transactionsByDate = {};
-
-    for (final Transaction _transaction in transactions) {
-      final DateTime _date = DateTime(
-        _transaction.date.year,
-        _transaction.date.month,
-        _transaction.date.day,
-      );
-
-      if (_transactionsByDate.containsKey(_date)) {
-        _transactionsByDate[_date]!.add(_transaction);
-      } else {
-        _transactionsByDate[_date] = [_transaction];
-      }
-    }
-
-    _transactionsByDate.forEach((key, value) {
-      value.sort((a, b) => b.date.compareTo(a.date));
-    });
-
-    return _transactionsByDate;
-  }
-
-  List<DateTime> _getSortedDates(
-      Map<DateTime, List<Transaction>> transactionsByDates) {
-    return transactionsByDates.keys.toList()
-      ..sort(
-        (curDateTime, newDateTime) => newDateTime.compareTo(
-          curDateTime,
-        ),
-      );
-  }
-
   Future<void> _scrollListener() async {
     if (_isScrollNearBottom && state.canLoadMore && !state.isLoading) {
       fetchTransactions();
     }
-  }
-
-  Map<String?, List<Transaction>> _getExpensesByCategories(
-    List<Transaction> transactions,
-  ) {
-    final Map<String?, List<Transaction>> _map = {};
-    final List<Transaction> expenses = transactions
-        .where(
-          (element) => element.type == TransactionType.expense,
-        )
-        .toList();
-
-    for (final Transaction _tr in expenses) {
-      final String? _categoryUuid = _tr.categoryUuid;
-
-      if (_map.containsKey(_categoryUuid)) {
-        _map[_categoryUuid]!.add(_tr);
-      } else {
-        _map[_categoryUuid] = [_tr];
-      }
-    }
-
-    return _map;
   }
 
   @override

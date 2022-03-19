@@ -2,12 +2,39 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
+import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
-import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:pie_chart/pie_chart.dart';
 
-class PieChartSection extends StatelessWidget {
-  const PieChartSection({Key? key}) : super(key: key);
+class PieChartSection extends StatefulWidget {
+  const PieChartSection({
+    required this.transactions,
+    this.isLoading = false,
+    Key? key,
+  }) : super(key: key);
+
+  final List<Transaction> transactions;
+  final bool isLoading;
+
+  @override
+  State<PieChartSection> createState() => _PieChartSectionState();
+}
+
+class _PieChartSectionState extends State<PieChartSection> {
+  late bool isLoading = true;
+  late final Map<String?, double> amountsByCategory;
+
+  @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      amountsByCategory = _getAmountsByCategory(
+        widget.transactions,
+      );
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,15 +46,17 @@ class PieChartSection extends StatelessWidget {
           color: Colors.black12,
         ),
       ),
-      child: BlocBuilder<TransactionListCubit, TransactionListState>(
-        builder: (context, state) {
-          if (state.showLoadingIndicator || !state.initialized) {
-            return const Center(
-              child: CircularProgressIndicator(),
+      child: Builder(
+        builder: (context) {
+          if (isLoading) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             );
           }
 
-          if (state.transactions.isEmpty) {
+          if (widget.transactions.isEmpty) {
             return Center(
               child: Text(
                 AppLocalizationsWrapper.of(context).no_data_to_show,
@@ -35,8 +64,7 @@ class PieChartSection extends StatelessWidget {
             );
           }
 
-          final _amountsByCategory = state.amountsByCategory;
-          final _categoryUuids = _amountsByCategory.keys.toList();
+          final _categoryUuids = amountsByCategory.keys.toList();
 
           return BlocBuilder<CategoryListCubit, CategoryListState>(
             builder: (context, categoriesState) {
@@ -62,7 +90,7 @@ class PieChartSection extends StatelessWidget {
                         AppLocalizationsWrapper.of(context).without_category;
                   },
                   value: (_currentUuid) {
-                    return _amountsByCategory[_currentUuid]!;
+                    return amountsByCategory[_currentUuid]!;
                   },
                 ),
               );
@@ -71,5 +99,45 @@ class PieChartSection extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Map<String?, double> _getAmountsByCategory(List<Transaction> transactions) {
+    final Map<String?, double> _map = {};
+    final _expensesByCategories = _getExpensesByCategories(transactions);
+
+    for (final String? categoryUuid in _expensesByCategories.keys.toList()) {
+      final double _amountByCategory =
+          _expensesByCategories[categoryUuid]!.fold<double>(
+        0,
+        (previousValue, element) => previousValue + element.amount,
+      );
+
+      _map[categoryUuid] = _amountByCategory;
+    }
+
+    return _map;
+  }
+
+  Map<String?, List<Transaction>> _getExpensesByCategories(
+    List<Transaction> transactions,
+  ) {
+    final Map<String?, List<Transaction>> _map = {};
+    final List<Transaction> expenses = transactions
+        .where(
+          (element) => element.type == TransactionType.expense,
+        )
+        .toList();
+
+    for (final Transaction _tr in expenses) {
+      final String? _categoryUuid = _tr.categoryUuid;
+
+      if (_map.containsKey(_categoryUuid)) {
+        _map[_categoryUuid]!.add(_tr);
+      } else {
+        _map[_categoryUuid] = [_tr];
+      }
+    }
+
+    return _map;
   }
 }
