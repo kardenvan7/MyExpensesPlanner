@@ -8,12 +8,12 @@ import 'package:pie_chart/pie_chart.dart';
 
 class PieChartSection extends StatefulWidget {
   const PieChartSection({
-    required this.transactions,
+    required this.expenses,
     this.isLoading = false,
     Key? key,
   }) : super(key: key);
 
-  final List<Transaction> transactions;
+  final List<Transaction> expenses;
   final bool isLoading;
 
   @override
@@ -22,16 +22,36 @@ class PieChartSection extends StatefulWidget {
 
 class _PieChartSectionState extends State<PieChartSection> {
   late bool isLoading = true;
-  late final Map<String?, double> amountsByCategory;
+  late Map<String?, double> amountsByCategory;
 
   @override
   void initState() {
     super.initState();
 
+    final _amountsByCategory = _getAmountsByCategory(
+      widget.expenses,
+    );
+
     setState(() {
-      amountsByCategory = _getAmountsByCategory(
-        widget.transactions,
-      );
+      amountsByCategory = _amountsByCategory;
+      isLoading = false;
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant PieChartSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final _amountsByCategory = _getAmountsByCategory(
+      widget.expenses,
+    );
+
+    setState(() {
+      amountsByCategory = _amountsByCategory;
       isLoading = false;
     });
   }
@@ -56,7 +76,8 @@ class _PieChartSectionState extends State<PieChartSection> {
             );
           }
 
-          if (widget.transactions.isEmpty) {
+          if (widget.expenses.isEmpty ||
+              amountsByCategory.keys.toList().isEmpty) {
             return Center(
               child: Text(
                 AppLocalizationsWrapper.of(context).no_data_to_show,

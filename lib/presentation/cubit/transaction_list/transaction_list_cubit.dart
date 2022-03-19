@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_expenses_planner/core/utils/print.dart';
 import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
@@ -144,8 +143,6 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   void _refreshWithNewData(TransactionsChangeData newData) {
     final List<Transaction> _transactions = _copyCurrentTransactions();
 
-    printWithBrackets('old transactions length: ${_transactions.length}');
-
     if (!newData.deletedAll) {
       _transactions.removeWhere(
         (currentListElement) =>
@@ -162,7 +159,6 @@ class TransactionListCubit extends Cubit<TransactionListState> {
           newData.editedTransactions,
         ),
       );
-      printWithBrackets('new transactions length: ${_transactions.length}');
 
       emit(
         state.copyWith(

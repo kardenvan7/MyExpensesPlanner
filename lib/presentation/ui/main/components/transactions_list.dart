@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_range_extensions.dart';
-import 'package:my_expenses_planner/core/utils/print.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
@@ -44,9 +43,6 @@ class TransactionsList extends StatelessWidget {
             ),
           );
         }
-
-        printWithBrackets(
-            'transactions length in build: ${state.transactions.length}');
 
         return state.transactions.isNotEmpty
             ? TransactionListClear(

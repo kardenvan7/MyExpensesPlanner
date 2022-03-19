@@ -32,5 +32,6 @@
   "app_secondary_color": "Secondary color",
   "app_dark_theme": "Dark theme",
 
-  "statistics": "Statistics"
+  "statistics": "Statistics",
+  "no_statistics_for_period": "No transactions found for chosen period"
 }

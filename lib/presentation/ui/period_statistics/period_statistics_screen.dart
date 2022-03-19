@@ -30,7 +30,7 @@ class PeriodStatisticsScreen extends StatelessWidget {
       child: Scaffold(
         appBar: const PeriodStatisticsAppBar(),
         body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 20),
           child: BlocBuilder<TransactionListCubit, TransactionListState>(
             buildWhen: (oldState, newState) {
               return newState.triggerBuilder;
@@ -41,17 +41,19 @@ class PeriodStatisticsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   PieChartSection(
-                    transactions: state.transactions,
+                    expenses: state.transactions,
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  TransactionList(
-                    transactions: state.transactions,
-                    errorMessage: state.errorMessage,
-                    isLazyLoading: state.isLoading,
-                    showLoadingIndicator: state.showLoadingIndicator,
-                    dateTimeRange: state.dateTimeRange,
+                  Expanded(
+                    child: TransactionList(
+                      transactions: state.transactions,
+                      errorMessage: state.errorMessage,
+                      isLazyLoading: state.isLoading,
+                      showLoadingIndicator: state.showLoadingIndicator,
+                      dateTimeRange: state.dateTimeRange,
+                    ),
                   ),
                 ],
               );

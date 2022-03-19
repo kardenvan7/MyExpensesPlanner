@@ -71,13 +71,14 @@ class TransactionList extends StatelessWidget {
             },
             showDateChips: !(dateTimeRange?.isWithinOneDay ?? false),
           )
-        : Container(
-            margin: const EdgeInsets.only(bottom: kToolbarHeight),
-            child: Center(
-              child: Text(
-                AppLocalizationsWrapper
-                    .keys.empty_transaction_list_placeholder_text,
-                textAlign: TextAlign.center,
+        : Expanded(
+            child: Container(
+              margin: const EdgeInsets.only(bottom: kToolbarHeight),
+              child: Center(
+                child: Text(
+                  AppLocalizationsWrapper.of(context).no_statistics_for_period,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           );

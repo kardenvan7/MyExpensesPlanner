@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_extensions.dart';
-import 'package:my_expenses_planner/core/utils/print.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/presentation/ui/core/widgets/transactions_list_item.dart';
 
@@ -44,7 +43,6 @@ class _TransactionListClearState extends State<TransactionListClear> {
 
   @override
   void initState() {
-    printWithBrackets('init state');
     super.initState();
     final _transactionsByDates = _getTransactionsByDates(widget.transactions);
     final _sortedDates = _getSortedDates(_transactionsByDates);
@@ -58,7 +56,6 @@ class _TransactionListClearState extends State<TransactionListClear> {
 
   @override
   void didChangeDependencies() {
-    printWithBrackets('did change dependencies');
     super.didChangeDependencies();
   }
 

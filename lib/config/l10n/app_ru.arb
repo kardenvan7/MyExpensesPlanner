@@ -32,5 +32,6 @@
   "app_secondary_color": "Второстепенный цвет",
   "app_dark_theme": "Темная тема",
 
-  "statistics": "Статистика"
+  "statistics": "Статистика",
+  "no_statistics_for_period": "Не найдено транзакций за указанный период"
 }
