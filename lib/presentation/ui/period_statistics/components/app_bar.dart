@@ -83,14 +83,9 @@ class PeriodStatisticsAppBar extends StatelessWidget
                 }).then(
               (DateTimeRange? value) {
                 if (value != null) {
-                  final _now = DateTime.now();
                   final _range = DateTimeRange(
-                    start: value.start,
-                    end: value.end.isSameDayWith(_now)
-                        ? _now
-                        : value.end
-                            .add(const Duration(days: 1))
-                            .subtract(const Duration(milliseconds: 1)),
+                    start: value.start.startOfDay,
+                    end: value.end.endOfDay,
                   );
 
                   BlocProvider.of<TransactionListCubit>(context)

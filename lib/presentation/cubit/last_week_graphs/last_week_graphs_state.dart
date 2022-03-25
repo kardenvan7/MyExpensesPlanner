@@ -32,7 +32,7 @@ class LastWeekGraphsState {
     final Map<DateTime, List<Transaction>> _transactionsByDate = {};
 
     for (final Transaction _transaction in transactions) {
-      final _date = _transaction.date.withoutTime;
+      final _date = _transaction.date.startOfDay;
 
       if (_transactionsByDate.containsKey(_date)) {
         _transactionsByDate[_date]!.add(_transaction);

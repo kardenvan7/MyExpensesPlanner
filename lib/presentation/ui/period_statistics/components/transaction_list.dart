@@ -71,14 +71,12 @@ class TransactionList extends StatelessWidget {
             },
             showDateChips: !(dateTimeRange?.isWithinOneDay ?? false),
           )
-        : Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(bottom: kToolbarHeight),
-              child: Center(
-                child: Text(
-                  AppLocalizationsWrapper.of(context).no_statistics_for_period,
-                  textAlign: TextAlign.center,
-                ),
+        : Container(
+            margin: const EdgeInsets.only(bottom: kToolbarHeight),
+            child: Center(
+              child: Text(
+                AppLocalizationsWrapper.of(context).no_statistics_for_period,
+                textAlign: TextAlign.center,
               ),
             ),
           );
@@ -92,10 +90,8 @@ class TransactionList extends StatelessWidget {
       getIt<AppRouter>().push(
         PeriodStatisticsRoute(
           dateTimeRange: DateTimeRange(
-            start: date,
-            end: date.add(const Duration(days: 1)).subtract(
-                  const Duration(milliseconds: 1),
-                ),
+            start: date.startOfDay,
+            end: date.endOfDay,
           ),
         ),
       );

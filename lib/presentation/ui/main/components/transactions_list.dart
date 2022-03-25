@@ -85,10 +85,8 @@ class TransactionsList extends StatelessWidget {
       getIt<AppRouter>().push(
         PeriodStatisticsRoute(
           dateTimeRange: DateTimeRange(
-            start: date,
-            end: date.add(const Duration(days: 1)).subtract(
-                  const Duration(milliseconds: 1),
-                ),
+            start: date.startOfDay,
+            end: date.endOfDay,
           ),
         ),
       );

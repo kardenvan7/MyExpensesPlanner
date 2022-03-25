@@ -49,7 +49,11 @@ extension DateTimeExt on DateTime {
     return isSameMonthAndYearWith(otherDate) && day == otherDate.day;
   }
 
-  DateTime get withoutTime {
+  DateTime get startOfDay {
     return DateTime(year, month, day);
+  }
+
+  DateTime get endOfDay {
+    return DateTime(year, month, day, 23, 59, 59, 999, 999);
   }
 }

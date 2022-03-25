@@ -77,9 +77,19 @@ class OneDayTransactionsColumn extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.black),
               ),
-              child: FractionallySizedBox(
-                alignment: Alignment.bottomCenter,
-                heightFactor: maxAmount != 0 ? amountForDay / maxAmount : 0,
+              child: TweenAnimationBuilder<double>(
+                duration: const Duration(seconds: 1),
+                tween: DoubleTween(
+                  begin: 0,
+                  end: maxAmount != 0 ? amountForDay / maxAmount : 0,
+                ),
+                builder: (context, value, child) {
+                  return FractionallySizedBox(
+                    alignment: Alignment.bottomCenter,
+                    heightFactor: value,
+                    child: child!,
+                  );
+                },
                 child: BlocBuilder<AppSettingsCubit, AppSettingsState>(
                   builder: (context, state) {
                     return Container(
@@ -120,32 +130,33 @@ class OneDayTransactionsColumn extends StatelessWidget {
                                     end: _curFraction,
                                   ),
                                   duration: const Duration(seconds: 1),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      const Divider(
+                                        color: Colors.black,
+                                        thickness: 1.2,
+                                        height: 0,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          color: state.categories
+                                                  .firstWhereOrNull(
+                                                    (element) =>
+                                                        element.uuid ==
+                                                        _categoryTransactions
+                                                            .categoryUuid,
+                                                  )
+                                                  ?.color ??
+                                              Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                   builder: (context, value, child) {
                                     return Flexible(
                                       flex: value,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          const Divider(
-                                            color: Colors.black,
-                                            thickness: 1.2,
-                                            height: 0,
-                                          ),
-                                          Expanded(
-                                            child: Container(
-                                              color: state.categories
-                                                      .firstWhereOrNull(
-                                                        (element) =>
-                                                            element.uuid ==
-                                                            _categoryTransactions
-                                                                .categoryUuid,
-                                                      )
-                                                      ?.color ??
-                                                  Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                      child: child!,
                                     );
                                   },
                                 );
@@ -161,7 +172,7 @@ class OneDayTransactionsColumn extends StatelessWidget {
             ),
           ),
           TweenAnimationBuilder<double>(
-            builder: (context, double value, child) {
+            builder: (context, value, child) {
               return SizedBox(
                 height: 25,
                 child: Container(

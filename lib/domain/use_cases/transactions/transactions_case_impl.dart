@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/core/extensions/date_time_extensions.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_transactions_repository.dart';
@@ -92,18 +93,14 @@ class TransactionsCaseImpl implements ITransactionsCase {
   @override
   Future<List<Transaction>> getLastWeekExpenses() async {
     final DateTime _now = DateTime.now();
-    final DateTime _startDate = DateTime(
-      _now.year,
-      _now.month,
-      _now.day,
-    ).subtract(
+    final DateTime _startDate = _now.startOfDay.subtract(
       const Duration(
         days: 6,
       ),
     );
 
     return _transactionsRepository.getTransactions(
-      dateTimeRange: DateTimeRange(start: _startDate, end: _now),
+      dateTimeRange: DateTimeRange(start: _startDate, end: _now.endOfDay),
       type: TransactionType.expense,
     );
   }
