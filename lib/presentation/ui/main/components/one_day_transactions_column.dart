@@ -12,12 +12,14 @@ class OneDayTransactionsColumn extends StatelessWidget {
     required this.transactions,
     required this.title,
     required this.maxAmount,
+    this.animationDuration = const Duration(seconds: 1),
     Key? key,
   }) : super(key: key);
 
   final List<Transaction> transactions;
   final String title;
   final double maxAmount;
+  final Duration animationDuration;
 
   double get amountForDay {
     return transactions.fold(
@@ -78,7 +80,7 @@ class OneDayTransactionsColumn extends StatelessWidget {
                 border: Border.all(color: Colors.black),
               ),
               child: TweenAnimationBuilder<double>(
-                duration: const Duration(seconds: 1),
+                duration: animationDuration,
                 tween: DoubleTween(
                   begin: 0,
                   end: maxAmount != 0 ? amountForDay / maxAmount : 0,
@@ -129,7 +131,7 @@ class OneDayTransactionsColumn extends StatelessWidget {
                                     begin: 1,
                                     end: _curFraction,
                                   ),
-                                  duration: const Duration(seconds: 1),
+                                  duration: animationDuration,
                                   child: Column(
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
@@ -187,7 +189,7 @@ class OneDayTransactionsColumn extends StatelessWidget {
                 ),
               );
             },
-            duration: const Duration(seconds: 1),
+            duration: animationDuration,
             tween: DoubleTween(
               begin: 0,
               end: amountForDay,
