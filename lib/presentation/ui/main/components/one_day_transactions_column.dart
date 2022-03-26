@@ -160,7 +160,6 @@ class _OneDayTransactionsColumnState extends State<OneDayTransactionsColumn> {
                                 final CategoryTransactions
                                     _categoryTransactions =
                                     _transactionsByCategoriesUsed[index];
-
                                 final int _curFraction;
 
                                 if (currentTransactionsByCategory
@@ -178,11 +177,23 @@ class _OneDayTransactionsColumnState extends State<OneDayTransactionsColumn> {
                                 }
 
                                 return TweenAnimationBuilder<int>(
+                                  key: ValueKey(
+                                    _categoryTransactions.categoryUuid,
+                                  ),
                                   tween: IntTween(
                                     begin: 1,
                                     end: _curFraction,
                                   ),
                                   duration: widget.animationDuration,
+                                  builder: (context, value, child) {
+                                    if (value == 0) {
+                                      return Container();
+                                    }
+                                    return Flexible(
+                                      flex: value,
+                                      child: child!,
+                                    );
+                                  },
                                   child: Column(
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
@@ -206,15 +217,6 @@ class _OneDayTransactionsColumnState extends State<OneDayTransactionsColumn> {
                                       ),
                                     ],
                                   ),
-                                  builder: (context, value, child) {
-                                    if (value == 0) {
-                                      return Container();
-                                    }
-                                    return Flexible(
-                                      flex: value,
-                                      child: child!,
-                                    );
-                                  },
                                 );
                               },
                             ),

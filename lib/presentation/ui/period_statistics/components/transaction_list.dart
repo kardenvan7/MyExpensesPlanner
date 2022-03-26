@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_range_extensions.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 import 'package:my_expenses_planner/presentation/ui/core/widgets/transaction_list_clear.dart';
 
 class TransactionList extends StatelessWidget {
   const TransactionList({
+    required this.transactions,
+    required this.onDeleteConfirmed,
     this.errorWhileInitializing = false,
     this.errorMessage,
     this.isLazyLoading = false,
     this.showLoadingIndicator = false,
     this.dateTimeRange,
-    required this.transactions,
+    this.scrollController,
+    this.scrollPhysics,
     Key? key,
   }) : super(key: key);
 
   final List<Transaction> transactions;
+  final void Function(String uuid) onDeleteConfirmed;
   final bool showLoadingIndicator;
   final String? errorMessage;
   final DateTimeRange? dateTimeRange;
   final bool isLazyLoading;
   final bool errorWhileInitializing;
+  final ScrollController? scrollController;
+  final ScrollPhysics? scrollPhysics;
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +62,7 @@ class TransactionList extends StatelessWidget {
               _onTransactionDeleteTap(context: context, uuid: id);
             },
             onTransactionEditTap: _onTransactionEditTap,
-            scrollController:
-                BlocProvider.of<TransactionListCubit>(context).scrollController,
+            scrollController: scrollController,
             transactions: transactions,
             isLazyLoading: isLazyLoading,
             errorMessage: errorMessage,
@@ -70,14 +73,12 @@ class TransactionList extends StatelessWidget {
               );
             },
             showDateChips: !(dateTimeRange?.isWithinOneDay ?? false),
+            scrollPhysics: scrollPhysics,
           )
-        : Container(
-            margin: const EdgeInsets.only(bottom: kToolbarHeight),
-            child: Center(
-              child: Text(
-                AppLocalizationsWrapper.of(context).no_statistics_for_period,
-                textAlign: TextAlign.center,
-              ),
+        : Center(
+            child: Text(
+              AppLocalizationsWrapper.of(context).no_statistics_for_period,
+              textAlign: TextAlign.center,
             ),
           );
   }
@@ -129,7 +130,7 @@ class TransactionList extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                _onDeleteConfirmed(contextWithCubit: context, uuid: uuid);
+                _onDeleteConfirmed(uuid: uuid);
               },
               child: Text(
                 AppLocalizationsWrapper.of(context).yes,
@@ -148,12 +149,9 @@ class TransactionList extends StatelessWidget {
   }
 
   void _onDeleteConfirmed({
-    required BuildContext contextWithCubit,
     required String uuid,
   }) {
-    BlocProvider.of<TransactionListCubit>(contextWithCubit)
-        .deleteTransaction(uuid);
-
+    onDeleteConfirmed(uuid);
     getIt<AppRouter>().pop();
   }
 

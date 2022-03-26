@@ -18,6 +18,7 @@ class TransactionListClear extends StatefulWidget {
     this.showLoadingIndicator = false,
     this.isLazyLoading = false,
     this.scrollController,
+    this.scrollPhysics,
     Key? key,
   }) : super(key: key);
 
@@ -30,6 +31,7 @@ class TransactionListClear extends StatefulWidget {
   final void Function(DateTime date)? onDateChipTap;
   final String? errorMessage;
   final ScrollController? scrollController;
+  final ScrollPhysics? scrollPhysics;
 
   @override
   State<TransactionListClear> createState() => _TransactionListClearState();
@@ -91,6 +93,7 @@ class _TransactionListClearState extends State<TransactionListClear> {
     return widget.transactions.isNotEmpty
         ? ListView.separated(
             controller: widget.scrollController,
+            physics: widget.scrollPhysics,
             padding: EdgeInsets.only(
               bottom: Platform.isIOS ? 30 : 10,
             ),

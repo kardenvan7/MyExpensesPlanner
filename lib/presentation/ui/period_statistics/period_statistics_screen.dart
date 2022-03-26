@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_range_extensions.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
@@ -36,30 +37,50 @@ class PeriodStatisticsScreen extends StatelessWidget {
             appBar: PeriodStatisticsAppBar(
               dateTimeRange: state.dateTimeRange!,
             ),
-            body: Container(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  PieChartSection(
-                    transactions: state.transactions,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Expanded(
-                    child: TransactionList(
-                      transactions: state.transactions,
-                      errorMessage: state.errorMessage,
-                      isLazyLoading: state.isLazyLoading,
-                      showLoadingIndicator: state.showLoadingIndicator,
-                      dateTimeRange: state.dateTimeRange,
+            body: state.transactions.isEmpty
+                ? Center(
+                    child: Text(
+                      AppLocalizationsWrapper.of(context)
+                          .no_statistics_for_period,
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
-              ),
-            ),
+                  )
+                : state.showLoadingIndicator
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      )
+                    : ListView(
+                        padding:
+                            const EdgeInsets.only(left: 16, right: 16, top: 20),
+                        controller:
+                            BlocProvider.of<TransactionListCubit>(context)
+                                .scrollController,
+                        children: [
+                          SizedBox(
+                            height: 500,
+                            child: PieChartSection(
+                              transactions: state.transactions,
+                              isLoading: state.showLoadingIndicator,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TransactionList(
+                            transactions: state.transactions,
+                            onDeleteConfirmed:
+                                BlocProvider.of<TransactionListCubit>(context)
+                                    .deleteTransaction,
+                            errorMessage: state.errorMessage,
+                            isLazyLoading: state.isLazyLoading,
+                            showLoadingIndicator: state.showLoadingIndicator,
+                            dateTimeRange: state.dateTimeRange,
+                            scrollPhysics: const NeverScrollableScrollPhysics(),
+                          ),
+                        ],
+                      ),
           );
         },
       ),

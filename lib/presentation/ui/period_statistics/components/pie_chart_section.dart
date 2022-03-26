@@ -18,16 +18,28 @@ class PieChartSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _amountsByCategories = _getAmountsByCategory(transactions);
+    final _expensesByCategories = _getExpensesByCategory(transactions);
+    final double income = transactions
+        .where((element) => element.type == TransactionType.income)
+        .fold<double>(
+          0,
+          (previousValue, element) => previousValue + element.amount,
+        );
+    final double expenses = transactions
+        .where((element) => element.type == TransactionType.expense)
+        .fold<double>(
+          0,
+          (previousValue, element) => previousValue + element.amount,
+        );
+
+    final double difference = income - expenses;
 
     return Container(
-      height: MediaQuery.of(context).size.height * 0.3,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.black12,
-        ),
+        border: Border.all(color: Colors.black12),
       ),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       child: Builder(
         builder: (context) {
           if (isLoading) {
@@ -38,8 +50,7 @@ class PieChartSection extends StatelessWidget {
             );
           }
 
-          if (transactions.isEmpty ||
-              _amountsByCategories.keys.toList().isEmpty) {
+          if (transactions.isEmpty) {
             return Center(
               child: Text(
                 AppLocalizationsWrapper.of(context).no_data_to_show,
@@ -47,35 +58,117 @@ class PieChartSection extends StatelessWidget {
             );
           }
 
-          final _categoryUuids = _amountsByCategories.keys.toList();
+          final _categoryUuids = _expensesByCategories.keys.toList();
 
           return BlocBuilder<CategoryListCubit, CategoryListState>(
             builder: (context, categoriesState) {
-              return PieChart(
-                colorList: List.generate(
-                  _categoryUuids.length,
-                  (index) =>
-                      categoriesState.categories
-                          .firstWhereOrNull(
-                            (element) => _categoryUuids[index] == element.uuid,
-                          )
-                          ?.color ??
-                      Colors.grey,
-                ),
-                // ignore: prefer_for_elements_to_map_fromIterable
-                dataMap: Map<String, double>.fromIterable(
-                  _categoryUuids,
-                  key: (_currentUuid) {
-                    return categoriesState.categories
-                            .firstWhereOrNull(
-                                (element) => element.uuid == _currentUuid)
-                            ?.name ??
-                        AppLocalizationsWrapper.of(context).without_category;
-                  },
-                  value: (_currentUuid) {
-                    return _amountsByCategories[_currentUuid]!;
-                  },
-                ),
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_expensesByCategories.isNotEmpty)
+                    Expanded(
+                      child: SizedBox(
+                        child: PieChart(
+                          legendOptions: const LegendOptions(
+                            showLegends: true,
+                            legendPosition: LegendPosition.bottom,
+                            showLegendsInRow: true,
+                          ),
+                          chartLegendSpacing: 20,
+                          ringStrokeWidth: 30,
+                          chartType: ChartType.ring,
+                          formatChartValues: (double value) {
+                            return value.toStringAsFixed(0);
+                          },
+                          colorList: List.generate(
+                            _categoryUuids.length,
+                            (index) =>
+                                categoriesState.categories
+                                    .firstWhereOrNull(
+                                      (element) =>
+                                          _categoryUuids[index] == element.uuid,
+                                    )
+                                    ?.color ??
+                                Colors.grey,
+                          ),
+                          // ignore: prefer_for_elements_to_map_fromIterable
+                          dataMap: Map<String, double>.fromIterable(
+                            _categoryUuids,
+                            key: (_currentUuid) {
+                              return categoriesState.categories
+                                      .firstWhereOrNull((element) =>
+                                          element.uuid == _currentUuid)
+                                      ?.name ??
+                                  AppLocalizationsWrapper.of(context)
+                                      .without_category;
+                            },
+                            value: (_currentUuid) {
+                              return _expensesByCategories[_currentUuid]!;
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (income > 0)
+                        Container(
+                          margin: EdgeInsets.only(
+                            bottom: expenses > 0 ? 10 : 0,
+                          ),
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'Income:       ',
+                              children: [
+                                TextSpan(
+                                  text: '+$income',
+                                  style: const TextStyle(
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      if (expenses > 0)
+                        RichText(
+                          text: TextSpan(
+                            text: 'Expenses:       ',
+                            children: [
+                              TextSpan(
+                                text: '-$expenses',
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      if (income > 0 && expenses > 0)
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'Profit:       ',
+                              children: [
+                                TextSpan(
+                                  text:
+                                      '${difference > 0 ? '+' : ''}$difference',
+                                  style: TextStyle(
+                                    color: difference > 0
+                                        ? Colors.green
+                                        : Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
               );
             },
           );
@@ -84,7 +177,7 @@ class PieChartSection extends StatelessWidget {
     );
   }
 
-  Map<String?, double> _getAmountsByCategory(List<Transaction> transactions) {
+  Map<String?, double> _getExpensesByCategory(List<Transaction> transactions) {
     final Map<String?, double> _map = {};
     final _expensesByCategories = _getExpensesByCategories(transactions);
 
