@@ -43,7 +43,7 @@ class PeriodStatisticsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   PieChartSection(
-                    expenses: state.transactions,
+                    transactions: state.transactions,
                   ),
                   const SizedBox(
                     height: 20,
@@ -52,7 +52,7 @@ class PeriodStatisticsScreen extends StatelessWidget {
                     child: TransactionList(
                       transactions: state.transactions,
                       errorMessage: state.errorMessage,
-                      isLazyLoading: state.isLoading,
+                      isLazyLoading: state.isLazyLoading,
                       showLoadingIndicator: state.showLoadingIndicator,
                       dateTimeRange: state.dateTimeRange,
                     ),

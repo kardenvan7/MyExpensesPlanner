@@ -53,7 +53,7 @@ class TransactionsList extends StatelessWidget {
                 scrollController: BlocProvider.of<TransactionListCubit>(context)
                     .scrollController,
                 transactions: state.transactions,
-                isLazyLoading: state.isLoading,
+                isLazyLoading: state.isLazyLoading,
                 errorMessage: state.errorMessage,
                 onDateChipTap: (DateTime date) {
                   _onDateChipTap(

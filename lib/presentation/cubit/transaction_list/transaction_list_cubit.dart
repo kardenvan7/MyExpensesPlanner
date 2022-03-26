@@ -17,7 +17,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   })  : _transactionsCaseImpl = transactionsCaseImpl,
         super(
           TransactionListState(
-            isLoading: true,
+            isLazyLoading: true,
             transactions: [],
             loadLimit: loadLimit,
             canLoadMore: true,
@@ -81,11 +81,11 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     await fetchTransactions();
   }
 
-  Future<void> fetchTransactions() async {
+  Future<void> fetchTransactions({bool isLazyLoading = false}) async {
     try {
       emit(
         state.copyWith(
-          isLoading: true,
+          isLazyLoading: isLazyLoading,
           showLoadingIndicator: state.transactions.isEmpty,
         ),
       );
@@ -104,7 +104,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
       emit(
         state.copyWith(
-          isLoading: false,
+          isLazyLoading: false,
           showLoadingIndicator: false,
           transactions: _currentTransactions,
           canLoadMore: _fetchedTransactions.length == state.loadLimit,
@@ -115,7 +115,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     } catch (e, _) {
       emit(
         state.copyWith(
-          isLoading: false,
+          isLazyLoading: false,
           errorMessage: e.toString(),
           showLoadingIndicator: false,
         ),
@@ -166,7 +166,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
           transactions: _transactions,
           showLoadingIndicator: false,
           initialized: true,
-          isLoading: false,
+          isLazyLoading: false,
           triggerBuilder: true,
         ),
       );
@@ -180,7 +180,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
       state.copyWith(
         transactions: [],
         offset: 0,
-        isLoading: false,
+        isLazyLoading: false,
         showLoadingIndicator: false,
         triggerBuilder: triggerBuilder,
       ),
@@ -188,7 +188,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   }
 
   Future<void> fillWithMockTransactions() async {
-    emit(state.copyWith(isLoading: true, showLoadingIndicator: true));
+    emit(state.copyWith(isLazyLoading: true, showLoadingIndicator: true));
 
     try {
       final List<Transaction> _transactions = [];
@@ -216,7 +216,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
       emit(
         state.copyWith(
-          isLoading: false,
+          isLazyLoading: false,
           showLoadingIndicator: false,
         ),
       );
@@ -246,7 +246,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   Future<void> deleteAllTransactions() async {
     emit(
       state.copyWith(
-        isLoading: true,
+        isLazyLoading: true,
         showLoadingIndicator: true,
       ),
     );
@@ -260,15 +260,15 @@ class TransactionListCubit extends Cubit<TransactionListState> {
         state.copyWith(
           showLoadingIndicator: false,
           errorMessage: e.toString(),
-          isLoading: false,
+          isLazyLoading: false,
         ),
       );
     }
   }
 
   Future<void> _scrollListener() async {
-    if (_isScrollNearBottom && state.canLoadMore && !state.isLoading) {
-      fetchTransactions();
+    if (_isScrollNearBottom && state.canLoadMore && !state.isLazyLoading) {
+      fetchTransactions(isLazyLoading: true);
     }
   }
 

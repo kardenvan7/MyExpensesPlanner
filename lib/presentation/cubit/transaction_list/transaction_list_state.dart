@@ -2,7 +2,7 @@ part of './transaction_list_cubit.dart';
 
 class TransactionListState {
   TransactionListState({
-    required this.isLoading,
+    required this.isLazyLoading,
     required this.transactions,
     required this.canLoadMore,
     required this.offset,
@@ -15,7 +15,7 @@ class TransactionListState {
     this.errorMessage,
   });
 
-  final bool isLoading;
+  final bool isLazyLoading;
   final List<Transaction> transactions;
   final bool canLoadMore;
   final int offset;
@@ -32,7 +32,7 @@ class TransactionListState {
   bool get errorWhileInitializing => hasError && !initialized;
 
   TransactionListState copyWith({
-    bool? isLoading,
+    bool? isLazyLoading,
     List<Transaction>? transactions,
     bool? canLoadMore,
     int? offset,
@@ -45,7 +45,7 @@ class TransactionListState {
     ValueWrapper<String>? categoryUuid,
   }) {
     return TransactionListState(
-      isLoading: isLoading ?? false,
+      isLazyLoading: isLazyLoading ?? false,
       transactions: transactions ?? this.transactions,
       canLoadMore: canLoadMore ?? this.canLoadMore,
       offset: offset ?? this.offset,

@@ -6,58 +6,20 @@ import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:pie_chart/pie_chart.dart';
 
-class PieChartSection extends StatefulWidget {
+class PieChartSection extends StatelessWidget {
   const PieChartSection({
-    required this.expenses,
+    required this.transactions,
     this.isLoading = false,
     Key? key,
   }) : super(key: key);
 
-  final List<Transaction> expenses;
   final bool isLoading;
-
-  @override
-  State<PieChartSection> createState() => _PieChartSectionState();
-}
-
-class _PieChartSectionState extends State<PieChartSection> {
-  late bool isLoading = true;
-  late Map<String?, double> amountsByCategory;
-
-  @override
-  void initState() {
-    super.initState();
-
-    final _amountsByCategory = _getAmountsByCategory(
-      widget.expenses,
-    );
-
-    setState(() {
-      amountsByCategory = _amountsByCategory;
-      isLoading = false;
-    });
-  }
-
-  @override
-  void didUpdateWidget(covariant PieChartSection oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    setState(() {
-      isLoading = true;
-    });
-
-    final _amountsByCategory = _getAmountsByCategory(
-      widget.expenses,
-    );
-
-    setState(() {
-      amountsByCategory = _amountsByCategory;
-      isLoading = false;
-    });
-  }
+  final List<Transaction> transactions;
 
   @override
   Widget build(BuildContext context) {
+    final _amountsByCategories = _getAmountsByCategory(transactions);
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.3,
       decoration: BoxDecoration(
@@ -76,8 +38,8 @@ class _PieChartSectionState extends State<PieChartSection> {
             );
           }
 
-          if (widget.expenses.isEmpty ||
-              amountsByCategory.keys.toList().isEmpty) {
+          if (transactions.isEmpty ||
+              _amountsByCategories.keys.toList().isEmpty) {
             return Center(
               child: Text(
                 AppLocalizationsWrapper.of(context).no_data_to_show,
@@ -85,7 +47,7 @@ class _PieChartSectionState extends State<PieChartSection> {
             );
           }
 
-          final _categoryUuids = amountsByCategory.keys.toList();
+          final _categoryUuids = _amountsByCategories.keys.toList();
 
           return BlocBuilder<CategoryListCubit, CategoryListState>(
             builder: (context, categoriesState) {
@@ -111,7 +73,7 @@ class _PieChartSectionState extends State<PieChartSection> {
                         AppLocalizationsWrapper.of(context).without_category;
                   },
                   value: (_currentUuid) {
-                    return amountsByCategory[_currentUuid]!;
+                    return _amountsByCategories[_currentUuid]!;
                   },
                 ),
               );
