@@ -1,3 +1,3 @@
 class ConfigConstants {
-  static const bool isTest = true;
+  static const bool isTest = false;
 }
