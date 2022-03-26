@@ -33,5 +33,8 @@
   "app_dark_theme": "Темная тема",
 
   "statistics": "Статистика",
-  "no_statistics_for_period": "Не найдено транзакций за указанный период"
+  "no_statistics_for_period": "Не найдено транзакций за указанный период",
+  "expenses": "Затраты",
+  "difference": "Разница",
+  "profit": "Выгода"
 }

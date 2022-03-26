@@ -33,5 +33,8 @@
   "app_dark_theme": "Dark theme",
 
   "statistics": "Statistics",
-  "no_statistics_for_period": "No transactions found for chosen period"
+  "no_statistics_for_period": "No transactions found for chosen period",
+  "expenses": "Expenses",
+  "difference": "Difference",
+  "profit": "Profit"
 }

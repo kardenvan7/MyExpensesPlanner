@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
@@ -74,8 +75,8 @@ class PieChartSection extends StatelessWidget {
                             legendPosition: LegendPosition.bottom,
                             showLegendsInRow: true,
                           ),
-                          chartLegendSpacing: 20,
-                          ringStrokeWidth: 30,
+                          chartLegendSpacing: 30,
+                          ringStrokeWidth: 35,
                           chartType: ChartType.ring,
                           formatChartValues: (double value) {
                             return value.toStringAsFixed(0);
@@ -111,59 +112,78 @@ class PieChartSection extends StatelessWidget {
                     ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       if (income > 0)
                         Container(
                           margin: EdgeInsets.only(
                             bottom: expenses > 0 ? 10 : 0,
                           ),
-                          child: RichText(
-                            text: TextSpan(
-                              text: 'Income:       ',
-                              children: [
-                                TextSpan(
-                                  text: '+$income',
-                                  style: const TextStyle(
-                                    color: Colors.green,
-                                  ),
+                          constraints: const BoxConstraints(
+                            minWidth: 150,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${AppLocalizationsWrapper.of(context).income}: ',
+                              ),
+                              Text(
+                                income.toStringAsFixed(0),
+                                style: const TextStyle(
+                                  color: Colors.green,
                                 ),
-                              ],
-                            ),
+                              )
+                            ],
                           ),
                         ),
                       if (expenses > 0)
-                        RichText(
-                          text: TextSpan(
-                            text: 'Expenses:       ',
+                        Container(
+                          constraints: const BoxConstraints(
+                            minWidth: 150,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              TextSpan(
-                                text: '-$expenses',
+                              Text(
+                                '${AppLocalizationsWrapper.of(context).expenses}: ',
+                              ),
+                              Text(
+                                '-${expenses.toStringAsFixed(0)}',
                                 style: const TextStyle(
                                   color: Colors.red,
                                 ),
-                              ),
+                              )
                             ],
                           ),
                         ),
                       if (income > 0 && expenses > 0)
                         Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          child: RichText(
-                            text: TextSpan(
-                              text: 'Profit:       ',
-                              children: [
-                                TextSpan(
-                                  text:
-                                      '${difference > 0 ? '+' : ''}$difference',
-                                  style: TextStyle(
-                                    color: difference > 0
-                                        ? Colors.green
-                                        : Colors.red,
-                                  ),
+                          margin: const EdgeInsets.only(
+                            top: 10,
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 150,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${AppLocalizationsWrapper.of(context).difference}: ',
+                              ),
+                              Text(
+                                difference.toStringAsFixed(0),
+                                style: TextStyle(
+                                  color: difference > 0
+                                      ? Colors.green
+                                      : difference == 0
+                                          ? Colors.grey
+                                          : Colors.red,
                                 ),
-                              ],
-                            ),
+                              )
+                            ],
                           ),
                         ),
                     ],
