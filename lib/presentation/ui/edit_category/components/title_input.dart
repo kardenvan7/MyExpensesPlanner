@@ -5,12 +5,14 @@ class CategoryTitleInput extends StatelessWidget {
   const CategoryTitleInput({
     required this.initialValue,
     required this.onChange,
+    this.autofocus = false,
     this.errorText,
     Key? key,
   }) : super(key: key);
 
   final String? initialValue;
   final void Function(String? string) onChange;
+  final bool autofocus;
   final String? errorText;
 
   bool get isErrorState => errorText != null;
@@ -21,6 +23,7 @@ class CategoryTitleInput extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         TextFormField(
+          autofocus: autofocus,
           onChanged: onChange,
           initialValue: initialValue,
           textCapitalization: TextCapitalization.sentences,

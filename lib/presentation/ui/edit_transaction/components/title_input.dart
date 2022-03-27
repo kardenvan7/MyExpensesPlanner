@@ -5,6 +5,7 @@ class TitleInput extends StatelessWidget {
   const TitleInput({
     required this.value,
     required this.onChanged,
+    this.autofocus = false,
     this.errorText,
     Key? key,
   }) : super(key: key);
@@ -12,6 +13,7 @@ class TitleInput extends StatelessWidget {
   final String? value;
   final void Function(String? value) onChanged;
   final String? errorText;
+  final bool autofocus;
 
   bool get isErrorState => errorText != null;
 
@@ -21,6 +23,7 @@ class TitleInput extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         TextFormField(
+          autofocus: autofocus,
           initialValue: value,
           textInputAction: TextInputAction.next,
           textCapitalization: TextCapitalization.sentences,

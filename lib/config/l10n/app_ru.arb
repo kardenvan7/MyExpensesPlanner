@@ -12,6 +12,8 @@
   "submit": "Принять",
   "add_category": "Добавить категорию",
   "edit_category": "Изменить категорию",
+  "set_category": "Присвоить категорию",
+  "change_category": "Изменить категорию",
   "delete_category_confirmation_question": "Вы уверены, что хотите удалить категорию? Это действие нельзя будет отменить",
   "error_while_creating_transaction": "Произошла ошибка во время создания транзакции",
   "error_while_changing_transaction": "Произошла ошибка во время изменения транзакции",

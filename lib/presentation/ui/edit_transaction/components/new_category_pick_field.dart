@@ -9,82 +9,73 @@ import 'package:my_expenses_planner/presentation/cubit/category_list/category_li
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 
-class CategoryPickField extends StatefulWidget {
-  const CategoryPickField({
-    required this.pickedCategoryUuid,
+class NewCategoryPickField extends StatefulWidget {
+  const NewCategoryPickField({
+    required this.initialCategoryUuid,
     required this.onCategoryPicked,
     Key? key,
   }) : super(key: key);
 
-  final String? pickedCategoryUuid;
-  final void Function(String? uuid) onCategoryPicked;
+  final String? initialCategoryUuid;
+  final void Function(String? categoryUuid) onCategoryPicked;
 
   @override
-  State<CategoryPickField> createState() => _CategoryPickFieldState();
+  State<NewCategoryPickField> createState() => _NewCategoryPickFieldState();
 }
 
-class _CategoryPickFieldState extends State<CategoryPickField> {
-  late String? _pickedCategoryUuid = widget.pickedCategoryUuid;
+class _NewCategoryPickFieldState extends State<NewCategoryPickField> {
+  late String? _pickedCategoryUuid = widget.initialCategoryUuid;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryListCubit, CategoryListState>(
-      builder: (context, state) {
-        final TransactionCategory? _pickedCategory =
-            state.categories.firstWhereOrNull(
-          (element) => element.uuid == _pickedCategoryUuid,
-        );
+    return ListTile(
+      tileColor: Colors.transparent,
+      contentPadding: const EdgeInsets.only(
+        top: 5,
+        bottom: 5,
+        left: 12,
+      ),
+      title: BlocBuilder<CategoryListCubit, CategoryListState>(
+        builder: (context, state) {
+          final _category = state.categories.firstWhereOrNull(
+            (element) => element.uuid == _pickedCategoryUuid,
+          );
 
-        return InkWell(
-          onTap: _onCategoryPick,
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 16,
-            ),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Theme.of(context)
-                        .inputDecorationTheme
-                        .enabledBorder
-                        ?.borderSide
-                        .color ??
-                    Colors.black,
-                width: 1,
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (_category != null)
+                Container(
+                  height: 20,
+                  width: 20,
+                  margin: const EdgeInsets.only(right: 7),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _category.color,
+                  ),
+                ),
+              Flexible(
+                child: Text(
+                  _category?.name ??
+                      AppLocalizationsWrapper.of(context).without_category,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Row(
-              children: [
-                if (_pickedCategory != null)
-                  Container(
-                    width: 25,
-                    height: 25,
-                    margin: const EdgeInsets.only(
-                      right: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: _pickedCategory.color,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                Expanded(
-                  child: Text(
-                    _pickedCategory?.name ??
-                        AppLocalizationsWrapper.of(context).without_category,
-                    style: const TextStyle(
-                      fontSize: 17,
-                    ),
-                  ),
-                ),
-                const Icon(
-                  Icons.arrow_drop_down,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+            ],
+          );
+        },
+      ),
+      trailing: ElevatedButton(
+        child: Text(
+          _pickedCategoryUuid == null
+              ? AppLocalizationsWrapper.of(context).set_category
+              : AppLocalizationsWrapper.of(context).change_category,
+        ),
+        onPressed: () {
+          _onCategoryPick();
+        },
+      ),
     );
   }
 

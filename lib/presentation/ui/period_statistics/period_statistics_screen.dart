@@ -5,8 +5,8 @@ import 'package:my_expenses_planner/core/extensions/date_time_range_extensions.d
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
+import 'package:my_expenses_planner/presentation/ui/core/widgets/pie_chart_section.dart';
 import 'package:my_expenses_planner/presentation/ui/period_statistics/components/app_bar.dart';
-import 'package:my_expenses_planner/presentation/ui/period_statistics/components/pie_chart_section.dart';
 import 'package:my_expenses_planner/presentation/ui/period_statistics/components/transaction_list.dart';
 
 class PeriodStatisticsScreen extends StatelessWidget {
@@ -58,8 +58,11 @@ class PeriodStatisticsScreen extends StatelessWidget {
                             BlocProvider.of<TransactionListCubit>(context)
                                 .scrollController,
                         children: [
-                          SizedBox(
-                            height: 500,
+                          Container(
+                            constraints: const BoxConstraints(
+                              minHeight: 100,
+                              maxHeight: 500,
+                            ),
                             child: PieChartSection(
                               transactions: state.transactions,
                               isLoading: state.showLoadingIndicator,

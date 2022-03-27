@@ -1,22 +1,16 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
-import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
-import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/edit_transaction/edit_transaction_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
-import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/amount_input.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/date_input.dart';
+import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/new_category_pick_field.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/title_input.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/components/transaction_type_switch.dart';
-
-part './components/category_pick_field.dart';
 
 class EditTransactionScreen extends StatelessWidget {
   const EditTransactionScreen({this.transaction, Key? key}) : super(key: key);
@@ -77,6 +71,7 @@ class EditTransactionScreen extends StatelessWidget {
                     value: state.title,
                     onChanged: _cubit.setTitle,
                     errorText: state.formState.titleErrorText,
+                    autofocus: state.uuid == null,
                   ),
                   const SizedBox(
                     height: 10,
@@ -90,6 +85,9 @@ class EditTransactionScreen extends StatelessWidget {
                     initialDate: state.date,
                     onDatePicked: _cubit.setDate,
                   ),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   TransactionTypeSwitch(
                     type: state.type!,
                     onChanged: _cubit.setType,
@@ -98,8 +96,8 @@ class EditTransactionScreen extends StatelessWidget {
                     height: 15,
                   ),
                   if (state.showCategoryField)
-                    CategoryPickField(
-                      pickedCategoryUuid: state.categoryUuid,
+                    NewCategoryPickField(
+                      initialCategoryUuid: state.categoryUuid,
                       onCategoryPicked: _cubit.setCategoryUuid,
                     ),
                 ],

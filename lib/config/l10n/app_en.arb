@@ -12,6 +12,8 @@
   "submit": "Submit",
   "add_category": "Add category",
   "edit_category": "Edit category",
+  "set_category": "Set category",
+  "change_category": "Change category",
   "delete_category_confirmation_question": "Are you sure you want to delete the category? This action can not be undone",
   "error_while_creating_transaction": "Failed to create the transaction",
   "error_while_changing_transaction": "Failed to save the changes",

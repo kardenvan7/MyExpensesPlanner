@@ -21,16 +21,16 @@ class EditCategoryState {
 
   factory EditCategoryState.initialAdding() {
     return EditCategoryState(
-      uuid: DateTime.now().millisecondsSinceEpoch.toString(),
+      uuid: null,
       color: Colors.white,
-      name: '',
+      name: null,
     );
   }
 
   /// Category related
-  final String uuid;
+  final String? uuid;
   final Color color;
-  final String name;
+  final String? name;
 
   /// UI related
   final bool triggerBuilder;
@@ -39,6 +39,7 @@ class EditCategoryState {
   final FormState formState;
 
   bool get showSnackBar => snackBarText != null;
+  bool get isCreating => uuid == null;
 
   EditCategoryState copyWith({
     DateTime? date,

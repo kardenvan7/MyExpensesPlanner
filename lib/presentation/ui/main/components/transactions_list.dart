@@ -11,85 +11,94 @@ import 'package:my_expenses_planner/presentation/ui/core/widgets/transaction_lis
 
 class TransactionsList extends StatelessWidget {
   const TransactionsList({
+    required this.transactionsListState,
     Key? key,
   }) : super(key: key);
 
+  final TransactionListState transactionsListState;
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TransactionListCubit, TransactionListState>(
-      buildWhen: (oldState, newState) {
-        return newState.triggerBuilder;
-      },
-      builder: (context, state) {
-        if (state.errorWhileInitializing) {
-          return Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(state.errorMessage!),
-                ],
+    if (transactionsListState.errorWhileInitializing) {
+      return Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(transactionsListState.errorMessage!),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (transactionsListState.showLoadingIndicator) {
+      return Center(
+        child: CircularProgressIndicator(
+          color: Theme.of(context).colorScheme.secondary,
+        ),
+      );
+    }
+
+    return transactionsListState.transactions.isNotEmpty
+        ? TransactionListClear(
+            onTransactionDeleteTap: (String id) {
+              _onTransactionDeleteTap(context: context, uuid: id);
+            },
+            onTransactionEditTap: _onTransactionEditTap,
+            scrollController:
+                BlocProvider.of<TransactionListCubit>(context).scrollController,
+            transactions: transactionsListState.transactions,
+            isLazyLoading: transactionsListState.isLazyLoading,
+            errorMessage: transactionsListState.errorMessage,
+            onDateChipTap: (DateTime date) {
+              _onDateChipTap(
+                date: date,
+                pickedRange: transactionsListState.dateTimeRange,
+                context: context,
+              );
+            },
+            showDateChips:
+                !(transactionsListState.dateTimeRange?.isWithinOneDay ?? false),
+          )
+        : Container(
+            margin: const EdgeInsets.only(bottom: kToolbarHeight),
+            child: Center(
+              child: Text(
+                transactionsListState.transactions.isEmpty &&
+                        transactionsListState.dateTimeRange == null
+                    ? AppLocalizationsWrapper.of(context)
+                        .empty_transaction_list_placeholder_text
+                    : AppLocalizationsWrapper.of(context)
+                        .no_statistics_for_period,
+                textAlign: TextAlign.center,
               ),
             ),
           );
-        }
-
-        if (state.showLoadingIndicator) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-          );
-        }
-
-        return state.transactions.isNotEmpty
-            ? TransactionListClear(
-                onTransactionDeleteTap: (String id) {
-                  _onTransactionDeleteTap(context: context, uuid: id);
-                },
-                onTransactionEditTap: _onTransactionEditTap,
-                scrollController: BlocProvider.of<TransactionListCubit>(context)
-                    .scrollController,
-                transactions: state.transactions,
-                isLazyLoading: state.isLazyLoading,
-                errorMessage: state.errorMessage,
-                onDateChipTap: (DateTime date) {
-                  _onDateChipTap(
-                    date: date,
-                    pickedRange: state.dateTimeRange,
-                  );
-                },
-                showDateChips: !(state.dateTimeRange?.isWithinOneDay ?? false),
-              )
-            : Container(
-                margin: const EdgeInsets.only(bottom: kToolbarHeight),
-                child: Center(
-                  child: Text(
-                    AppLocalizationsWrapper
-                        .keys.empty_transaction_list_placeholder_text,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              );
-      },
-    );
   }
 
   void _onDateChipTap({
     required DateTime date,
     required DateTimeRange? pickedRange,
+    required BuildContext context,
   }) {
     if (!_isDayPicked(date: date, pickedRange: pickedRange)) {
-      getIt<AppRouter>().push(
-        PeriodStatisticsRoute(
-          dateTimeRange: DateTimeRange(
-            start: date.startOfDay,
-            end: date.endOfDay,
-          ),
+      BlocProvider.of<TransactionListCubit>(context).onDateTimeRangeChange(
+        DateTimeRange(
+          start: date.startOfDay,
+          end: date.endOfDay,
         ),
       );
+      // getIt<AppRouter>().push(
+      //   PeriodStatisticsRoute(
+      //     dateTimeRange: DateTimeRange(
+      //       start: date.startOfDay,
+      //       end: date.endOfDay,
+      //     ),
+      //   ),
+      // );
     }
   }
 

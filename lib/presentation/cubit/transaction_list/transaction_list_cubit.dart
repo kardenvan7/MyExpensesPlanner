@@ -94,8 +94,8 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
       final List<Transaction> _fetchedTransactions =
           await _transactionsCaseImpl.getTransactions(
-        limit: state.loadLimit,
-        offset: state.offset,
+        limit: state.dateTimeRange != null ? null : state.loadLimit,
+        offset: state.dateTimeRange != null ? null : state.offset,
         dateTimeRange: state.dateTimeRange,
         categoryUuid: state.categoryUuid,
       );
@@ -230,7 +230,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     }
   }
 
-  Future<void> onDateTimeRangeChange(DateTimeRange range) async {
+  Future<void> onDateTimeRangeChange(DateTimeRange? range) async {
     emit(
       state.copyWith(
         dateTimeRange: ValueWrapper(value: range),

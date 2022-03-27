@@ -180,6 +180,7 @@ class _DarkTheme {
         shape: CircleBorder(),
         foregroundColor: primaryColor,
         backgroundColor: secondaryColor,
+        elevation: 0,
       );
 
   DialogTheme get _dialogTheme => const DialogTheme(

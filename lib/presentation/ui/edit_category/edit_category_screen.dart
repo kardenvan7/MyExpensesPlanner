@@ -45,7 +45,7 @@ class EditCategoryScreen extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                _cubit.isCreating
+                state.isCreating
                     ? AppLocalizationsWrapper.of(context).add_category
                     : AppLocalizationsWrapper.of(context).edit_category,
               ),
@@ -65,6 +65,7 @@ class EditCategoryScreen extends StatelessWidget {
                       initialValue: state.name,
                       onChange: _cubit.setName,
                       errorText: state.formState.nameErrorText,
+                      autofocus: state.isCreating,
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 30),

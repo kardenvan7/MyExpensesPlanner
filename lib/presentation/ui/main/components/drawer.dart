@@ -20,48 +20,45 @@ class MainScreenDrawer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              margin: const EdgeInsets.only(top: 50),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+                //   margin: const EdgeInsets.only(top: 50),
+                //   child: Column(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       ListView(
+                //         shrinkWrap: true,
+                //         physics: const NeverScrollableScrollPhysics(),
+                //         children: [
+                //           ListTile(
+                //             leading: const Icon(Icons.stacked_bar_chart),
+                //             title: Text(
+                //               AppLocalizationsWrapper.of(context).statistics,
+                //             ),
+                //             onTap: () {
+                //               getIt<AppRouter>().push(
+                //                 PeriodStatisticsRoute(),
+                //               );
+                //             },
+                //           ),
+                //         ],
+                //       ),
+                //     ],
+                //   ),
+                ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              child: ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  ListView(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      ListTile(
-                        leading: const Icon(Icons.stacked_bar_chart),
-                        title: Text(
-                          AppLocalizationsWrapper.of(context).statistics,
-                        ),
-                        onTap: () {
-                          getIt<AppRouter>().push(
-                            PeriodStatisticsRoute(),
-                          );
-                        },
-                      ),
-                    ],
+                  ListTile(
+                    leading: const Icon(Icons.settings),
+                    title: Text(AppLocalizationsWrapper.of(context).settings),
+                    onTap: () {
+                      getIt<AppRouter>().pushNamed(SettingsScreen.routeName);
+                    },
                   ),
                 ],
               ),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ListView(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    ListTile(
-                      leading: const Icon(Icons.settings),
-                      title: Text(AppLocalizationsWrapper.of(context).settings),
-                      onTap: () {
-                        getIt<AppRouter>().pushNamed(SettingsScreen.routeName);
-                      },
-                    ),
-                  ],
-                ),
-              ],
             ),
           ],
         ),

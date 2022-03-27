@@ -40,7 +40,12 @@ class PieChartSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.black12),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      padding: const EdgeInsets.only(
+        bottom: 10,
+        left: 16,
+        right: 16,
+        top: 10,
+      ),
       child: Builder(
         builder: (context) {
           if (isLoading) {
@@ -63,50 +68,56 @@ class PieChartSection extends StatelessWidget {
 
           return BlocBuilder<CategoryListCubit, CategoryListState>(
             builder: (context, categoriesState) {
+              final int _categoriesCount = _expensesByCategories.length;
+              final double _dynamicChartRadius =
+                  (80 + 20 * _categoriesCount).toDouble();
+
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (_expensesByCategories.isNotEmpty)
-                    Expanded(
-                      child: SizedBox(
-                        child: PieChart(
-                          legendOptions: const LegendOptions(
-                            showLegends: true,
-                            legendPosition: LegendPosition.bottom,
-                            showLegendsInRow: true,
-                          ),
-                          chartLegendSpacing: 30,
-                          ringStrokeWidth: 35,
-                          chartType: ChartType.ring,
-                          formatChartValues: (double value) {
-                            return value.toStringAsFixed(0);
+                    Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      child: PieChart(
+                        legendOptions: const LegendOptions(
+                          showLegends: true,
+                          legendPosition: LegendPosition.bottom,
+                          showLegendsInRow: true,
+                        ),
+                        chartLegendSpacing: 30,
+                        ringStrokeWidth: 35,
+                        chartRadius: _dynamicChartRadius > 400
+                            ? 400
+                            : _dynamicChartRadius,
+                        chartType: ChartType.ring,
+                        formatChartValues: (double value) {
+                          return value.toStringAsFixed(0);
+                        },
+                        colorList: List.generate(
+                          _categoryUuids.length,
+                          (index) =>
+                              categoriesState.categories
+                                  .firstWhereOrNull(
+                                    (element) =>
+                                        _categoryUuids[index] == element.uuid,
+                                  )
+                                  ?.color ??
+                              Colors.grey,
+                        ),
+                        // ignore: prefer_for_elements_to_map_fromIterable
+                        dataMap: Map<String, double>.fromIterable(
+                          _categoryUuids,
+                          key: (_currentUuid) {
+                            return categoriesState.categories
+                                    .firstWhereOrNull((element) =>
+                                        element.uuid == _currentUuid)
+                                    ?.name ??
+                                AppLocalizationsWrapper.of(context)
+                                    .without_category;
                           },
-                          colorList: List.generate(
-                            _categoryUuids.length,
-                            (index) =>
-                                categoriesState.categories
-                                    .firstWhereOrNull(
-                                      (element) =>
-                                          _categoryUuids[index] == element.uuid,
-                                    )
-                                    ?.color ??
-                                Colors.grey,
-                          ),
-                          // ignore: prefer_for_elements_to_map_fromIterable
-                          dataMap: Map<String, double>.fromIterable(
-                            _categoryUuids,
-                            key: (_currentUuid) {
-                              return categoriesState.categories
-                                      .firstWhereOrNull((element) =>
-                                          element.uuid == _currentUuid)
-                                      ?.name ??
-                                  AppLocalizationsWrapper.of(context)
-                                      .without_category;
-                            },
-                            value: (_currentUuid) {
-                              return _expensesByCategories[_currentUuid]!;
-                            },
-                          ),
+                          value: (_currentUuid) {
+                            return _expensesByCategories[_currentUuid]!;
+                          },
                         ),
                       ),
                     ),
