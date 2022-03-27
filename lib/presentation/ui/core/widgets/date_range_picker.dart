@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
+import 'package:my_expenses_planner/presentation/ui/core/widgets/customized_flutter_date_picker.dart';
 
 class CustomDateRangePickerIcon extends StatelessWidget {
   const CustomDateRangePickerIcon({
@@ -34,7 +35,7 @@ Future<DateTimeRange?> showCustomDateRangePicker({
 }) {
   final DateTime _now = DateTime.now();
 
-  return showDateRangePicker(
+  return showCustomizedDateRangePicker(
     useRootNavigator: false,
     context: context,
     firstDate: firstDate ?? DateTime(_now.year - 1),

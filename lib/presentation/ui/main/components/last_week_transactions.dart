@@ -35,9 +35,8 @@ class LastWeekTransactions extends StatelessWidget {
             final _now = DateTime.now();
 
             return Container(
-              clipBehavior: Clip.hardEdge,
               width: size.width,
-              height: size.height,
+              clipBehavior: Clip.hardEdge,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),

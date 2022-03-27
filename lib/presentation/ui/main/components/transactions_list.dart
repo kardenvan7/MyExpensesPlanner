@@ -44,12 +44,11 @@ class TransactionsList extends StatelessWidget {
 
     return transactionsListState.transactions.isNotEmpty
         ? TransactionListClear(
+            scrollPhysics: const NeverScrollableScrollPhysics(),
             onTransactionDeleteTap: (String id) {
               _onTransactionDeleteTap(context: context, uuid: id);
             },
             onTransactionEditTap: _onTransactionEditTap,
-            scrollController:
-                BlocProvider.of<TransactionListCubit>(context).scrollController,
             transactions: transactionsListState.transactions,
             isLazyLoading: transactionsListState.isLazyLoading,
             errorMessage: transactionsListState.errorMessage,
