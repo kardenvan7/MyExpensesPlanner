@@ -21,16 +21,7 @@ class TransactionsList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (transactionsListState.errorWhileInitializing) {
       return Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(transactionsListState.errorMessage!),
-            ],
-          ),
-        ),
+        child: Text(transactionsListState.errorMessage!),
       );
     }
 
@@ -63,7 +54,7 @@ class TransactionsList extends StatelessWidget {
                 !(transactionsListState.dateTimeRange?.isWithinOneDay ?? false),
           )
         : Container(
-            margin: const EdgeInsets.only(bottom: kToolbarHeight),
+            margin: const EdgeInsets.only(top: 150),
             child: Center(
               child: Text(
                 transactionsListState.transactions.isEmpty &&

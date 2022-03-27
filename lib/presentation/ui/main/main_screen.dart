@@ -83,8 +83,9 @@ class MainScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                  if (state.transactions.isEmpty)
+                  if (state.transactions.isEmpty && state.dateTimeRange != null)
                     Container(
+                      alignment: Alignment.center,
                       margin: const EdgeInsets.only(top: 300),
                       child: Text(
                         AppLocalizationsWrapper.of(context)
