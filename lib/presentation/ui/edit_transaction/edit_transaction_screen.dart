@@ -21,90 +21,96 @@ class EditTransactionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<EditTransactionCubit>(
-      create: (context) => EditTransactionCubit(
-        transaction: transaction,
-        transactionsCase: getIt<ITransactionsCase>(),
-      ),
-      child: BlocConsumer<EditTransactionCubit, EditTransactionState>(
-        listener: (context, state) {
-          if (state.showSnackBar) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  state.snackBarText!,
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: BlocProvider<EditTransactionCubit>(
+        create: (context) => EditTransactionCubit(
+          transaction: transaction,
+          transactionsCase: getIt<ITransactionsCase>(),
+        ),
+        child: BlocConsumer<EditTransactionCubit, EditTransactionState>(
+          listener: (context, state) {
+            if (state.showSnackBar) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    state.snackBarText!,
+                  ),
+                ),
+              );
+            }
+
+            if (state.popScreen) {
+              getIt<AppRouter>().pop();
+            }
+          },
+          buildWhen: (oldState, newState) {
+            return newState.triggerBuilder;
+          },
+          builder: (context, state) {
+            final EditTransactionCubit _cubit =
+                BlocProvider.of<EditTransactionCubit>(context);
+
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  _cubit.isAdding
+                      ? AppLocalizationsWrapper.of(context)
+                          .add_transaction_title
+                      : AppLocalizationsWrapper.of(context)
+                          .edit_transaction_title,
+                ),
+              ),
+              floatingActionButton: FloatingActionButton(
+                child: const Icon(Icons.save),
+                onPressed: _cubit.submit,
+              ),
+              body: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                margin: const EdgeInsets.only(top: 10),
+                child: Column(
+                  children: [
+                    TitleInput(
+                      value: state.title,
+                      onChanged: _cubit.setTitle,
+                      errorText: state.formState.titleErrorText,
+                      autofocus: state.uuid == null,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    AmountInput(
+                      value: state.amount,
+                      onChanged: _cubit.setAmount,
+                      errorText: state.formState.amountErrorText,
+                    ),
+                    DateInput(
+                      initialDate: state.date,
+                      onDatePicked: _cubit.setDate,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    TransactionTypeSwitch(
+                      type: state.type!,
+                      onChanged: _cubit.setType,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    if (state.showCategoryField)
+                      NewCategoryPickField(
+                        initialCategoryUuid: state.categoryUuid,
+                        onCategoryPicked: _cubit.setCategoryUuid,
+                      ),
+                  ],
                 ),
               ),
             );
-          }
-
-          if (state.popScreen) {
-            getIt<AppRouter>().pop();
-          }
-        },
-        buildWhen: (oldState, newState) {
-          return newState.triggerBuilder;
-        },
-        builder: (context, state) {
-          final EditTransactionCubit _cubit =
-              BlocProvider.of<EditTransactionCubit>(context);
-
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                _cubit.isAdding
-                    ? AppLocalizationsWrapper.of(context).add_transaction_title
-                    : AppLocalizationsWrapper.of(context)
-                        .edit_transaction_title,
-              ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              child: const Icon(Icons.save),
-              onPressed: _cubit.submit,
-            ),
-            body: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              margin: const EdgeInsets.only(top: 10),
-              child: Column(
-                children: [
-                  TitleInput(
-                    value: state.title,
-                    onChanged: _cubit.setTitle,
-                    errorText: state.formState.titleErrorText,
-                    autofocus: state.uuid == null,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  AmountInput(
-                    value: state.amount,
-                    onChanged: _cubit.setAmount,
-                    errorText: state.formState.amountErrorText,
-                  ),
-                  DateInput(
-                    initialDate: state.date,
-                    onDatePicked: _cubit.setDate,
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  TransactionTypeSwitch(
-                    type: state.type!,
-                    onChanged: _cubit.setType,
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  if (state.showCategoryField)
-                    NewCategoryPickField(
-                      initialCategoryUuid: state.categoryUuid,
-                      onCategoryPicked: _cubit.setCategoryUuid,
-                    ),
-                ],
-              ),
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }
