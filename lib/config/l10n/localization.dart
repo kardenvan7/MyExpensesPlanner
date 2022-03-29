@@ -12,20 +12,6 @@ class AppLocalizationsWrapper {
   static AppLocalizations ofGlobalContext() {
     return AppLocalizations.of(NavigatorService.key.currentContext!)!;
   }
-
-  static AppLocalizations keys = AppLocalizations.of(
-    NavigatorService.key.currentContext!,
-  )!;
-}
-
-class EasyLocalizationsConfig {
-  static const String pathToLocalizations = 'assets/deprecated_translations';
-  static const List<Locale> supportedLocalizations = <Locale>[
-    SupportedLocales.english,
-    SupportedLocales.russian,
-  ];
-
-  static const Locale defaultLocale = SupportedLocales.russian;
 }
 
 class SupportedLocales {

@@ -1,9 +1,11 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
+import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
+import 'package:my_expenses_planner/core/extensions/double_extensions.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
+import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:pie_chart/pie_chart.dart';
 
@@ -19,7 +21,8 @@ class PieChartSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _expensesByCategories = _getExpensesByCategory(transactions);
+    final Map<String?, double> _expensesByCategories =
+        _getExpensesByCategory(transactions);
     final double income = transactions
         .where((element) => element.type == TransactionType.income)
         .fold<double>(
@@ -68,58 +71,24 @@ class PieChartSection extends StatelessWidget {
 
           return BlocBuilder<CategoryListCubit, CategoryListState>(
             builder: (context, categoriesState) {
-              final int _categoriesCount = _expensesByCategories.length;
-              final double _dynamicChartRadius =
-                  (80 + 20 * _categoriesCount).toDouble();
-
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (_expensesByCategories.isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: PieChart(
-                        legendOptions: const LegendOptions(
-                          showLegends: true,
-                          legendPosition: LegendPosition.bottom,
-                          showLegendsInRow: true,
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        PieChartWrapper(
+                          expensesByCategories: _expensesByCategories,
+                          categories: categoriesState.categories,
                         ),
-                        chartLegendSpacing: 30,
-                        ringStrokeWidth: 35,
-                        chartRadius: _dynamicChartRadius > 400
-                            ? 400
-                            : _dynamicChartRadius,
-                        chartType: ChartType.ring,
-                        formatChartValues: (double value) {
-                          return value.toStringAsFixed(0);
-                        },
-                        colorList: List.generate(
-                          _categoryUuids.length,
-                          (index) =>
-                              categoriesState.categories
-                                  .firstWhereOrNull(
-                                    (element) =>
-                                        _categoryUuids[index] == element.uuid,
-                                  )
-                                  ?.color ??
-                              Colors.grey,
+                        const SizedBox(height: 10),
+                        PieChartCustomLegend(
+                          categories: categoriesState.categories,
+                          expensesByCategories: _expensesByCategories,
                         ),
-                        // ignore: prefer_for_elements_to_map_fromIterable
-                        dataMap: Map<String, double>.fromIterable(
-                          _categoryUuids,
-                          key: (_currentUuid) {
-                            return categoriesState.categories
-                                    .firstWhereOrNull((element) =>
-                                        element.uuid == _currentUuid)
-                                    ?.name ??
-                                AppLocalizationsWrapper.of(context)
-                                    .without_category;
-                          },
-                          value: (_currentUuid) {
-                            return _expensesByCategories[_currentUuid]!;
-                          },
-                        ),
-                      ),
+                        const SizedBox(height: 10),
+                      ],
                     ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
@@ -246,5 +215,122 @@ class PieChartSection extends StatelessWidget {
     }
 
     return _map;
+  }
+}
+
+class PieChartWrapper extends StatelessWidget {
+  const PieChartWrapper({
+    required this.expensesByCategories,
+    required this.categories,
+    Key? key,
+  }) : super(key: key);
+
+  final Map<String?, double> expensesByCategories;
+  final List<TransactionCategory> categories;
+
+  @override
+  Widget build(BuildContext context) {
+    final _categoriesCount = expensesByCategories.length;
+    final List<String?> _categoryUuids = expensesByCategories.keys.toList();
+    final double _dynamicChartRadius = (80 + 20 * _categoriesCount).toDouble();
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: PieChart(
+        legendOptions: const LegendOptions(
+          showLegends: false,
+          legendPosition: LegendPosition.bottom,
+          showLegendsInRow: true,
+        ),
+        chartLegendSpacing: 30,
+        ringStrokeWidth: 35,
+        chartRadius: _dynamicChartRadius > 400 ? 400 : _dynamicChartRadius,
+        chartType: ChartType.ring,
+        formatChartValues: (double value) {
+          return value.toStringAsFixed(0);
+        },
+        colorList: List.generate(
+          _categoryUuids.length,
+          (index) =>
+              categories
+                  .firstWhereOrNull(
+                    (element) => _categoryUuids[index] == element.uuid,
+                  )
+                  ?.color ??
+              Colors.grey,
+        ),
+        // ignore: prefer_for_elements_to_map_fromIterable
+        dataMap: Map<String, double>.fromIterable(
+          _categoryUuids,
+          key: (_currentUuid) {
+            return categories
+                    .firstWhereOrNull((element) => element.uuid == _currentUuid)
+                    ?.name ??
+                AppLocalizationsWrapper.of(context).without_category;
+          },
+          value: (_currentUuid) {
+            return expensesByCategories[_currentUuid]!;
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class PieChartCustomLegend extends StatelessWidget {
+  const PieChartCustomLegend({
+    required this.categories,
+    required this.expensesByCategories,
+    Key? key,
+  }) : super(key: key);
+
+  final List<TransactionCategory> categories;
+  final Map<String?, double> expensesByCategories;
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String?> _categoryUuids = expensesByCategories.keys.toList();
+    return Wrap(
+      spacing: 10,
+      children: List.generate(
+        expensesByCategories.keys.length,
+        (index) {
+          final _category = categories.firstWhereOrNull(
+            (element) => _categoryUuids[index] == element.uuid,
+          );
+
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 2.5,
+                  horizontal: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: _category?.color,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Text(
+                  (_category?.name ??
+                          AppLocalizationsWrapper.of(context)
+                              .without_category) +
+                      ' - ' +
+                      expensesByCategories[_categoryUuids[index]]!
+                          .toAmountString(),
+                  style: TextStyle(
+                    color: _category?.color == null
+                        ? Theme.of(context).textTheme.bodySmall!.color
+                        : _category!.color.isBright
+                            ? Colors.black
+                            : Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }

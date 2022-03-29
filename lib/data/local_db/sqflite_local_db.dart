@@ -48,17 +48,17 @@ class SqfliteDatabaseProvider {
         );
 
         await db.execute(
-          'ALTER TABLE ${SqfliteDbConfig.transactionsTableName} '
-          'ADD COLUMN ${TransactionsTableColumns.categoryUuid.code} '
-          'TEXT REFERENCES ${SqfliteDbConfig.categoriesTableName}(${CategoriesTableColumns.uuid.code})',
-        );
-
-        await db.execute(
           'CREATE TABLE ${SqfliteDbConfig.categoriesTableName} ('
           '${CategoriesTableColumns.uuid.code} TEXT PRIMARY KEY, '
           '${CategoriesTableColumns.name.code} TEXT, '
           '${CategoriesTableColumns.color.code} TEXT'
           ')',
+        );
+
+        await db.execute(
+          'ALTER TABLE ${SqfliteDbConfig.transactionsTableName} '
+          'ADD COLUMN ${TransactionsTableColumns.categoryUuid.code} '
+          'TEXT REFERENCES ${SqfliteDbConfig.categoriesTableName}(${CategoriesTableColumns.uuid.code})',
         );
       },
     );

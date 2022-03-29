@@ -166,8 +166,8 @@ class _TransactionListClearState extends State<TransactionListClear> {
             margin: const EdgeInsets.only(bottom: kToolbarHeight),
             child: Center(
               child: Text(
-                AppLocalizationsWrapper
-                    .keys.empty_transaction_list_placeholder_text,
+                AppLocalizationsWrapper.of(context)
+                    .empty_transaction_list_placeholder_text,
                 textAlign: TextAlign.center,
               ),
             ),

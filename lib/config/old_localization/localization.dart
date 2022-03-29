@@ -21,3 +21,13 @@ class ConfiguredEasyLocalization extends StatelessWidget {
     );
   }
 }
+
+class EasyLocalizationsConfig {
+  static const String pathToLocalizations = 'assets/deprecated_translations';
+  static const List<Locale> supportedLocalizations = <Locale>[
+    SupportedLocales.english,
+    SupportedLocales.russian,
+  ];
+
+  static const Locale defaultLocale = SupportedLocales.russian;
+}

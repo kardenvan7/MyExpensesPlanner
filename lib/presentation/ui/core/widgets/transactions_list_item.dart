@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
+import 'package:my_expenses_planner/core/extensions/double_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/string_extensions.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
@@ -156,13 +157,7 @@ class TransactionsListItem extends StatelessWidget {
     final _sign = _getSignByType(type: transaction.type);
 
     return '$_sign '
-        '${transaction.amount.toStringAsFixed(
-      transaction.amount < 99
-          ? 2
-          : transaction.amount < 999
-              ? 1
-              : 0,
-    )}';
+        '${transaction.amount.toAmountString()}';
   }
 
   String _getSignByType({required TransactionType type}) {

@@ -155,11 +155,29 @@ class TransactionListCubit extends Cubit<TransactionListState> {
                 null,
       );
 
-      _transactions.addAll(
-        newData.addedTransactions.followedBy(
-          newData.editedTransactions,
-        ),
-      );
+      if (state.dateTimeRange == null) {
+        _transactions.addAll(
+          newData.addedTransactions.followedBy(
+            newData.editedTransactions,
+          ),
+        );
+      } else {
+        _transactions.addAll(
+          newData.addedTransactions
+              .where(
+                (element) =>
+                    element.date.isAfter(state.dateTimeRange!.start) &&
+                    element.date.isBefore(state.dateTimeRange!.end),
+              )
+              .followedBy(
+                newData.editedTransactions.where(
+                  (element) =>
+                      element.date.isAfter(state.dateTimeRange!.start) &&
+                      element.date.isBefore(state.dateTimeRange!.end),
+                ),
+              ),
+        );
+      }
 
       emit(
         state.copyWith(
