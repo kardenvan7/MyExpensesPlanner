@@ -45,7 +45,7 @@ class ExportCubit extends Cubit<ExportState> {
               isFinished: true,
             ),
           );
-        } catch (e, st) {
+        } catch (e, _) {
           emit(
             state.copyWith(
               isLoading: false,

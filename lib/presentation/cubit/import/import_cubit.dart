@@ -45,14 +45,14 @@ class ImportCubit extends Cubit<ImportState> {
             ),
           );
         }
-      } on UnsupportedFileExtension catch (e) {
+      } on UnsupportedFileExtension catch (_) {
         emit(
           state.copyWith(
             errorMessage: AppLocalizationsWrapper.ofGlobalContext()
                 .file_extension_unsupported,
           ),
         );
-      } catch (e, st) {
+      } catch (e, _) {
         emit(state.copyWith(errorMessage: e.toString()));
       }
     }
