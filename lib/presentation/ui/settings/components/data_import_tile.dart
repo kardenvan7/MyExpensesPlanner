@@ -33,6 +33,10 @@ class DataImportTile extends StatelessWidget {
               title: Text(
                 AppLocalizationsWrapper.of(context).import_from_file,
               ),
+              trailing: const Icon(
+                MaterialCommunityIcons.import,
+                size: 24,
+              ),
             );
           },
         );

@@ -7,36 +7,42 @@ class DataExportTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<ExportCubit>(
       create: (context) => getIt<ExportCubit>(),
-      child: Builder(builder: (context) {
-        final _cubit = BlocProvider.of<ExportCubit>(context);
+      child: Builder(
+        builder: (context) {
+          final _cubit = BlocProvider.of<ExportCubit>(context);
 
-        return BlocConsumer<ExportCubit, ExportState>(
-          listener: (listenerContext, state) {
-            if (state.showDialog) {
-              showDialog(
-                context: listenerContext,
-                builder: (context) => ExportStatusDialog(
-                  exportCubit: _cubit,
+          return BlocConsumer<ExportCubit, ExportState>(
+            listener: (listenerContext, state) {
+              if (state.showDialog) {
+                showDialog(
+                  context: listenerContext,
+                  builder: (context) => ExportStatusDialog(
+                    exportCubit: _cubit,
+                  ),
+                );
+              }
+
+              if (state.closeDialog) {
+                getIt<AppRouter>().pop();
+              }
+            },
+            builder: (context, state) {
+              return ListTile(
+                onTap: () {
+                  _cubit.onExportTap();
+                },
+                title: Text(
+                  AppLocalizationsWrapper.of(context).export_to_file,
+                ),
+                trailing: const Icon(
+                  MaterialCommunityIcons.export,
+                  size: 24,
                 ),
               );
-            }
-
-            if (state.closeDialog) {
-              getIt<AppRouter>().pop();
-            }
-          },
-          builder: (context, state) {
-            return ListTile(
-              onTap: () {
-                _cubit.onExportTap();
-              },
-              title: Text(
-                AppLocalizationsWrapper.of(context).export_to_file,
-              ),
-            );
-          },
-        );
-      }),
+            },
+          );
+        },
+      ),
     );
   }
 }

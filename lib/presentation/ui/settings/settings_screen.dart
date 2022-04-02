@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/assets/assets.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
+import 'package:my_expenses_planner/core/flutter_icons/flutter_icons.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/export/export_cubit.dart';
@@ -30,14 +31,23 @@ class SettingsScreen extends StatelessWidget {
           vertical: 10,
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             ListView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               children: const [
                 LanguageTile(),
+                Divider(height: 0),
                 ThemePicker(),
+              ],
+            ),
+            ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: const [
                 DataExportTile(),
+                Divider(height: 0),
                 DataImportTile(),
               ],
             ),
