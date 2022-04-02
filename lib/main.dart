@@ -34,7 +34,6 @@ class MyExpensesPlanner extends StatelessWidget {
         builder: (context, appState) {
           final AppThemes _themes = AppThemes()
             ..initialize(
-              appState: appState,
               context: context,
             );
 

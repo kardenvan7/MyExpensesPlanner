@@ -54,7 +54,7 @@ class CategoriesCaseImpl implements ICategoriesCase {
           editedCategories: [newCategory],
         ),
       );
-    } catch (e, st) {
+    } catch (e, _) {
       print(e);
     }
   }

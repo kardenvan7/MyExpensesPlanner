@@ -30,7 +30,6 @@ dependencies:
   auto_route: ^3.2.4
   auto_size_text: ^3.0.0
   collection: ^1.15.0
-  easy_localization: ^3.0.1-dev
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.1
@@ -75,7 +74,6 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
   assets:
-    - assets/deprecated_translations/
     - assets/svg/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

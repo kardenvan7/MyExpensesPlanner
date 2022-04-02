@@ -3,6 +3,7 @@ part of './assets.dart';
 class _ImageAssets {
   const _ImageAssets();
 
+  // ignore: unused_field
   static const _ImageAsset treasureMap = _ImageAsset('treasure_map.png');
 }
 

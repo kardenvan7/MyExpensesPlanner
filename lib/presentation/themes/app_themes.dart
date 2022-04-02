@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
 
 part './dark_theme.dart';
 part './light_theme.dart';
@@ -31,17 +30,14 @@ class AppThemes {
   }
 
   void initialize({
-    required AppSettingsState appState,
     required BuildContext context,
   }) {
     if (!_initialized) {
       _light = _LightTheme(
-        appState: appState,
         context: context,
       ).themeData;
 
       _dark = _DarkTheme(
-        appState: appState,
         context: context,
       ).themeData;
 

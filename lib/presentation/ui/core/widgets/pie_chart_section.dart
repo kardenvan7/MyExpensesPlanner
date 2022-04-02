@@ -67,8 +67,6 @@ class PieChartSection extends StatelessWidget {
             );
           }
 
-          final _categoryUuids = _expensesByCategories.keys.toList();
-
           return BlocBuilder<CategoryListCubit, CategoryListState>(
             builder: (context, categoriesState) {
               return Column(
