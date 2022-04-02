@@ -105,11 +105,15 @@ class PieChartSection extends StatelessWidget {
                             children: [
                               Text(
                                 '${AppLocalizationsWrapper.of(context).income}: ',
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                ),
                               ),
                               Text(
                                 income.toStringAsFixed(0),
                                 style: const TextStyle(
                                   color: Colors.green,
+                                  fontSize: 17,
                                 ),
                               )
                             ],
@@ -126,11 +130,15 @@ class PieChartSection extends StatelessWidget {
                             children: [
                               Text(
                                 '${AppLocalizationsWrapper.of(context).expenses}: ',
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                ),
                               ),
                               Text(
                                 '-${expenses.toStringAsFixed(0)}',
                                 style: const TextStyle(
                                   color: Colors.red,
+                                  fontSize: 17,
                                 ),
                               )
                             ],
@@ -150,6 +158,9 @@ class PieChartSection extends StatelessWidget {
                             children: [
                               Text(
                                 '${AppLocalizationsWrapper.of(context).difference}: ',
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                ),
                               ),
                               Text(
                                 difference.toStringAsFixed(0),
@@ -159,6 +170,7 @@ class PieChartSection extends StatelessWidget {
                                       : difference == 0
                                           ? Colors.grey
                                           : Colors.red,
+                                  fontSize: 17,
                                 ),
                               )
                             ],
