@@ -5,7 +5,7 @@ import 'package:my_expenses_planner/core/extensions/date_time_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/string_extensions.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
-import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
+import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 
 import './one_day_transactions_column.dart';
 import '../../../cubit/last_week_graphs/last_week_graphs_cubit.dart';
@@ -62,12 +62,11 @@ class LastWeekTransactions extends StatelessWidget {
 
                           return InkWell(
                             onTap: () {
-                              getIt<AppRouter>().push(
-                                PeriodStatisticsRoute(
-                                  dateTimeRange: DateTimeRange(
-                                    start: date.startOfDay,
-                                    end: date.endOfDay,
-                                  ),
+                              BlocProvider.of<TransactionListCubit>(context)
+                                  .onDateTimeRangeChange(
+                                DateTimeRange(
+                                  start: date.startOfDay,
+                                  end: date.endOfDay,
                                 ),
                               );
                             },
