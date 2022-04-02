@@ -95,7 +95,9 @@ class LastWeekGraphsCubit extends Cubit<LastWeekGraphsState> {
             ),
       );
 
-      emit(LastWeekGraphsState(transactions: _transactions));
+      final _uniqueTransactions = _transactions.toSet().toList();
+
+      emit(LastWeekGraphsState(transactions: _uniqueTransactions));
     } else {
       emit(LastWeekGraphsState(transactions: []));
     }

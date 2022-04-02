@@ -44,7 +44,13 @@
   "export_in_process": "Export in process",
   "export_finished_successfully": "Export finished successfully",
   "export_failure": "Export failed",
-  "success": "Success",
+  "import_from_file": "Import from file",
+  "import_in_process": "Import in process",
+  "import_finished_successfully": "Import finished successfully",
+  "import_failure": "Import failed",
+  "file_extension_unsupported": "Chosen file extension unsupported",
 
+
+  "success": "Success",
   "close": "Close"
 }

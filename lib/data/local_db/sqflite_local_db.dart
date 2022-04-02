@@ -10,7 +10,7 @@ class SqfliteDatabaseProvider {
   SqfliteDatabaseProvider._();
 
   static const String _dbFileName = 'myExpensesPlanner.db';
-  static const int _version = 2;
+  static const int _version = 3;
 
   static final SqfliteDatabaseProvider _instance = SqfliteDatabaseProvider._();
 
@@ -31,22 +31,88 @@ class SqfliteDatabaseProvider {
         if (oldVersion == 1 && newVersion == 2) {
           await db.execute(
             'ALTER TABLE ${SqfliteDbConfig.transactionsTableName} '
-            'ADD COLUMN ${TransactionsTableColumns.type.code} TEXT DEFAULT "${TransactionType.expense.name}";',
+            'ADD COLUMN ${TransactionsTableColumns.type.code} TEXT DEFAULT '
+            '"${TransactionType.expense.name}"'
+            ';',
+          );
+        }
+
+        if (oldVersion == 2 && newVersion == 3) {
+          await db.execute(
+            'CREATE TABLE transactions_replacement ('
+            'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+            '${TransactionsTableColumns.uuid.code} TEXT, '
+            '${TransactionsTableColumns.title.code} TEXT, '
+            '${TransactionsTableColumns.amount.code} REAL, '
+            '${TransactionsTableColumns.date.code} INT, '
+            '${TransactionsTableColumns.type.code} TEXT, '
+            '${TransactionsTableColumns.categoryUuid.code} TEXT'
+            ' REFERENCES ${SqfliteDbConfig.categoriesTableName}'
+            '(${CategoriesTableColumns.uuid.code})'
+            ');',
+          );
+
+          await db.execute(
+            'INSERT INTO transactions_replacement('
+            '${TransactionsTableColumns.uuid.code},'
+            '${TransactionsTableColumns.title.code},'
+            '${TransactionsTableColumns.amount.code},'
+            '${TransactionsTableColumns.date.code},'
+            '${TransactionsTableColumns.type.code}, '
+            '${TransactionsTableColumns.categoryUuid.code}'
+            ')'
+            ' SELECT '
+            '${TransactionsTableColumns.uuid.code},'
+            '${TransactionsTableColumns.title.code},'
+            '${TransactionsTableColumns.amount.code},'
+            '${TransactionsTableColumns.date.code},'
+            '${TransactionsTableColumns.type.code}, '
+            '${TransactionsTableColumns.categoryUuid.code}'
+            ' FROM transactions;',
+          );
+
+          await db.execute(
+            'DROP TABLE IF EXISTS ${SqfliteDbConfig.transactionsTableName};',
+          );
+
+          await db.execute(
+            'CREATE TABLE ${SqfliteDbConfig.transactionsTableName} ('
+            '${TransactionsTableColumns.uuid.code} TEXT PRIMARY KEY, '
+            '${TransactionsTableColumns.title.code} TEXT, '
+            '${TransactionsTableColumns.amount.code} REAL, '
+            '${TransactionsTableColumns.date.code} INT, '
+            '${TransactionsTableColumns.type.code} TEXT, '
+            '${TransactionsTableColumns.categoryUuid.code} TEXT'
+            ' REFERENCES ${SqfliteDbConfig.categoriesTableName}'
+            '(${CategoriesTableColumns.uuid.code})'
+            ');',
+          );
+
+          await db.execute(
+            'INSERT INTO ${SqfliteDbConfig.transactionsTableName}('
+            '${TransactionsTableColumns.uuid.code},'
+            '${TransactionsTableColumns.title.code},'
+            '${TransactionsTableColumns.amount.code},'
+            '${TransactionsTableColumns.date.code},'
+            '${TransactionsTableColumns.type.code}, '
+            '${TransactionsTableColumns.categoryUuid.code}'
+            ')'
+            ' SELECT '
+            '${TransactionsTableColumns.uuid.code},'
+            '${TransactionsTableColumns.title.code},'
+            '${TransactionsTableColumns.amount.code},'
+            '${TransactionsTableColumns.date.code},'
+            '${TransactionsTableColumns.type.code}, '
+            '${TransactionsTableColumns.categoryUuid.code}'
+            ' FROM transactions_replacement;',
+          );
+
+          await db.execute(
+            'DROP TABLE IF EXISTS transactions_replacement;',
           );
         }
       },
       onCreate: (Database db, int version) async {
-        await db.execute(
-          'CREATE TABLE ${SqfliteDbConfig.transactionsTableName} ('
-          'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-          '${TransactionsTableColumns.uuid.code} TEXT, '
-          '${TransactionsTableColumns.title.code} TEXT, '
-          '${TransactionsTableColumns.amount.code} REAL, '
-          '${TransactionsTableColumns.date.code} INT, '
-          '${TransactionsTableColumns.type.code} TEXT'
-          ');',
-        );
-
         await db.execute(
           'CREATE TABLE ${SqfliteDbConfig.categoriesTableName} ('
           '${CategoriesTableColumns.uuid.code} TEXT PRIMARY KEY, '
@@ -56,9 +122,15 @@ class SqfliteDatabaseProvider {
         );
 
         await db.execute(
-          'ALTER TABLE ${SqfliteDbConfig.transactionsTableName} '
-          'ADD COLUMN ${TransactionsTableColumns.categoryUuid.code} '
-          'TEXT REFERENCES ${SqfliteDbConfig.categoriesTableName}(${CategoriesTableColumns.uuid.code})',
+          'CREATE TABLE ${SqfliteDbConfig.transactionsTableName} ('
+          '${TransactionsTableColumns.uuid.code} TEXT PRIMARY KEY, '
+          '${TransactionsTableColumns.title.code} TEXT, '
+          '${TransactionsTableColumns.amount.code} REAL, '
+          '${TransactionsTableColumns.date.code} INT, '
+          '${TransactionsTableColumns.type.code} TEXT, '
+          '${TransactionsTableColumns.categoryUuid.code} TEXT REFERENCES '
+          '${SqfliteDbConfig.categoriesTableName}(${CategoriesTableColumns.uuid.code})'
+          ');',
         );
       },
     );

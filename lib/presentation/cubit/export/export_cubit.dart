@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:my_expenses_planner/domain/core/export/file_export_handler.dart';
+import 'package:my_expenses_planner/domain/core/export/data_export_handler.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transaction_category.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
@@ -19,7 +19,7 @@ class ExportCubit extends Cubit<ExportState> {
   final ICategoriesCase _categoriesCase;
 
   Future<void> onExportTap() async {
-    final FileExportHandler _exporter = FileExportHandler();
+    final DataExportHandler _exporter = DataExportHandler();
     await _exporter.requestAndSetPermission();
 
     if (_exporter.isPermissionGranted) {

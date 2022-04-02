@@ -44,7 +44,12 @@
   "export_in_process": "Идет экспорт данных",
   "export_finished_successfully": "Экпорт успешно завершен",
   "export_failure": "Ошибка экспорта данных",
-  "success": "Успех",
+  "import_from_file": "Импортировать из файла",
+  "import_in_process": "Идет импорт данных",
+  "import_finished_successfully": "Импорт успешно завершен",
+  "import_failure": "Ошибка импорта данных",
+  "file_extension_unsupported": "Расширение выбранного файла не поддерживается",
 
+  "success": "Успех",
   "close": "Закрыть"
 }

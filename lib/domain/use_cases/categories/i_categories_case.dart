@@ -6,6 +6,7 @@ abstract class ICategoriesCase {
   Future<TransactionCategory?> getCategoryByUuid(String uuid);
 
   Future<void> save(TransactionCategory category);
+  Future<void> saveMultiple(List<TransactionCategory> categories);
   Future<void> update(String uuid, TransactionCategory newCategory);
   Future<void> delete(String uuid);
 

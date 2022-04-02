@@ -122,7 +122,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
   Future<void> saveMultiple({
     required List<domain.Transaction> transactions,
   }) async {
-    String _queryString = 'INSERT INTO $_tableName '
+    String _queryString = 'INSERT OR REPLACE INTO $_tableName '
         '('
         '${TransactionsTableColumns.uuid.code}, '
         '${TransactionsTableColumns.title.code}, '
@@ -150,7 +150,7 @@ class SqfliteTransactionsRepository implements ITransactionsRepository {
     );
 
     if (id == 0) {
-      throw FormatException('Saving transaction $id failed');
+      throw const FormatException('Saving multiple transactions failed');
     }
   }
 

@@ -42,6 +42,19 @@ class CategoriesCaseImpl implements ICategoriesCase {
   }
 
   @override
+  Future<void> saveMultiple(List<TransactionCategory> categories) async {
+    await _categoriesRepository.saveMultiple(
+      categories,
+    );
+
+    _streamController.add(
+      CategoriesChangeData(
+        addedCategories: categories,
+      ),
+    );
+  }
+
+  @override
   Future<void> update(String uuid, TransactionCategory newCategory) async {
     try {
       await _categoriesRepository.update(

@@ -1,7 +1,7 @@
 part of '../settings_screen.dart';
 
-class FileExportTile extends StatelessWidget {
-  const FileExportTile({Key? key}) : super(key: key);
+class DataExportTile extends StatelessWidget {
+  const DataExportTile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

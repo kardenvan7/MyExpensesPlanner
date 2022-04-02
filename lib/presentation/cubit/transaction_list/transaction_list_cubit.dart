@@ -179,9 +179,11 @@ class TransactionListCubit extends Cubit<TransactionListState> {
         );
       }
 
+      final _uniqueTransactions = _transactions.toSet().toList();
+
       emit(
         state.copyWith(
-          transactions: _transactions,
+          transactions: _uniqueTransactions,
           showLoadingIndicator: false,
           initialized: true,
           isLazyLoading: false,

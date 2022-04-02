@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class FileExportHandler {
+class DataExportHandler {
   static const String exportFileExtension = 'json';
   static const String exportFilePrefix = 'my_expenses_planner_';
 

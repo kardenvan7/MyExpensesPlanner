@@ -36,4 +36,10 @@ class MockCategoriesCaseImpl implements ICategoriesCase {
     // TODO: implement getCategoryByUuid
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> saveMultiple(List<TransactionCategory> category) {
+    // TODO: implement saveMultiple
+    throw UnimplementedError();
+  }
 }

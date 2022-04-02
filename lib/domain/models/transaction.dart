@@ -61,6 +61,18 @@ class Transaction {
           categoryUuid == null ? this.categoryUuid : categoryUuid.value,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is Transaction) {
+      return uuid == other.uuid;
+    }
+
+    return false;
+  }
+
+  @override
+  int get hashCode => uuid.hashCode;
 }
 
 enum TransactionType { expense, income }

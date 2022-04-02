@@ -61,6 +61,37 @@ class SqfliteCategoriesRepository implements ICategoriesRepository {
   }
 
   @override
+  Future<void> saveMultiple(List<domain.TransactionCategory> categories) async {
+    String _queryString = 'INSERT OR REPLACE INTO $tableName '
+        '('
+        '${CategoriesTableColumns.uuid.code}, '
+        '${CategoriesTableColumns.color.code}, '
+        '${CategoriesTableColumns.name.code}'
+        ')'
+        ' VALUES ';
+
+    for (final _category in categories) {
+      _queryString += ''
+          '('
+          '"${_category.uuid}", "${_category.color.toHexString()}", "${_category.name}"'
+          '), ';
+    }
+
+    _queryString = _queryString.substring(0, _queryString.length - 2);
+    _queryString += ';';
+
+    print(_queryString);
+
+    final int id = await _dbWrapper.rawInsert(
+      sql: _queryString,
+    );
+
+    if (id == 0) {
+      throw const FormatException('Saving multiple categories failed');
+    }
+  }
+
+  @override
   Future<void> update(
     String uuid,
     domain.TransactionCategory newCategory,

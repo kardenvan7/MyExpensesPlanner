@@ -1,0 +1,1 @@
+class UnsupportedFileExtension implements Exception {}
