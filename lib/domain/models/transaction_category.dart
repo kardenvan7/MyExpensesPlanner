@@ -28,7 +28,7 @@ class TransactionCategory {
     return {
       'uuid': uuid,
       'name': name,
-      'color': color,
+      'color': color.toHexString(),
     };
   }
 

@@ -38,5 +38,13 @@
   "no_statistics_for_period": "No transactions found for chosen period",
   "expenses": "Expenses",
   "difference": "Difference",
-  "profit": "Profit"
+  "profit": "Profit",
+
+  "export_to_file": "Export to file",
+  "export_in_process": "Export in process",
+  "export_finished_successfully": "Export finished successfully",
+  "export_failure": "Export failed",
+  "success": "Success",
+
+  "close": "Close"
 }

@@ -38,5 +38,13 @@
   "no_statistics_for_period": "Не найдено транзакций за указанный период",
   "expenses": "Затраты",
   "difference": "Разница",
-  "profit": "Выгода"
+  "profit": "Выгода",
+
+  "export_to_file": "Экспортировать в файл",
+  "export_in_process": "Идет экспорт данных",
+  "export_finished_successfully": "Экпорт успешно завершен",
+  "export_failure": "Ошибка экспорта данных",
+  "success": "Успех",
+
+  "close": "Закрыть"
 }

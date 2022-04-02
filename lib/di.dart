@@ -18,6 +18,7 @@ import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions
 import 'package:my_expenses_planner/domain/use_cases/transactions/transactions_case_impl.dart';
 import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
+import 'package:my_expenses_planner/presentation/cubit/export/export_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 
 /// Syntax sugar. A shorter way for accessing [GetIt.instance].
@@ -66,6 +67,12 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<IAppSettingsCase>(
       () => AppSettingsCaseImpl(
         getIt<IAppSettingsRepository>(),
+      ),
+    )
+    ..registerFactory<ExportCubit>(
+      () => ExportCubit(
+        getIt<ITransactionsCase>(),
+        getIt<ICategoriesCase>(),
       ),
     )
 
