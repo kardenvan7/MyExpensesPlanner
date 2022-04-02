@@ -5,6 +5,7 @@ import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings
 
 showCalculator({
   required BuildContext context,
+  double? initialValue,
   void Function(
     String? lastSymbol,
     double? value,
@@ -18,6 +19,7 @@ showCalculator({
       return BlocBuilder<AppSettingsCubit, AppSettingsState>(
         builder: (context, state) {
           return SimpleCalculator(
+            value: initialValue ?? 0,
             hideSurroundingBorder: true,
             onChanged: onChanged,
             theme: CalculatorThemeData(

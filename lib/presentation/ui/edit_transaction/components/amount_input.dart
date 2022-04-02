@@ -90,6 +90,7 @@ class _AmountInputState extends State<AmountInput> {
                 ) {
                   _controller.text = value?.toString() ?? '';
                 },
+                initialValue: double.tryParse(_controller.text),
               );
             },
             icon: const Icon(
