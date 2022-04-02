@@ -76,7 +76,6 @@ class ExportStatusDialog extends StatelessWidget {
                   fontSize: 19,
                 ),
               ),
-              contentPadding: EdgeInsets.zero,
               content: state.isLoading
                   ? SizedBox(
                       height: 100,

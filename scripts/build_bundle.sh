@@ -1,1 +1,1 @@
-cd ../ && flutter build appbundle
+cd ../ && flutter build appbundle && $SHELL
