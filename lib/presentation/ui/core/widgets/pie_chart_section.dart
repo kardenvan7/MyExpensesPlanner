@@ -297,35 +297,38 @@ class PieChartCustomLegend extends StatelessWidget {
             (element) => _categoryUuids[index] == element.uuid,
           );
 
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 2.5,
-                  horizontal: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: _category?.color,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  (_category?.name ??
-                          AppLocalizationsWrapper.of(context)
-                              .without_category) +
-                      ' - ' +
-                      expensesByCategories[_categoryUuids[index]]!
-                          .toAmountString(),
-                  style: TextStyle(
-                    color: _category?.color == null
-                        ? Theme.of(context).textTheme.bodySmall!.color
-                        : _category!.color.isBright
-                            ? Colors.black
-                            : Colors.white,
+          return Container(
+            margin: const EdgeInsets.only(bottom: 7),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2.5,
+                    horizontal: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _category?.color,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    (_category?.name ??
+                            AppLocalizationsWrapper.of(context)
+                                .without_category) +
+                        ' - ' +
+                        expensesByCategories[_categoryUuids[index]]!
+                            .toAmountString(),
+                    style: TextStyle(
+                      color: _category?.color == null
+                          ? Theme.of(context).textTheme.bodySmall!.color
+                          : _category!.color.isBright
+                              ? Colors.black
+                              : Colors.white,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
