@@ -1,0 +1,1 @@
+cd ../ && flutter build appbundle
