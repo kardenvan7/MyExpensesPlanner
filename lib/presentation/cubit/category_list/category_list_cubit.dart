@@ -95,6 +95,8 @@ class CategoryListCubit extends Cubit<CategoryListState> {
 
     _list.addAll(newData.addedCategories.followedBy(newData.editedCategories));
 
-    emit(CategoryListState(categories: _list));
+    final _uniqueList = _list.toSet().toList();
+
+    emit(CategoryListState(categories: _uniqueList));
   }
 }
