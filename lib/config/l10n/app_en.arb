@@ -1,4 +1,6 @@
 {
+  "app_title": "My Expenses Planner",
+
   "main_app_bar_title": "My Expenses",
   "add_transaction_title": "Add Transaction",
   "edit_transaction_title": "Edit Transaction",
@@ -49,7 +51,6 @@
   "import_finished_successfully": "Import finished successfully",
   "import_failure": "Import failed",
   "file_extension_unsupported": "Chosen file extension unsupported",
-
 
   "success": "Success",
   "close": "Close"

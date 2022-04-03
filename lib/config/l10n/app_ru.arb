@@ -1,4 +1,6 @@
 {
+  "app_title": "Мои расходы",
+
   "main_app_bar_title": "Мои расходы",
   "add_transaction_title": "Добавить транзакцию",
   "edit_transaction_title": "Изменить транзакцию",
