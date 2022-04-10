@@ -1,5 +1,4 @@
 import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
-import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart' as domain;
 
 class Transaction {
@@ -14,16 +13,16 @@ class Transaction {
 
   factory Transaction.fromMap(Map<String, dynamic> map) {
     return Transaction(
-      uuid: map[TransactionsTableColumns.uuid.code] as String,
-      amount: map[TransactionsTableColumns.amount.code] as double,
-      title: map[TransactionsTableColumns.title.code] as String,
+      uuid: map['uuid'] as String,
+      amount: map['amount'] as double,
+      title: map['title'] as String,
       date: DateTime.fromMillisecondsSinceEpoch(
-        map[TransactionsTableColumns.date.code] as int,
+        map['date'] as int,
       ),
-      type: TransactionTypeFactory.fromCode(
-        map[TransactionsTableColumns.type.code] as String?,
+      type: TransactionTypeFactory.fromName(
+        map['type'] as String?,
       ),
-      categoryUuid: map[TransactionsTableColumns.categoryUuid.code] as String?,
+      categoryUuid: map['category_uuid'] as String?,
     );
   }
 
@@ -33,7 +32,7 @@ class Transaction {
       amount: _transaction.amount,
       title: _transaction.title,
       date: _transaction.date,
-      type: TransactionTypeFactory.fromCode(_transaction.type.name),
+      type: TransactionTypeFactory.fromName(_transaction.type.name),
       categoryUuid: _transaction.categoryUuid,
     );
   }
@@ -66,16 +65,16 @@ class Transaction {
 
   Map<String, Object?> toMap() {
     return {
-      TransactionsTableColumns.uuid.code: uuid,
-      TransactionsTableColumns.title.code: title,
-      TransactionsTableColumns.amount.code: amount,
-      TransactionsTableColumns.date.code: date.millisecondsSinceEpoch,
-      TransactionsTableColumns.type.code: type.name,
-      TransactionsTableColumns.categoryUuid.code: categoryUuid,
+      'uuid': uuid,
+      'title': title,
+      'amount': amount,
+      'date': date.millisecondsSinceEpoch,
+      'type': type.name,
+      'category_uuid': categoryUuid,
     };
   }
 
-  domain.Transaction toDataTransaction() {
+  domain.Transaction toDomainTransaction() {
     return domain.Transaction(
       uuid: uuid,
       amount: amount,
@@ -90,7 +89,7 @@ class Transaction {
 enum TransactionType { expense, income }
 
 extension TransactionTypeFactory on TransactionType {
-  static TransactionType fromCode(String? code) {
+  static TransactionType fromName(String? code) {
     if (code == TransactionType.income.name) {
       return TransactionType.income;
     } else {

@@ -46,8 +46,8 @@ class EditCategoryScreen extends StatelessWidget {
             appBar: AppBar(
               title: Text(
                 state.isCreating
-                    ? AppLocalizationsWrapper.of(context).add_category
-                    : AppLocalizationsWrapper.of(context).edit_category,
+                    ? AppLocalizationsFacade.of(context).add_category
+                    : AppLocalizationsFacade.of(context).edit_category,
               ),
             ),
             floatingActionButton: FloatingActionButton(

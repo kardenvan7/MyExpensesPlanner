@@ -20,7 +20,7 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       centerTitle: true,
       title: AutoSizeText(
-        AppLocalizationsWrapper.of(context).main_app_bar_title,
+        AppLocalizationsFacade.of(context).main_app_bar_title,
         maxLines: 1,
       ),
       actions: [

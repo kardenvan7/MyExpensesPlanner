@@ -31,7 +31,7 @@ class DataImportTile extends StatelessWidget {
                 _cubit.onImportButtonPressed();
               },
               title: Text(
-                AppLocalizationsWrapper.of(context).import_from_file,
+                AppLocalizationsFacade.of(context).import_from_file,
               ),
               trailing: const Icon(
                 MaterialCommunityIcons.import,
@@ -104,7 +104,7 @@ class ImportStatusDialog extends StatelessWidget {
                           getIt<AppRouter>().pop();
                         },
                         child: Text(
-                          AppLocalizationsWrapper.of(context).close,
+                          AppLocalizationsFacade.of(context).close,
                         ),
                       ),
                     ]
@@ -118,11 +118,11 @@ class ImportStatusDialog extends StatelessWidget {
 
   String _getTitle(BuildContext context, ImportState state) {
     return state.isLoading
-        ? AppLocalizationsWrapper.of(context).import_in_process
+        ? AppLocalizationsFacade.of(context).import_in_process
         : state.errorMessage != null
-            ? AppLocalizationsWrapper.of(context).import_failure
+            ? AppLocalizationsFacade.of(context).import_failure
             : state.isFinished
-                ? AppLocalizationsWrapper.of(context)
+                ? AppLocalizationsFacade.of(context)
                     .import_finished_successfully
                 : '';
   }

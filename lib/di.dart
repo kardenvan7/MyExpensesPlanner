@@ -1,12 +1,14 @@
 import 'package:get_it/get_it.dart';
-import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
+import 'package:my_expenses_planner/data/local_db/i_local_db.dart';
+import 'package:my_expenses_planner/data/local_db/sqflite/sqflite_database_facade.dart';
+import 'package:my_expenses_planner/data/local_db/sqflite/sqflite_db_provider.dart';
 import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
+import 'package:my_expenses_planner/data/local_storage/hive_facade.dart';
 import 'package:my_expenses_planner/data/local_storage/hive_local_storage.dart';
-import 'package:my_expenses_planner/data/local_storage/hive_wrapper.dart';
 import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
 import 'package:my_expenses_planner/data/repositories/app_settings/app_settings_repository.dart';
-import 'package:my_expenses_planner/data/repositories/categories/sqflite_categories_repository.dart';
-import 'package:my_expenses_planner/data/repositories/transactions/sqflite_transactions_repository.dart';
+import 'package:my_expenses_planner/data/repositories/categories/local_db_categories_repository.dart';
+import 'package:my_expenses_planner/data/repositories/transactions/local_db_transactions_repository.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_app_settings_repository.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_categories_repository.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_transactions_repository.dart';
@@ -29,23 +31,22 @@ Future<void> configureDependencies() async {
   getIt
 
     /// dbs, storages and repos
-    ..registerSingleton<DatabaseWrapper>(
-      DatabaseWrapper(
-        SqfliteDatabaseProvider(),
+    ..registerSingleton<ILocalStorage>(
+      HiveLocalStorage(HiveFacade()),
+    )
+    ..registerSingleton<ILocalDatabase>(
+      SqfliteLocalDatabase(
+        SqfliteDatabaseFacade(
+          SqfliteDatabaseProvider(),
+        ),
       ),
     )
-    ..registerSingleton<HiveWrapper>(
-      HiveWrapper(),
-    )
-    ..registerSingleton<ILocalStorage>(
-      HiveLocalStorage(getIt<HiveWrapper>()),
-    )
     ..registerSingleton<ICategoriesRepository>(
-      SqfliteCategoriesRepository(getIt<DatabaseWrapper>()),
+      SqfliteCategoriesRepository(getIt<ILocalDatabase>()),
     )
     ..registerLazySingleton<ITransactionsRepository>(
-      () => SqfliteTransactionsRepository(
-        dbWrapper: getIt<DatabaseWrapper>(),
+      () => LocalDbTransactionsRepository(
+        localDatabase: getIt<ILocalDatabase>(),
       ),
     )
     ..registerLazySingleton<IAppSettingsRepository>(

@@ -1,11 +1,11 @@
 import 'package:hive_flutter/adapters.dart';
 
-class HiveWrapper {
-  HiveWrapper._();
+class HiveFacade {
+  HiveFacade._();
 
-  static final HiveWrapper _instance = HiveWrapper._();
+  static final HiveFacade _instance = HiveFacade._();
 
-  factory HiveWrapper() {
+  factory HiveFacade() {
     return _instance;
   }
 

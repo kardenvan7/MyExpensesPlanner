@@ -130,10 +130,9 @@ class _TransactionListClearState extends State<TransactionListClear> {
                       child: Chip(
                         label: Text(
                           _currentDate.isToday
-                              ? AppLocalizationsWrapper.of(context).today
+                              ? AppLocalizationsFacade.of(context).today
                               : _currentDate.isYesterday
-                                  ? AppLocalizationsWrapper.of(context)
-                                      .yesterday
+                                  ? AppLocalizationsFacade.of(context).yesterday
                                   : DateFormat.yMMMMd(
                                       Localizations.localeOf(context)
                                           .toLanguageTag(),
@@ -166,7 +165,7 @@ class _TransactionListClearState extends State<TransactionListClear> {
             margin: const EdgeInsets.only(bottom: kToolbarHeight),
             child: Center(
               child: Text(
-                AppLocalizationsWrapper.of(context)
+                AppLocalizationsFacade.of(context)
                     .empty_transaction_list_placeholder_text,
                 textAlign: TextAlign.center,
               ),

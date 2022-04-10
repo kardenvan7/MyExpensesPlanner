@@ -62,10 +62,10 @@ class TransactionTypeSwitch extends StatelessWidget {
   }) {
     switch (type) {
       case TransactionType.income:
-        return AppLocalizationsWrapper.of(context).income;
+        return AppLocalizationsFacade.of(context).income;
 
       case TransactionType.expense:
-        return AppLocalizationsWrapper.of(context).expense;
+        return AppLocalizationsFacade.of(context).expense;
     }
   }
 }

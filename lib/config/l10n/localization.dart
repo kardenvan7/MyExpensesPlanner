@@ -4,8 +4,8 @@ import 'package:my_expenses_planner/config/constants.dart';
 import 'package:my_expenses_planner/core/extensions/locale_extensions.dart';
 import 'package:my_expenses_planner/main.dart';
 
-class AppLocalizationsWrapper {
-  AppLocalizationsWrapper();
+class AppLocalizationsFacade {
+  AppLocalizationsFacade();
 
   static AppLocalizations of(BuildContext context) {
     return AppLocalizations.of(context)!;

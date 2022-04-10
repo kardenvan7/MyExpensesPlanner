@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
+import 'package:my_expenses_planner/data/local_db/sqflite/sqflite_db_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseWrapper {
-  DatabaseWrapper(this._databaseProvider);
+class SqfliteDatabaseFacade {
+  SqfliteDatabaseFacade(this._databaseProvider);
 
   final SqfliteDatabaseProvider _databaseProvider;
 

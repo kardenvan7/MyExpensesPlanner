@@ -71,7 +71,7 @@ class TransactionsListItem extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: Center(
                     child: AutoSizeText(
-                      AppLocalizationsWrapper.of(context).income,
+                      AppLocalizationsFacade.of(context).income,
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(
                             fontSize: 14,
                             color: Colors.green,
@@ -98,7 +98,7 @@ class TransactionsListItem extends StatelessWidget {
                       child: Center(
                         child: AutoSizeText(
                           _category?.name ??
-                              AppLocalizationsWrapper.of(context)
+                              AppLocalizationsFacade.of(context)
                                   .without_category,
                           style:
                               Theme.of(context).textTheme.bodyText1?.copyWith(

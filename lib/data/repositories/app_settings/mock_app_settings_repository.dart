@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_app_settings_repository.dart';
 
-class AppSettingsRepository implements IAppSettingsRepository {
-  AppSettingsRepository(this._localStorage);
-
-  final ILocalStorage _localStorage;
+class MockAppSettingsRepository implements IAppSettingsRepository {
+  Locale? _locale;
+  ThemeMode? _themeMode;
 
   @override
   Future<Locale?> getAppLanguage() async {
-    return _localStorage.getAppLanguage();
+    return Future.value(_locale);
   }
 
   @override
   Future<ThemeMode?> getTheme() async {
-    return _localStorage.getTheme();
+    return Future.value(_themeMode);
   }
 
   @override
   Future<void> saveAppLanguage(Locale locale) async {
-    await _localStorage.saveAppLanguage(locale);
+    await Future.sync(() => _locale = locale);
   }
 
   @override
   Future<void> saveTheme(ThemeMode theme) async {
-    await _localStorage.saveTheme(theme);
+    await Future.sync(() => _themeMode = theme);
   }
 }

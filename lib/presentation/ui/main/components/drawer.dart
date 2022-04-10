@@ -52,7 +52,7 @@ class MainScreenDrawer extends StatelessWidget {
                 children: [
                   ListTile(
                     leading: const Icon(Icons.settings),
-                    title: Text(AppLocalizationsWrapper.of(context).settings),
+                    title: Text(AppLocalizationsFacade.of(context).settings),
                     onTap: () {
                       getIt<AppRouter>().pushNamed(SettingsScreen.routeName);
                     },

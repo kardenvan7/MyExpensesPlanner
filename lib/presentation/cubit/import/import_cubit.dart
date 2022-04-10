@@ -48,7 +48,7 @@ class ImportCubit extends Cubit<ImportState> {
       } on UnsupportedFileExtension catch (_) {
         emit(
           state.copyWith(
-            errorMessage: AppLocalizationsWrapper.ofGlobalContext()
+            errorMessage: AppLocalizationsFacade.ofGlobalContext()
                 .file_extension_unsupported,
           ),
         );

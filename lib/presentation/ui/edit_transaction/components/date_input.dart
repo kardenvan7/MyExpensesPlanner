@@ -33,7 +33,7 @@ class _DateInputState extends State<DateInput> {
       ),
       trailing: ElevatedButton(
         child: Text(
-          AppLocalizationsWrapper.of(context).change_date,
+          AppLocalizationsFacade.of(context).change_date,
         ),
         onPressed: _onPickDate,
       ),

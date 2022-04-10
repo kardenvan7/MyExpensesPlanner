@@ -57,9 +57,8 @@ class EditTransactionScreen extends StatelessWidget {
               appBar: AppBar(
                 title: Text(
                   _cubit.isAdding
-                      ? AppLocalizationsWrapper.of(context)
-                          .add_transaction_title
-                      : AppLocalizationsWrapper.of(context)
+                      ? AppLocalizationsFacade.of(context).add_transaction_title
+                      : AppLocalizationsFacade.of(context)
                           .edit_transaction_title,
                 ),
               ),

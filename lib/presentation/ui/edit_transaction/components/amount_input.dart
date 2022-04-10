@@ -56,7 +56,7 @@ class _AmountInputState extends State<AmountInput> {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   label: Text(
-                    AppLocalizationsWrapper.of(context).amount_input_label,
+                    AppLocalizationsFacade.of(context).amount_input_label,
                   ),
                   enabledBorder: isErrorState
                       ? Theme.of(context).inputDecorationTheme.errorBorder

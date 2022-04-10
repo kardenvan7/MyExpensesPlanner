@@ -6,7 +6,7 @@ class LanguageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(AppLocalizationsWrapper.of(context).app_language),
+      title: Text(AppLocalizationsFacade.of(context).app_language),
       trailing: BlocBuilder<AppSettingsCubit, AppSettingsState>(
         builder: (context, state) {
           return Row(

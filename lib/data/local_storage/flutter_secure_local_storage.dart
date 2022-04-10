@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_expenses_planner/core/extensions/locale_extensions.dart';
 import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
-import 'package:my_expenses_planner/data/models/app_settings.dart';
 
 class FlutterSecureLocalStorage implements ILocalStorage {
   FlutterSecureLocalStorage(this._flutterSecureStorage);
@@ -12,7 +11,11 @@ class FlutterSecureLocalStorage implements ILocalStorage {
 
   static const String appLangKey = 'app_lang';
   static const String themeKey = 'theme_key';
-  static const String appSettingsKey = 'app_settings';
+
+  @override
+  Future<void> initialize() async {
+    await Future.sync(() => null);
+  }
 
   /// App Settings
 
@@ -49,20 +52,6 @@ class FlutterSecureLocalStorage implements ILocalStorage {
 
     return ThemeMode.values.firstWhereOrNull(
       (element) => element.name == _themeCode,
-    );
-  }
-
-  @override
-  Future<AppSettings?> getAppSettings() async {
-    final Map<String, String> _values = await _flutterSecureStorage.readAll();
-
-    return AppSettings(
-      locale: _values[appLangKey] != null
-          ? LocaleFactory.fromLangString(_values[appLangKey]!)
-          : null,
-      themeMode: ThemeMode.values.firstWhereOrNull(
-        (element) => element.name == _values[themeKey],
-      ),
     );
   }
 

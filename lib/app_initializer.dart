@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:my_expenses_planner/data/local_db/database_wrapper.dart';
-import 'package:my_expenses_planner/data/local_storage/hive_wrapper.dart';
+import 'package:my_expenses_planner/data/local_db/i_local_db.dart';
+import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/main.dart';
 import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
@@ -17,8 +17,8 @@ class AppInitializer {
           WidgetsFlutterBinding.ensureInitialized();
           SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
           await configureDependencies();
-          await getIt<DatabaseWrapper>().initDatabase();
-          await getIt<HiveWrapper>().initHive();
+          await getIt<ILocalDatabase>().initialize();
+          await getIt<ILocalStorage>().initialize();
           await getIt<AppSettingsCubit>().initialize();
         } catch (e) {
           exit(1);

@@ -59,9 +59,9 @@ class TransactionsList extends StatelessWidget {
               child: Text(
                 transactionsListState.transactions.isEmpty &&
                         transactionsListState.dateTimeRange == null
-                    ? AppLocalizationsWrapper.of(context)
+                    ? AppLocalizationsFacade.of(context)
                         .empty_transaction_list_placeholder_text
-                    : AppLocalizationsWrapper.of(context)
+                    : AppLocalizationsFacade.of(context)
                         .no_statistics_for_period,
                 textAlign: TextAlign.center,
               ),
@@ -113,20 +113,20 @@ class TransactionsList extends StatelessWidget {
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(
-            AppLocalizationsWrapper.of(context)
+            AppLocalizationsFacade.of(context)
                 .delete_transaction_confirmation_question,
           ),
           actions: [
             TextButton(
               onPressed: _onDeleteDenied,
-              child: Text(AppLocalizationsWrapper.of(context).no),
+              child: Text(AppLocalizationsFacade.of(context).no),
             ),
             TextButton(
               onPressed: () {
                 _onDeleteConfirmed(contextWithCubit: context, uuid: uuid);
               },
               child: Text(
-                AppLocalizationsWrapper.of(context).yes,
+                AppLocalizationsFacade.of(context).yes,
               ),
             ),
           ],

@@ -7,7 +7,7 @@ class ThemePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(
-        AppLocalizationsWrapper.of(context).app_dark_theme,
+        AppLocalizationsFacade.of(context).app_dark_theme,
       ),
       trailing: BlocBuilder<AppSettingsCubit, AppSettingsState>(
         builder: (context, state) {

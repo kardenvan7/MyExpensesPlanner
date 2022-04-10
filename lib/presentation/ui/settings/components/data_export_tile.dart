@@ -32,7 +32,7 @@ class DataExportTile extends StatelessWidget {
                   _cubit.onExportTap();
                 },
                 title: Text(
-                  AppLocalizationsWrapper.of(context).export_to_file,
+                  AppLocalizationsFacade.of(context).export_to_file,
                 ),
                 trailing: const Icon(
                   MaterialCommunityIcons.export,
@@ -106,7 +106,7 @@ class ExportStatusDialog extends StatelessWidget {
                           getIt<AppRouter>().pop();
                         },
                         child: Text(
-                          AppLocalizationsWrapper.of(context).close,
+                          AppLocalizationsFacade.of(context).close,
                         ),
                       ),
                     ]
@@ -120,11 +120,11 @@ class ExportStatusDialog extends StatelessWidget {
 
   String _getTitle(BuildContext context, ExportState state) {
     return state.isLoading
-        ? AppLocalizationsWrapper.of(context).export_in_process
+        ? AppLocalizationsFacade.of(context).export_in_process
         : state.errorMessage != null
-            ? AppLocalizationsWrapper.of(context).export_failure
+            ? AppLocalizationsFacade.of(context).export_failure
             : state.isFinished
-                ? AppLocalizationsWrapper.of(context)
+                ? AppLocalizationsFacade.of(context)
                     .export_finished_successfully
                 : '';
   }

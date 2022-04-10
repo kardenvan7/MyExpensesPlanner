@@ -1,182 +1,308 @@
-import 'package:my_expenses_planner/data/local_db/config.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
+import 'package:my_expenses_planner/data/local_db/i_local_db.dart';
+import 'package:my_expenses_planner/data/local_db/sqflite/sqflite_config.dart';
+import 'package:my_expenses_planner/data/local_db/sqflite/sqflite_database_facade.dart';
+import 'package:my_expenses_planner/data/models/transaction.dart';
+import 'package:my_expenses_planner/data/models/transaction_category.dart';
 
-class SqfliteDatabaseProvider {
-  factory SqfliteDatabaseProvider() {
-    return _instance;
+class SqfliteLocalDatabase implements ILocalDatabase {
+  SqfliteLocalDatabase(this._databaseFacade);
+
+  final SqfliteDatabaseFacade _databaseFacade;
+
+  static const String _transactionsTableName =
+      SqfliteDbConfig.transactionsTableName;
+
+  static const String _categoriesTableName =
+      SqfliteDbConfig.categoriesTableName;
+
+  @override
+  Future<void> initialize() async {
+    await _databaseFacade.initDatabase();
   }
 
-  SqfliteDatabaseProvider._();
+  @override
+  Future<List<Transaction>> getTransactions({
+    int? limit,
+    int? offset,
+    DateTimeRange? dateTimeRange,
+    String? categoryUuid,
+    TransactionType? type,
+  }) async {
+    String _query = 'SELECT * FROM $_transactionsTableName ';
 
-  static const String _dbFileName = 'myExpensesPlanner.db';
-  static const int _version = 3;
+    if (dateTimeRange != null) {
+      _query += 'WHERE ${SqfliteTransactionsTableColumns.date.code} '
+          '>= ${dateTimeRange.start.millisecondsSinceEpoch} '
+          'AND ${SqfliteTransactionsTableColumns.date.code} <= ${dateTimeRange.end.millisecondsSinceEpoch}';
+    }
 
-  static final SqfliteDatabaseProvider _instance = SqfliteDatabaseProvider._();
+    if (categoryUuid != null) {
+      if (dateTimeRange != null) {
+        _query +=
+            ' AND ${SqfliteTransactionsTableColumns.categoryUuid.code} = $categoryUuid';
+      } else {
+        _query +=
+            ' WHERE ${SqfliteTransactionsTableColumns.categoryUuid.code} = $categoryUuid';
+      }
+    }
 
-  late final Database database;
-  late final String _myDbPath;
+    if (type != null) {
+      if (categoryUuid == null && dateTimeRange == null) {
+        _query +=
+            ' WHERE ${SqfliteTransactionsTableColumns.type.code} = "${type.name}"';
+      } else {
+        _query +=
+            ' AND ${SqfliteTransactionsTableColumns.type.code} = "${type.name}"';
+      }
+    }
 
-  Future<void> initDatabase() async {
-    final String _databasesPath = await getDatabasesPath();
-    _myDbPath = join(_databasesPath, _dbFileName);
+    _query += ' ORDER BY ${SqfliteTransactionsTableColumns.date.code} DESC';
 
-    database = await openDatabase(
-      _myDbPath,
-      version: _version,
-      onOpen: (Database db) async {
-        db.execute('PRAGMA foreign_keys=ON');
-      },
-      onUpgrade: (Database db, int oldVersion, int newVersion) async {
-        if (oldVersion == 1 && newVersion == 2) {
-          await db.execute(
-            'ALTER TABLE ${SqfliteDbConfig.transactionsTableName} '
-            'ADD COLUMN ${TransactionsTableColumns.type.code} TEXT DEFAULT '
-            '"${TransactionType.expense.name}"'
-            ';',
-          );
-        }
+    if (limit != null && offset != null) {
+      _query += ' LIMIT $limit OFFSET $offset';
+    }
 
-        if (oldVersion == 2 && newVersion == 3) {
-          await db.execute(
-            'CREATE TABLE transactions_replacement ('
-            'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-            '${TransactionsTableColumns.uuid.code} TEXT, '
-            '${TransactionsTableColumns.title.code} TEXT, '
-            '${TransactionsTableColumns.amount.code} REAL, '
-            '${TransactionsTableColumns.date.code} INT, '
-            '${TransactionsTableColumns.type.code} TEXT, '
-            '${TransactionsTableColumns.categoryUuid.code} TEXT'
-            ' REFERENCES ${SqfliteDbConfig.categoriesTableName}'
-            '(${CategoriesTableColumns.uuid.code})'
-            ');',
-          );
+    _query += ';';
 
-          await db.execute(
-            'INSERT INTO transactions_replacement('
-            '${TransactionsTableColumns.uuid.code},'
-            '${TransactionsTableColumns.title.code},'
-            '${TransactionsTableColumns.amount.code},'
-            '${TransactionsTableColumns.date.code},'
-            '${TransactionsTableColumns.type.code}, '
-            '${TransactionsTableColumns.categoryUuid.code}'
-            ')'
-            ' SELECT '
-            '${TransactionsTableColumns.uuid.code},'
-            '${TransactionsTableColumns.title.code},'
-            '${TransactionsTableColumns.amount.code},'
-            '${TransactionsTableColumns.date.code},'
-            '${TransactionsTableColumns.type.code}, '
-            '${TransactionsTableColumns.categoryUuid.code}'
-            ' FROM transactions;',
-          );
+    final List<Map<String, Object?>> transactionsMapsList =
+        await _databaseFacade.rawQuery(_query);
 
-          await db.execute(
-            'DROP TABLE IF EXISTS ${SqfliteDbConfig.transactionsTableName};',
-          );
+    final List<Transaction> transactions = [];
 
-          await db.execute(
-            'CREATE TABLE ${SqfliteDbConfig.transactionsTableName} ('
-            '${TransactionsTableColumns.uuid.code} TEXT PRIMARY KEY, '
-            '${TransactionsTableColumns.title.code} TEXT, '
-            '${TransactionsTableColumns.amount.code} REAL, '
-            '${TransactionsTableColumns.date.code} INT, '
-            '${TransactionsTableColumns.type.code} TEXT, '
-            '${TransactionsTableColumns.categoryUuid.code} TEXT'
-            ' REFERENCES ${SqfliteDbConfig.categoriesTableName}'
-            '(${CategoriesTableColumns.uuid.code})'
-            ');',
-          );
+    for (final Map<String, Object?> transactionMap in transactionsMapsList) {
+      transactions.add(
+        Transaction.fromMap(transactionMap),
+      );
+    }
 
-          await db.execute(
-            'INSERT INTO ${SqfliteDbConfig.transactionsTableName}('
-            '${TransactionsTableColumns.uuid.code},'
-            '${TransactionsTableColumns.title.code},'
-            '${TransactionsTableColumns.amount.code},'
-            '${TransactionsTableColumns.date.code},'
-            '${TransactionsTableColumns.type.code}, '
-            '${TransactionsTableColumns.categoryUuid.code}'
-            ')'
-            ' SELECT '
-            '${TransactionsTableColumns.uuid.code},'
-            '${TransactionsTableColumns.title.code},'
-            '${TransactionsTableColumns.amount.code},'
-            '${TransactionsTableColumns.date.code},'
-            '${TransactionsTableColumns.type.code}, '
-            '${TransactionsTableColumns.categoryUuid.code}'
-            ' FROM transactions_replacement;',
-          );
+    return transactions;
+  }
 
-          await db.execute(
-            'DROP TABLE IF EXISTS transactions_replacement;',
-          );
-        }
-      },
-      onCreate: (Database db, int version) async {
-        await db.execute(
-          'CREATE TABLE ${SqfliteDbConfig.categoriesTableName} ('
-          '${CategoriesTableColumns.uuid.code} TEXT PRIMARY KEY, '
-          '${CategoriesTableColumns.name.code} TEXT, '
-          '${CategoriesTableColumns.color.code} TEXT'
-          ')',
-        );
+  @override
+  Future<void> insertTransaction(Transaction transaction) async {
+    final int id = await _databaseFacade.insert(
+      _transactionsTableName,
+      _getTransactionMapForDb(transaction),
+    );
 
-        await db.execute(
-          'CREATE TABLE ${SqfliteDbConfig.transactionsTableName} ('
-          '${TransactionsTableColumns.uuid.code} TEXT PRIMARY KEY, '
-          '${TransactionsTableColumns.title.code} TEXT, '
-          '${TransactionsTableColumns.amount.code} REAL, '
-          '${TransactionsTableColumns.date.code} INT, '
-          '${TransactionsTableColumns.type.code} TEXT, '
-          '${TransactionsTableColumns.categoryUuid.code} TEXT REFERENCES '
-          '${SqfliteDbConfig.categoriesTableName}(${CategoriesTableColumns.uuid.code})'
-          ');',
-        );
-      },
+    if (id == 0) {
+      throw FormatException('Saving transaction $id failed');
+    }
+  }
+
+  @override
+  Future<void> insertMultipleTransactions(
+    List<Transaction> transactions,
+  ) async {
+    String _queryString = 'INSERT OR REPLACE INTO $_transactionsTableName '
+        '('
+        '${SqfliteTransactionsTableColumns.uuid.code}, '
+        '${SqfliteTransactionsTableColumns.title.code}, '
+        '${SqfliteTransactionsTableColumns.amount.code}, '
+        '${SqfliteTransactionsTableColumns.date.code}, '
+        '${SqfliteTransactionsTableColumns.categoryUuid.code}, '
+        '${SqfliteTransactionsTableColumns.type.code}'
+        ')'
+        ' VALUES ';
+
+    for (final _tr in transactions) {
+      _queryString += ''
+          '('
+          '"${_tr.uuid}", "${_tr.title}", ${_tr.amount}, '
+          '${_tr.date.millisecondsSinceEpoch}, ${_tr.categoryUuid}, '
+          '"${_tr.type.name}"'
+          '), ';
+    }
+
+    _queryString = _queryString.substring(0, _queryString.length - 2);
+    _queryString += ';';
+
+    final int id = await _databaseFacade.rawInsert(
+      sql: _queryString,
+    );
+
+    if (id == 0) {
+      throw const FormatException('Saving multiple transactions failed');
+    }
+  }
+
+  @override
+  Future<void> updateTransaction(
+    String uuid,
+    Transaction newTransaction,
+  ) async {
+    final Map<String, dynamic> transactionMap = newTransaction.toMap();
+
+    final int rowsChangedCount = await _databaseFacade.update(
+      _transactionsTableName,
+      transactionMap,
+      where: '${SqfliteTransactionsTableColumns.uuid.code} = $uuid',
+    );
+
+    if (rowsChangedCount == 0) {
+      throw FormatException('Editing transaction $uuid failed');
+    }
+  }
+
+  @override
+  Future<void> deleteTransaction(String uuid) async {
+    final int rowsDeletedCount = await _databaseFacade.delete(
+      _transactionsTableName,
+      where: '${SqfliteTransactionsTableColumns.uuid.code} = $uuid',
+    );
+
+    if (rowsDeletedCount == 0) {
+      throw FormatException('Deleting transaction $uuid failed');
+    }
+  }
+
+  @override
+  Future<void> deleteAllTransactions() async {
+    final int id = await _databaseFacade.delete(_transactionsTableName);
+
+    if (id == 0) {
+      throw const FormatException('Deleting all transactions failed');
+    }
+  }
+
+  Map<String, dynamic> _getTransactionMapForDb(Transaction transaction) {
+    return <String, dynamic>{
+      SqfliteTransactionsTableColumns.uuid.code: transaction.uuid,
+      SqfliteTransactionsTableColumns.title.code: transaction.title,
+      SqfliteTransactionsTableColumns.date.code:
+          transaction.date.millisecondsSinceEpoch,
+      SqfliteTransactionsTableColumns.type.code: transaction.type.name,
+      SqfliteTransactionsTableColumns.categoryUuid.code:
+          transaction.categoryUuid,
+    };
+  }
+
+  @override
+  Future<void> insertCategory(TransactionCategory category) async {
+    final int id = await _databaseFacade.insert(
+      _categoriesTableName,
+      _getCategoryMapForDb(category),
+    );
+
+    if (id == 0) {
+      throw const FormatException('Saving category failed');
+    }
+  }
+
+  @override
+  Future<void> insertMultipleCategories(
+    List<TransactionCategory> categories,
+  ) async {
+    String _queryString = 'INSERT OR REPLACE INTO $_categoriesTableName '
+        '('
+        '${SqfliteCategoriesTableColumns.uuid.code}, '
+        '${SqfliteCategoriesTableColumns.color.code}, '
+        '${SqfliteCategoriesTableColumns.name.code}'
+        ')'
+        ' VALUES ';
+
+    for (final _category in categories) {
+      _queryString += ''
+          '('
+          '"${_category.uuid}", '
+          '"${_category.color.toHexString()}", '
+          '"${_category.name}"'
+          '), ';
+    }
+
+    _queryString = _queryString.substring(0, _queryString.length - 2);
+    _queryString += ';';
+
+    final int id = await _databaseFacade.rawInsert(
+      sql: _queryString,
     );
   }
 
-  Future<void> delete() async {
-    await deleteDatabase(_myDbPath);
+  @override
+  Future<List<TransactionCategory>> getCategories() async {
+    final List<Map<String, dynamic>> categoriesMapList =
+        await _databaseFacade.rawQuery(
+      'SELECT *'
+      'FROM $_categoriesTableName',
+    );
+
+    final List<TransactionCategory> categoriesList = [];
+
+    for (final Map<String, dynamic> categoryMap in categoriesMapList) {
+      categoriesList.add(
+        TransactionCategory.fromMap(categoryMap),
+      );
+    }
+
+    return categoriesList;
   }
 
-  Future<void> close() async {
-    await database.close();
+  @override
+  Future<TransactionCategory?> getCategoryByUuid(String uuid) async {
+    final List<Map<String, dynamic>> _categoryMapList =
+        await _databaseFacade.rawQuery(
+      'SELECT * FROM $_categoriesTableName '
+      'WHERE ${SqfliteCategoriesTableColumns.uuid.code} = $uuid '
+      'LIMIT 1',
+    );
+
+    if (_categoryMapList.isEmpty) {
+      return null;
+    }
+
+    return TransactionCategory.fromMap(_categoryMapList.first);
   }
-}
 
-enum TransactionsTableColumns { uuid, title, amount, date, categoryUuid, type }
-enum TransactionType { expense, income }
-enum CategoriesTableColumns { uuid, name, color }
+  @override
+  Future<void> updateCategory(
+    String uuid,
+    TransactionCategory newCategory,
+  ) async {
+    final Map<String, Object?> newCategoryMap = _getCategoryMapForDb(
+      newCategory,
+    );
 
-extension TransactionCategoriesTableColumnsCodes on CategoriesTableColumns {
-  String get code {
-    switch (this) {
-      case CategoriesTableColumns.uuid:
-        return 'uuid';
-      case CategoriesTableColumns.name:
-        return 'name';
-      case CategoriesTableColumns.color:
-        return 'color';
+    final int rowsChangedCount = await _databaseFacade.update(
+      _categoriesTableName,
+      newCategoryMap,
+      where: '${SqfliteCategoriesTableColumns.uuid.code} = $uuid',
+    );
+  }
+
+  @override
+  Future<void> deleteCategory(String uuid) async {
+    await _databaseFacade.update(
+      SqfliteDbConfig.transactionsTableName,
+      {SqfliteTransactionsTableColumns.categoryUuid.code: null},
+      where: '${SqfliteTransactionsTableColumns.categoryUuid.code} = $uuid',
+    );
+
+    final int rowsDeletedCount = await _databaseFacade.delete(
+      _categoriesTableName,
+      where: '${SqfliteCategoriesTableColumns.uuid.code} = $uuid',
+    );
+
+    if (rowsDeletedCount == 0) {
+      throw const FormatException('Deleting category failed');
     }
   }
-}
 
-extension TransactionsTableColumnsCodes on TransactionsTableColumns {
-  String get code {
-    switch (this) {
-      case TransactionsTableColumns.uuid:
-        return 'uuid';
-      case TransactionsTableColumns.title:
-        return 'title';
-      case TransactionsTableColumns.amount:
-        return 'amount';
-      case TransactionsTableColumns.date:
-        return 'date';
-      case TransactionsTableColumns.categoryUuid:
-        return 'category_uuid';
-      case TransactionsTableColumns.type:
-        return 'type';
+  @override
+  Future<void> deleteAllCategories() async {
+    final int id = await _databaseFacade.delete(_categoriesTableName);
+
+    if (id == 0) {
+      throw const FormatException('Deleting all categories failed');
     }
+  }
+
+  Map<String, dynamic> _getCategoryMapForDb(TransactionCategory category) {
+    return <String, dynamic>{
+      SqfliteCategoriesTableColumns.uuid.code: category.uuid,
+      SqfliteCategoriesTableColumns.name.code: category.name,
+      SqfliteCategoriesTableColumns.color.code: category.color.toHexString(),
+    };
   }
 }

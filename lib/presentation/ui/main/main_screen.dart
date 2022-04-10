@@ -88,7 +88,7 @@ class MainScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       margin: const EdgeInsets.only(top: 300),
                       child: Text(
-                        AppLocalizationsWrapper.of(context)
+                        AppLocalizationsFacade.of(context)
                             .no_statistics_for_period,
                         textAlign: TextAlign.center,
                       ),

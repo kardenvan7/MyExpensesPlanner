@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 extension DateTimeExt on DateTime {
   operator >(DateTime otherDate) {
     return microsecondsSinceEpoch > otherDate.microsecondsSinceEpoch;
@@ -55,5 +57,10 @@ extension DateTimeExt on DateTime {
 
   DateTime get endOfDay {
     return DateTime(year, month, day, 23, 59, 59, 999, 999);
+  }
+
+  bool isWithinRange(DateTimeRange range) {
+    return millisecondsSinceEpoch >= range.start.millisecondsSinceEpoch &&
+        millisecondsSinceEpoch <= range.end.millisecondsSinceEpoch;
   }
 }

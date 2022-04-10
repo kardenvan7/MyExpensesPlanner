@@ -108,7 +108,7 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
     } catch (e) {
       emit(
         state.copyWith(
-          snackBarText: AppLocalizationsWrapper.ofGlobalContext()
+          snackBarText: AppLocalizationsFacade.ofGlobalContext()
               .error_while_creating_transaction,
         ),
       );
@@ -129,7 +129,7 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
     } catch (e) {
       emit(
         state.copyWith(
-          snackBarText: AppLocalizationsWrapper.ofGlobalContext()
+          snackBarText: AppLocalizationsFacade.ofGlobalContext()
               .error_while_changing_transaction,
         ),
       );

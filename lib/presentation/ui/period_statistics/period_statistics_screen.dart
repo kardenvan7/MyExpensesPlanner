@@ -40,7 +40,7 @@ class PeriodStatisticsScreen extends StatelessWidget {
             body: state.transactions.isEmpty
                 ? Center(
                     child: Text(
-                      AppLocalizationsWrapper.of(context)
+                      AppLocalizationsFacade.of(context)
                           .no_statistics_for_period,
                       textAlign: TextAlign.center,
                     ),

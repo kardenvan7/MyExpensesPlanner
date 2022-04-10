@@ -38,7 +38,7 @@ class MyExpensesPlanner extends StatelessWidget {
             );
 
           return MaterialApp.router(
-            title: AppLocalizationsWrapper.getAppTitle(appState.locale),
+            title: AppLocalizationsFacade.getAppTitle(appState.locale),
             scaffoldMessengerKey: NavigatorService.key,
             themeMode: appState.themeMode,
             theme: _themes.light,

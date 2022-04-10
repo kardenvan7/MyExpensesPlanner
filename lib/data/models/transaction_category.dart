@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
-import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
+import 'package:my_expenses_planner/domain/models/transaction_category.dart'
+    as domain;
 
 class TransactionCategory {
   final String uuid;
@@ -15,22 +16,40 @@ class TransactionCategory {
 
   factory TransactionCategory.fromMap(Map map) {
     return TransactionCategory(
-      uuid: map[CategoriesTableColumns.uuid.code],
-      color: map[CategoriesTableColumns.color.code] is Color
-          ? map[CategoriesTableColumns.color.code]
-          : map[CategoriesTableColumns.color.code] is String
-              ? HexColor.fromHex(map[CategoriesTableColumns.color.code])
+      uuid: map['uuid'],
+      name: map['name'],
+      color: map['color'] is Color
+          ? map['color']
+          : map['color'] is String
+              ? HexColor.fromHex(map['color'])
               : null,
-      name: map[CategoriesTableColumns.name.code],
+    );
+  }
+
+  factory TransactionCategory.fromDomainCategory(
+    domain.TransactionCategory category,
+  ) {
+    return TransactionCategory(
+      uuid: category.uuid,
+      color: category.color,
+      name: category.name,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      CategoriesTableColumns.uuid.code: uuid,
-      CategoriesTableColumns.name.code: name,
-      CategoriesTableColumns.color.code: color,
+      'uuid': uuid,
+      'name': name,
+      'color': color,
     };
+  }
+
+  domain.TransactionCategory toDomainCategory() {
+    return domain.TransactionCategory(
+      uuid: uuid,
+      name: name,
+      color: color,
+    );
   }
 
   @override

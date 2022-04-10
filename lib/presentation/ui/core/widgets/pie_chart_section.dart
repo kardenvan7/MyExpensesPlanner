@@ -62,7 +62,7 @@ class PieChartSection extends StatelessWidget {
           if (transactions.isEmpty) {
             return Center(
               child: Text(
-                AppLocalizationsWrapper.of(context).no_data_to_show,
+                AppLocalizationsFacade.of(context).no_data_to_show,
               ),
             );
           }
@@ -104,7 +104,7 @@ class PieChartSection extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '${AppLocalizationsWrapper.of(context).income}: ',
+                                '${AppLocalizationsFacade.of(context).income}: ',
                                 style: const TextStyle(
                                   fontSize: 17,
                                 ),
@@ -129,7 +129,7 @@ class PieChartSection extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '${AppLocalizationsWrapper.of(context).expenses}: ',
+                                '${AppLocalizationsFacade.of(context).expenses}: ',
                                 style: const TextStyle(
                                   fontSize: 17,
                                 ),
@@ -157,7 +157,7 @@ class PieChartSection extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '${AppLocalizationsWrapper.of(context).difference}: ',
+                                '${AppLocalizationsFacade.of(context).difference}: ',
                                 style: const TextStyle(
                                   fontSize: 17,
                                 ),
@@ -276,7 +276,7 @@ class PieChartWrapper extends StatelessWidget {
             return categories
                     .firstWhereOrNull((element) => element.uuid == _currentUuid)
                     ?.name ??
-                AppLocalizationsWrapper.of(context).without_category;
+                AppLocalizationsFacade.of(context).without_category;
           },
           value: (_currentUuid) {
             return expensesByCategories[_currentUuid]!;
@@ -325,7 +325,7 @@ class PieChartCustomLegend extends StatelessWidget {
                   ),
                   child: Text(
                     (_category?.name ??
-                            AppLocalizationsWrapper.of(context)
+                            AppLocalizationsFacade.of(context)
                                 .without_category) +
                         ' - ' +
                         expensesByCategories[_categoryUuids[index]]!

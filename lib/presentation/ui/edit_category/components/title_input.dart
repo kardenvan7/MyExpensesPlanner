@@ -29,7 +29,7 @@ class CategoryTitleInput extends StatelessWidget {
           textCapitalization: TextCapitalization.sentences,
           decoration: InputDecoration(
             label: Text(
-              AppLocalizationsWrapper.of(context).title_input_label,
+              AppLocalizationsFacade.of(context).title_input_label,
             ),
             enabledBorder: isErrorState
                 ? Theme.of(context).inputDecorationTheme.errorBorder

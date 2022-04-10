@@ -71,7 +71,7 @@ class _CategoryPickFieldState extends State<CategoryPickField> {
                 Expanded(
                   child: Text(
                     _pickedCategory?.name ??
-                        AppLocalizationsWrapper.of(context).without_category,
+                        AppLocalizationsFacade.of(context).without_category,
                     style: const TextStyle(
                       fontSize: 17,
                     ),
@@ -142,7 +142,7 @@ class PickCategoryModalSheet extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
                   child: Text(
-                    AppLocalizationsWrapper.of(context).add_category,
+                    AppLocalizationsFacade.of(context).add_category,
                   ),
                   onPressed: () {
                     getIt<AppRouter>().pushNamed(EditCategoryScreen.routeName);
@@ -165,8 +165,7 @@ class PickCategoryModalSheet extends StatelessWidget {
                       return InkWell(
                         child: ListTile(
                           title: Text(
-                            AppLocalizationsWrapper.of(context)
-                                .without_category,
+                            AppLocalizationsFacade.of(context).without_category,
                           ),
                           onTap: () {
                             _onCategoryTap(context, null);
@@ -253,13 +252,13 @@ class PickCategoryModalSheet extends StatelessWidget {
       builder: (BuildContext alertContext) {
         return AlertDialog(
           title: Text(
-            AppLocalizationsWrapper.of(context)
+            AppLocalizationsFacade.of(context)
                 .delete_category_confirmation_question,
           ),
           actions: [
             TextButton(
               onPressed: getIt<AppRouter>().pop,
-              child: Text(AppLocalizationsWrapper.of(context).no),
+              child: Text(AppLocalizationsFacade.of(context).no),
             ),
             TextButton(
               onPressed: () async {
@@ -272,7 +271,7 @@ class PickCategoryModalSheet extends StatelessWidget {
 
                 getIt<AppRouter>().pop();
               },
-              child: Text(AppLocalizationsWrapper.of(context).yes),
+              child: Text(AppLocalizationsFacade.of(context).yes),
             ),
           ],
         );

@@ -77,7 +77,7 @@ class TransactionList extends StatelessWidget {
           )
         : Center(
             child: Text(
-              AppLocalizationsWrapper.of(context).no_statistics_for_period,
+              AppLocalizationsFacade.of(context).no_statistics_for_period,
               textAlign: TextAlign.center,
             ),
           );
@@ -120,20 +120,20 @@ class TransactionList extends StatelessWidget {
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(
-            AppLocalizationsWrapper.of(context)
+            AppLocalizationsFacade.of(context)
                 .delete_transaction_confirmation_question,
           ),
           actions: [
             TextButton(
               onPressed: _onDeleteDenied,
-              child: Text(AppLocalizationsWrapper.of(context).no),
+              child: Text(AppLocalizationsFacade.of(context).no),
             ),
             TextButton(
               onPressed: () {
                 _onDeleteConfirmed(uuid: uuid);
               },
               child: Text(
-                AppLocalizationsWrapper.of(context).yes,
+                AppLocalizationsFacade.of(context).yes,
               ),
             ),
           ],
