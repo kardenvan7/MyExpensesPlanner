@@ -28,12 +28,15 @@ class TransactionListCubit extends Cubit<TransactionListState> {
         );
 
   late final StreamSubscription _subscription;
+
   final ScrollController scrollController = ScrollController();
 
   bool get _isScrollNearBottom =>
       scrollController.offset >=
           scrollController.position.maxScrollExtent - 300 &&
       !scrollController.position.outOfRange;
+
+  final ITransactionsCase _transactionsCaseImpl;
 
   Future<void> initialize({
     DateTimeRange? dateTimeRange,
@@ -55,17 +58,10 @@ class TransactionListCubit extends Cubit<TransactionListState> {
 
       scrollController.addListener(_scrollListener);
 
+      emit(state.copyWith(initialized: true, triggerBuilder: false));
+
       await fetchTransactions();
     }
-  }
-
-  final ITransactionsCase _transactionsCaseImpl;
-
-  List<Transaction> _copyCurrentTransactions() {
-    return List.generate(
-      state.transactions.length,
-      (index) => state.transactions[index].copyWith(),
-    );
   }
 
   Future<void> refresh() async {
@@ -82,6 +78,10 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   }
 
   Future<void> fetchTransactions({bool isLazyLoading = false}) async {
+    if (!state.initialized) {
+      throw const FormatException('Cubit is not initialized');
+    }
+
     try {
       emit(
         state.copyWith(
@@ -124,6 +124,10 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   }
 
   Future<void> addTransaction(Transaction transaction) async {
+    if (!state.initialized) {
+      throw const FormatException('Cubit is not initialized');
+    }
+
     await _transactionsCaseImpl.save(transaction: transaction);
   }
 
@@ -131,6 +135,10 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     required String txId,
     required Transaction newTransaction,
   }) async {
+    if (!state.initialized) {
+      throw const FormatException('Cubit is not initialized');
+    }
+
     await _transactionsCaseImpl.edit(
       transactionId: txId,
       newTransaction: newTransaction,
@@ -138,6 +146,10 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   }
 
   Future<void> deleteTransaction(String txId) async {
+    if (!state.initialized) {
+      throw const FormatException('Cubit is not initialized');
+    }
+
     await _transactionsCaseImpl.delete(transactionId: txId);
   }
 
@@ -208,6 +220,10 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   }
 
   Future<void> fillWithMockTransactions() async {
+    if (!state.initialized) {
+      throw const FormatException('Cubit is not initialized');
+    }
+
     emit(state.copyWith(isLazyLoading: true, showLoadingIndicator: true));
 
     try {
@@ -264,6 +280,10 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   }
 
   Future<void> deleteAllTransactions() async {
+    if (!state.initialized) {
+      throw const FormatException('Cubit is not initialized');
+    }
+
     emit(
       state.copyWith(
         isLazyLoading: true,
@@ -290,6 +310,13 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     if (_isScrollNearBottom && state.canLoadMore && !state.isLazyLoading) {
       fetchTransactions(isLazyLoading: true);
     }
+  }
+
+  List<Transaction> _copyCurrentTransactions() {
+    return List.generate(
+      state.transactions.length,
+      (index) => state.transactions[index].copyWith(),
+    );
   }
 
   @override

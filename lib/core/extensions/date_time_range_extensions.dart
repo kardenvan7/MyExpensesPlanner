@@ -11,6 +11,13 @@ extension DateTimeRangeFactory on DateTimeRange {
     return DateTimeRange(start: _beginningOfCurrentMonth, end: _now);
   }
 
+  static DateTimeRange lastWeek() {
+    final _now = DateTime.now();
+    final _weekAgo = _now.startOfDay.subtract(const Duration(days: 6));
+
+    return DateTimeRange(start: _weekAgo, end: _now);
+  }
+
   bool get isWithinOneYear => start.isSameYearWith(end);
   bool get isWithinOneMonth => start.isSameMonthAndYearWith(end);
   bool get isWithinOneDay => start.isSameDayWith(end);

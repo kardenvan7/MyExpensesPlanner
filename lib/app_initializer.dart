@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:my_expenses_planner/data/local_db/i_local_db.dart';
 import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
 import 'package:my_expenses_planner/di.dart';
-import 'package:my_expenses_planner/main.dart';
 import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
+import 'package:my_expenses_planner/presentation/ui/my_expenses_planner.dart';
 
 class AppInitializer {
   Future<void> initialize() async {

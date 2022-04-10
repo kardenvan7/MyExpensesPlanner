@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_expenses_planner/config/constants.dart';
 import 'package:my_expenses_planner/core/extensions/locale_extensions.dart';
 import 'package:my_expenses_planner/main.dart';
+import 'package:my_expenses_planner/presentation/ui/my_expenses_planner.dart';
 
 class AppLocalizationsFacade {
   AppLocalizationsFacade();

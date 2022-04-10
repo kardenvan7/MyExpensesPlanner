@@ -13,9 +13,9 @@ class TransactionsCaseImpl implements ITransactionsCase {
   }) : _transactionsRepository = transactionsRepository;
 
   final ITransactionsRepository _transactionsRepository;
+
   final StreamController<TransactionsChangeData> streamController =
       StreamController<TransactionsChangeData>.broadcast();
-  int streamState = 0;
 
   @override
   Stream<TransactionsChangeData> get stream => streamController.stream;
