@@ -4,7 +4,6 @@ import 'package:my_expenses_planner/presentation/ui/core/widgets/color_picker_sc
 import 'package:my_expenses_planner/presentation/ui/edit_category/edit_category_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/edit_transaction/edit_transaction_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/main/main_screen.dart';
-import 'package:my_expenses_planner/presentation/ui/period_statistics/period_statistics_screen.dart';
 import 'package:my_expenses_planner/presentation/ui/settings/settings_screen.dart';
 
 import 'auto_router.gr.dart';
@@ -32,10 +31,6 @@ import 'auto_router.gr.dart';
     AutoRoute<Color?>(
       path: ColorPickerScreen.routeName,
       page: ColorPickerScreen,
-    ),
-    AutoRoute(
-      path: PeriodStatisticsScreen.routeName,
-      page: PeriodStatisticsScreen,
     ),
   ],
 )

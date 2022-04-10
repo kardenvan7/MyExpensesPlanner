@@ -123,7 +123,9 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     }
   }
 
-  Future<void> addTransaction(Transaction transaction) async {
+  Future<void> addTransaction(
+    Transaction transaction,
+  ) async {
     if (!state.initialized) {
       throw const FormatException('Cubit is not initialized');
     }
