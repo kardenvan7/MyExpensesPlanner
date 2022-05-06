@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:my_expenses_planner/core/utils/result.dart';
+import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
+
 import '../../models/categories_change_data.dart';
 import '../../models/transaction_category.dart';
 import '../../repositories_interfaces/i_categories_repository.dart';
@@ -12,74 +15,128 @@ class CategoriesCaseImpl implements ICategoriesCase {
 
   final ICategoriesRepository _categoriesRepository;
 
-  final StreamController<CategoriesChangeData> _streamController =
-      StreamController<CategoriesChangeData>.broadcast();
+  final StreamController<Result<FetchFailure, CategoriesChangeData>>
+      _streamController =
+      StreamController<Result<FetchFailure, CategoriesChangeData>>.broadcast();
 
   @override
-  Stream<CategoriesChangeData> get stream => _streamController.stream;
+  Stream<Result<FetchFailure, CategoriesChangeData>> get stream =>
+      _streamController.stream;
 
   @override
-  Future<List<TransactionCategory>> getCategories() async {
+  Future<Result<FetchFailure, List<TransactionCategory>>>
+      getCategories() async {
     return _categoriesRepository.getCategories();
   }
 
   @override
-  Future<TransactionCategory?> getCategoryByUuid(String uuid) async {
+  Future<Result<FetchFailure, TransactionCategory>> getCategoryByUuid(
+    String uuid,
+  ) async {
     return _categoriesRepository.getCategoryByUuid(uuid);
   }
 
   @override
-  Future<void> save(TransactionCategory category) async {
-    await _categoriesRepository.save(
+  Future<Result<FetchFailure, void>> save(TransactionCategory category) async {
+    final _result = await _categoriesRepository.save(
       category,
     );
 
-    _streamController.add(
-      CategoriesChangeData(
-        addedCategories: [category],
+    return _result.fold(
+      onFailure: (failure) => failure.when(
+        unknown: () => Result.failure(failure),
+        notFound: () => Result.failure(failure),
       ),
+      onSuccess: (_) {
+        _streamController.add(
+          Result.success(
+            CategoriesChangeData(
+              addedCategories: [category],
+            ),
+          ),
+        );
+
+        return Result.success(null);
+      },
     );
   }
 
   @override
-  Future<void> saveMultiple(List<TransactionCategory> categories) async {
-    await _categoriesRepository.saveMultiple(
+  Future<Result<FetchFailure, void>> saveMultiple(
+    List<TransactionCategory> categories,
+  ) async {
+    final _result = await _categoriesRepository.saveMultiple(
       categories,
     );
 
-    _streamController.add(
-      CategoriesChangeData(
-        addedCategories: categories,
+    return _result.fold(
+      onFailure: (failure) => failure.when(
+        unknown: () => Result.failure(failure),
+        notFound: () => Result.failure(failure),
       ),
+      onSuccess: (_) {
+        _streamController.add(
+          Result.success(
+            CategoriesChangeData(
+              addedCategories: categories,
+            ),
+          ),
+        );
+
+        return Result.success(null);
+      },
     );
   }
 
   @override
-  Future<void> update(String uuid, TransactionCategory newCategory) async {
-    try {
-      await _categoriesRepository.update(
-        uuid,
-        newCategory,
-      );
+  Future<Result<FetchFailure, void>> update(
+    String uuid,
+    TransactionCategory newCategory,
+  ) async {
+    final _result = await _categoriesRepository.update(
+      uuid,
+      newCategory,
+    );
 
-      _streamController.add(
-        CategoriesChangeData(
-          editedCategories: [newCategory],
-        ),
-      );
-    } catch (e, _) {
-      print(e);
-    }
+    return _result.fold(
+      onFailure: (failure) => failure.when(
+        unknown: () => Result.failure(failure),
+        notFound: () => Result.failure(failure),
+      ),
+      onSuccess: (_) {
+        _streamController.add(
+          Result.success(
+            CategoriesChangeData(
+              editedCategories: [newCategory],
+            ),
+          ),
+        );
+
+        return Result.success(null);
+      },
+    );
   }
 
   @override
-  Future<void> delete(String uuid) async {
-    await _categoriesRepository.delete(uuid);
+  Future<Result<FetchFailure, void>> delete(String uuid) async {
+    final _result = await _categoriesRepository.delete(uuid);
 
-    _streamController.add(
-      CategoriesChangeData(
-        deletedCategoriesUuids: [uuid],
+    return _result.fold(
+      onFailure: (failure) => failure.when(
+        unknown: () => Result.failure(failure),
+        notFound: () => Result.failure(failure),
       ),
+      onSuccess: (_) {
+        _streamController.add(
+          Result.success(
+            CategoriesChangeData(
+              deletedCategoriesUuids: [uuid],
+            ),
+          ),
+        );
+
+        return Result.success(null);
+      },
     );
   }
 }

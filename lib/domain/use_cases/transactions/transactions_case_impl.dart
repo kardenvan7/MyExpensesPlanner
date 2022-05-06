@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_extensions.dart';
+import 'package:my_expenses_planner/core/utils/result.dart';
+import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_transactions_repository.dart';
@@ -14,14 +16,16 @@ class TransactionsCaseImpl implements ITransactionsCase {
 
   final ITransactionsRepository _transactionsRepository;
 
-  final StreamController<TransactionsChangeData> streamController =
-      StreamController<TransactionsChangeData>.broadcast();
+  final StreamController<Result<FetchFailure, TransactionsChangeData>>
+      streamController = StreamController<
+          Result<FetchFailure, TransactionsChangeData>>.broadcast();
 
   @override
-  Stream<TransactionsChangeData> get stream => streamController.stream;
+  Stream<Result<FetchFailure, TransactionsChangeData>> get stream =>
+      streamController.stream;
 
   @override
-  Future<List<Transaction>> getTransactions({
+  Future<Result<FetchFailure, List<Transaction>>> getTransactions({
     int? limit,
     int? offset,
     DateTimeRange? dateTimeRange,
@@ -38,60 +42,96 @@ class TransactionsCaseImpl implements ITransactionsCase {
   }
 
   @override
-  Future<void> edit({
+  Future<Result<FetchFailure, void>> edit({
     required String transactionId,
     required Transaction newTransaction,
   }) async {
-    await _transactionsRepository.edit(
+    final _result = await _transactionsRepository.edit(
       transactionId: transactionId,
       newTransaction: newTransaction,
     );
 
-    streamController.add(
-      TransactionsChangeData(
-        editedTransactions: [
-          newTransaction,
-        ],
+    return _result.fold(
+      onFailure: (failure) => failure.when(
+        unknown: () => Result.failure(failure),
+        notFound: () => Result.failure(failure),
       ),
+      onSuccess: (_) {
+        streamController.add(
+          Result.success(
+            TransactionsChangeData(
+              editedTransactions: [
+                newTransaction,
+              ],
+            ),
+          ),
+        );
+
+        return Result.success(null);
+      },
     );
   }
 
   @override
-  Future<void> save({
+  Future<Result<FetchFailure, void>> save({
     required Transaction transaction,
   }) async {
-    await _transactionsRepository.save(
+    final _result = await _transactionsRepository.save(
       transaction: transaction,
     );
 
-    streamController.add(
-      TransactionsChangeData(
-        addedTransactions: [
-          transaction,
-        ],
+    return _result.fold(
+      onFailure: (failure) => failure.when(
+        unknown: () => Result.failure(failure),
+        notFound: () => Result.failure(failure),
       ),
+      onSuccess: (_) {
+        streamController.add(
+          Result.success(
+            TransactionsChangeData(
+              addedTransactions: [
+                transaction,
+              ],
+            ),
+          ),
+        );
+
+        return Result.success(null);
+      },
     );
   }
 
   @override
-  Future<void> delete({
+  Future<Result<FetchFailure, void>> delete({
     required String transactionId,
   }) async {
-    await _transactionsRepository.delete(
+    final _result = await _transactionsRepository.delete(
       transactionId: transactionId,
     );
 
-    streamController.add(
-      TransactionsChangeData(
-        deletedTransactionsUuids: [
-          transactionId,
-        ],
+    return _result.fold(
+      onFailure: (failure) => failure.when(
+        unknown: () => Result.failure(failure),
+        notFound: () => Result.failure(failure),
       ),
+      onSuccess: (_) {
+        streamController.add(
+          Result.success(
+            TransactionsChangeData(
+              deletedTransactionsUuids: [
+                transactionId,
+              ],
+            ),
+          ),
+        );
+
+        return Result.success(null);
+      },
     );
   }
 
   @override
-  Future<List<Transaction>> getLastWeekExpenses() async {
+  Future<Result<FetchFailure, List<Transaction>>> getLastWeekExpenses() async {
     final DateTime _now = DateTime.now();
     final DateTime _startDate = _now.startOfDay.subtract(
       const Duration(
@@ -106,29 +146,57 @@ class TransactionsCaseImpl implements ITransactionsCase {
   }
 
   @override
-  Future<void> saveMultiple({required List<Transaction> transactions}) async {
-    await _transactionsRepository.saveMultiple(transactions: transactions);
+  Future<Result<FetchFailure, void>> saveMultiple({
+    required List<Transaction> transactions,
+  }) async {
+    final _result = await _transactionsRepository.saveMultiple(
+      transactions: transactions,
+    );
 
-    streamController.add(
-      TransactionsChangeData(
-        addedTransactions: transactions,
+    return _result.fold(
+      onFailure: (failure) => failure.when(
+        unknown: () => Result.failure(failure),
+        notFound: () => Result.failure(failure),
       ),
+      onSuccess: (_) {
+        streamController.add(
+          Result.success(
+            TransactionsChangeData(
+              addedTransactions: transactions,
+            ),
+          ),
+        );
+
+        return Result.success(null);
+      },
     );
   }
 
   @override
-  Future<void> deleteAll() async {
-    await _transactionsRepository.deleteAll();
+  Future<Result<FetchFailure, void>> deleteAll() async {
+    final _result = await _transactionsRepository.deleteAll();
 
-    streamController.add(
-      TransactionsChangeData(
-        deletedAll: true,
+    return _result.fold(
+      onFailure: (failure) => failure.when(
+        unknown: () => Result.failure(failure),
+        notFound: () => Result.failure(failure),
       ),
+      onSuccess: (_) {
+        streamController.add(
+          Result.success(
+            TransactionsChangeData(
+              deletedAll: true,
+            ),
+          ),
+        );
+
+        return Result.success(null);
+      },
     );
   }
 
   @override
-  Future<void> fillWithMockTransactions() async {
+  Future<Result<FetchFailure, void>> fillWithMockTransactions() async {
     final List<Transaction> _transactions = [];
 
     for (int i = 0; i < 40; i++) {
@@ -153,12 +221,26 @@ class TransactionsCaseImpl implements ITransactionsCase {
       );
     }
 
-    await _transactionsRepository.saveMultiple(transactions: _transactions);
+    final _result = await _transactionsRepository.saveMultiple(
+      transactions: _transactions,
+    );
 
-    streamController.add(
-      TransactionsChangeData(
-        addedTransactions: _transactions,
+    return _result.fold(
+      onFailure: (failure) => failure.when(
+        unknown: () => Result.failure(failure),
+        notFound: () => Result.failure(failure),
       ),
+      onSuccess: (_) {
+        streamController.add(
+          Result.success(
+            TransactionsChangeData(
+              addedTransactions: _transactions,
+            ),
+          ),
+        );
+
+        return Result.success(null);
+      },
     );
   }
 }

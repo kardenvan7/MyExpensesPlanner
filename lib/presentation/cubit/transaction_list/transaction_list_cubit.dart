@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
+import 'package:my_expenses_planner/core/utils/result.dart';
 import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
+import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
@@ -50,11 +53,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
         ),
       );
 
-      _subscription = _transactionsCaseImpl.stream.listen((
-        TransactionsChangeData newData,
-      ) {
-        _refreshWithNewData(newData);
-      });
+      _subscription = _transactionsCaseImpl.stream.listen(_refreshWithNewData);
 
       scrollController.addListener(_scrollListener);
 
@@ -82,45 +81,48 @@ class TransactionListCubit extends Cubit<TransactionListState> {
       throw const FormatException('Cubit is not initialized');
     }
 
-    try {
-      emit(
-        state.copyWith(
-          isLazyLoading: isLazyLoading,
-          showLoadingIndicator: state.transactions.isEmpty,
-        ),
-      );
+    emit(
+      state.copyWith(
+        isLazyLoading: isLazyLoading,
+        showLoadingIndicator: state.transactions.isEmpty,
+      ),
+    );
 
-      final _currentTransactions = [...state.transactions];
+    final _currentTransactions = [...state.transactions];
 
-      final List<Transaction> _fetchedTransactions =
-          await _transactionsCaseImpl.getTransactions(
-        limit: state.dateTimeRange != null ? null : state.loadLimit,
-        offset: state.dateTimeRange != null ? null : state.offset,
-        dateTimeRange: state.dateTimeRange,
-        categoryUuid: state.categoryUuid,
-      );
+    final _result = await _transactionsCaseImpl.getTransactions(
+      limit: state.dateTimeRange != null ? null : state.loadLimit,
+      offset: state.dateTimeRange != null ? null : state.offset,
+      dateTimeRange: state.dateTimeRange,
+      categoryUuid: state.categoryUuid,
+    );
 
-      _currentTransactions.addAll(_fetchedTransactions);
+    _result.fold(
+      onFailure: (_) {
+        emit(
+          state.copyWith(
+            isLazyLoading: false,
+            errorMessage:
+                AppLocalizationsFacade.ofGlobalContext().unknown_error_occurred,
+            showLoadingIndicator: false,
+          ),
+        );
+      },
+      onSuccess: (_fetchedTransactions) {
+        _currentTransactions.addAll(_fetchedTransactions);
 
-      emit(
-        state.copyWith(
-          isLazyLoading: false,
-          showLoadingIndicator: false,
-          transactions: _currentTransactions,
-          canLoadMore: _fetchedTransactions.length == state.loadLimit,
-          offset: state.offset + _fetchedTransactions.length,
-          initialized: true,
-        ),
-      );
-    } catch (e, _) {
-      emit(
-        state.copyWith(
-          isLazyLoading: false,
-          errorMessage: e.toString(),
-          showLoadingIndicator: false,
-        ),
-      );
-    }
+        emit(
+          state.copyWith(
+            isLazyLoading: false,
+            showLoadingIndicator: false,
+            transactions: _currentTransactions,
+            canLoadMore: _fetchedTransactions.length == state.loadLimit,
+            offset: state.offset + _fetchedTransactions.length,
+            initialized: true,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> addTransaction(
@@ -155,58 +157,65 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     await _transactionsCaseImpl.delete(transactionId: txId);
   }
 
-  void _refreshWithNewData(TransactionsChangeData newData) {
-    final List<Transaction> _transactions = _copyCurrentTransactions();
+  void _refreshWithNewData(
+    Result<FetchFailure, TransactionsChangeData> dataResult,
+  ) {
+    dataResult.fold(
+      onFailure: (_) {},
+      onSuccess: (newData) {
+        final List<Transaction> _transactions = _copyCurrentTransactions();
 
-    if (!newData.deletedAll) {
-      _transactions.removeWhere(
-        (currentListElement) =>
-            newData.deletedTransactionsUuids
-                .contains(currentListElement.uuid) ||
-            newData.editedTransactions.firstWhereOrNull(
-                  (element) => element.uuid == currentListElement.uuid,
-                ) !=
-                null,
-      );
+        if (!newData.deletedAll) {
+          _transactions.removeWhere(
+            (currentListElement) =>
+                newData.deletedTransactionsUuids
+                    .contains(currentListElement.uuid) ||
+                newData.editedTransactions.firstWhereOrNull(
+                      (element) => element.uuid == currentListElement.uuid,
+                    ) !=
+                    null,
+          );
 
-      if (state.dateTimeRange == null) {
-        _transactions.addAll(
-          newData.addedTransactions.followedBy(
-            newData.editedTransactions,
-          ),
-        );
-      } else {
-        _transactions.addAll(
-          newData.addedTransactions
-              .where(
-                (element) =>
-                    element.date.isAfter(state.dateTimeRange!.start) &&
-                    element.date.isBefore(state.dateTimeRange!.end),
-              )
-              .followedBy(
-                newData.editedTransactions.where(
-                  (element) =>
-                      element.date.isAfter(state.dateTimeRange!.start) &&
-                      element.date.isBefore(state.dateTimeRange!.end),
-                ),
+          if (state.dateTimeRange == null) {
+            _transactions.addAll(
+              newData.addedTransactions.followedBy(
+                newData.editedTransactions,
               ),
-        );
-      }
+            );
+          } else {
+            _transactions.addAll(
+              newData.addedTransactions
+                  .where(
+                    (element) =>
+                        element.date.isAfter(state.dateTimeRange!.start) &&
+                        element.date.isBefore(state.dateTimeRange!.end),
+                  )
+                  .followedBy(
+                    newData.editedTransactions.where(
+                      (element) =>
+                          element.date.isAfter(state.dateTimeRange!.start) &&
+                          element.date.isBefore(state.dateTimeRange!.end),
+                    ),
+                  ),
+            );
+          }
 
-      final _uniqueTransactions = _transactions.toSet().toList();
+          final _uniqueTransactions = _transactions.toSet().toList();
 
-      emit(
-        state.copyWith(
-          transactions: _uniqueTransactions,
-          showLoadingIndicator: false,
-          initialized: true,
-          isLazyLoading: false,
-          triggerBuilder: true,
-        ),
-      );
-    } else {
-      emitEmptyState();
-    }
+          emit(
+            state.copyWith(
+              transactions: _uniqueTransactions,
+              showLoadingIndicator: false,
+              initialized: true,
+              isLazyLoading: false,
+              triggerBuilder: true,
+            ),
+          );
+        } else {
+          emitEmptyState();
+        }
+      },
+    );
   }
 
   void emitEmptyState({bool triggerBuilder = true}) {

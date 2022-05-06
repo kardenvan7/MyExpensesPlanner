@@ -3,11 +3,13 @@ part of 'last_week_graphs_cubit.dart';
 class LastWeekGraphsState {
   LastWeekGraphsState({
     this.isLoading = false,
+    this.errorMessage,
     List<Transaction>? transactions,
   }) : transactions = transactions ?? [];
 
   final bool isLoading;
   final List<Transaction> transactions;
+  final String? errorMessage;
 
   double get max {
     double maxAmount = 0;

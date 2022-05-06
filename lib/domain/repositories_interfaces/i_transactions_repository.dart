@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/core/utils/result.dart';
+import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 
 abstract class ITransactionsRepository {
-  Future<List<Transaction>> getTransactions({
+  Future<Result<FetchFailure, List<Transaction>>> getTransactions({
     int? limit,
     int? offset,
     DateTimeRange? dateTimeRange,
@@ -10,14 +12,20 @@ abstract class ITransactionsRepository {
     TransactionType? type,
   });
 
-  Future<void> save({required Transaction transaction});
-  Future<void> saveMultiple({required List<Transaction> transactions});
+  Future<Result<FetchFailure, void>> save({
+    required Transaction transaction,
+  });
+  Future<Result<FetchFailure, void>> saveMultiple({
+    required List<Transaction> transactions,
+  });
 
-  Future<void> edit({
+  Future<Result<FetchFailure, void>> edit({
     required String transactionId,
     required Transaction newTransaction,
   });
 
-  Future<void> delete({required String transactionId});
-  Future<void> deleteAll();
+  Future<Result<FetchFailure, void>> delete({
+    required String transactionId,
+  });
+  Future<Result<FetchFailure, void>> deleteAll();
 }

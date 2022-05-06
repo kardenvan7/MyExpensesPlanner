@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_expenses_planner/core/extensions/locale_extensions.dart';
-import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
+import 'package:my_expenses_planner/data/local/local_storage/i_local_storage.dart';
 
 class FlutterSecureLocalStorage implements ILocalStorage {
   FlutterSecureLocalStorage(this._flutterSecureStorage);

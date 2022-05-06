@@ -1,31 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_extensions.dart';
+import 'package:my_expenses_planner/core/utils/result.dart';
+import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_transactions_repository.dart';
 
-class MockTransactionsRepository implements ITransactionsRepository {
+class FakeTransactionsRepository implements ITransactionsRepository {
   final Map<String, Transaction> _storage = {};
 
   @override
-  Future<void> delete({required String transactionId}) async {
-    await Future.sync(() => _storage.remove(transactionId));
+  Future<Result<FetchFailure, void>> delete({
+    required String transactionId,
+  }) async {
+    return Future.sync(
+      () {
+        _storage.remove(transactionId);
+
+        return Result.success(null);
+      },
+    );
   }
 
   @override
-  Future<void> deleteAll() async {
-    await Future.sync(() => _storage.clear());
+  Future<Result<FetchFailure, void>> deleteAll() async {
+    return Future.sync(() {
+      _storage.clear();
+
+      return Result.success(null);
+    });
   }
 
   @override
-  Future<void> edit({
+  Future<Result<FetchFailure, void>> edit({
     required String transactionId,
     required Transaction newTransaction,
   }) async {
-    await Future.sync(() => _storage[transactionId] = newTransaction);
+    return Future.sync(
+      () {
+        _storage[transactionId] = newTransaction;
+
+        return Result.success(null);
+      },
+    );
   }
 
   @override
-  Future<List<Transaction>> getTransactions({
+  Future<Result<FetchFailure, List<Transaction>>> getTransactions({
     int? limit,
     int? offset,
     DateTimeRange? dateTimeRange,
@@ -55,20 +75,32 @@ class MockTransactionsRepository implements ITransactionsRepository {
       },
     ).toList();
 
-    return Future.value(_filteredValues);
+    return Future.value(Result.success(_filteredValues));
   }
 
   @override
-  Future<void> save({required Transaction transaction}) async {
-    await Future.sync(() => _storage[transaction.uuid] = transaction);
+  Future<Result<FetchFailure, void>> save({
+    required Transaction transaction,
+  }) async {
+    return Future.sync(
+      () {
+        _storage[transaction.uuid] = transaction;
+
+        return Result.success(null);
+      },
+    );
   }
 
   @override
-  Future<void> saveMultiple({required List<Transaction> transactions}) async {
-    await Future.sync(() {
+  Future<Result<FetchFailure, void>> saveMultiple({
+    required List<Transaction> transactions,
+  }) async {
+    return Future.sync(() {
       for (final Transaction transaction in transactions) {
         _storage[transaction.uuid] = transaction;
       }
+
+      return Result.success(null);
     });
   }
 }

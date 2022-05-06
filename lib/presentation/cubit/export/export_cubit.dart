@@ -1,84 +1,41 @@
 import 'package:bloc/bloc.dart';
+import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/domain/core/export/data_export_handler.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/domain/models/transaction_category.dart';
-import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
-import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 
 part 'export_state.dart';
 
 class ExportCubit extends Cubit<ExportState> {
   ExportCubit(
-    this._transactionsCase,
-    this._categoriesCase,
+    this._exportHandler,
   ) : super(ExportState());
 
-  static const String fileNamePrefix = 'my_expenses_planner_';
-
-  final ITransactionsCase _transactionsCase;
-  final ICategoriesCase _categoriesCase;
+  final DataExportHandler _exportHandler;
 
   Future<void> onExportTap() async {
-    final DataExportHandler _exporter = DataExportHandler();
-    await _exporter.requestAndSetPermission();
+    final _exportResult = await _exportHandler.export();
 
-    if (_exporter.isPermissionGranted) {
-      await _exporter.setDirectoryPath();
-
-      if (_exporter.isDirectorySet) {
+    _exportResult.fold(
+      onFailure: (failure) => failure.when(
+        unknown: () {
+          emit(
+            state.copyWith(
+              isLoading: false,
+              errorMessage:
+                  AppLocalizationsFacade.ofGlobalContext().export_failure,
+            ),
+          );
+        },
+        cancelled: () {},
+        permissionDenied: () {},
+      ),
+      onSuccess: (_) {
         emit(
           state.copyWith(
-            showDialog: true,
-            isLoading: true,
+            isLoading: false,
+            isFinished: true,
           ),
         );
-
-        try {
-          final Map<String, dynamic> _data = await _getDataMap();
-
-          _exporter.setContent(_data);
-          await _exporter.export();
-
-          emit(
-            state.copyWith(
-              isLoading: false,
-              isFinished: true,
-            ),
-          );
-        } catch (e, _) {
-          emit(
-            state.copyWith(
-              isLoading: false,
-              errorMessage: e.toString(),
-            ),
-          );
-        }
-      }
-    }
-  }
-
-  Future<Map<String, dynamic>> _getDataMap() async {
-    final Map<String, dynamic> _map = {};
-
-    final List<TransactionCategory> _categories =
-        await _categoriesCase.getCategories();
-
-    final List<Map<String, dynamic>> _categoriesMap = List.generate(
-      _categories.length,
-      (index) => _categories[index].toMap(),
+      },
     );
-
-    final List<Transaction> _transactions =
-        await _transactionsCase.getTransactions();
-
-    final List<Map<String, dynamic>> _transactionsMap = List.generate(
-      _transactions.length,
-      (index) => _transactions[index].toMap(),
-    );
-
-    _map['categories'] = _categoriesMap;
-    _map['transactions'] = _transactionsMap;
-
-    return _map;
   }
 }

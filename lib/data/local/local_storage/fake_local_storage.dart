@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
+import 'package:my_expenses_planner/data/local/local_storage/i_local_storage.dart';
 
-class MockLocalStorage implements ILocalStorage {
+class FakeLocalStorage implements ILocalStorage {
   Locale? _locale;
   ThemeMode? _themeMode;
 

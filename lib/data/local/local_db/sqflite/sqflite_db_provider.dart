@@ -1,4 +1,4 @@
-import 'package:my_expenses_planner/data/local_db/sqflite/sqflite_config.dart';
+import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_config.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

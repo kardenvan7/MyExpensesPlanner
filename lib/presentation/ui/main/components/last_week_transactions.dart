@@ -28,8 +28,15 @@ class LastWeekTransactions extends StatelessWidget {
           if (state.isLoading) {
             return Center(
               child: CircularProgressIndicator(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme
+                    .of(context)
+                    .colorScheme
+                    .secondary,
               ),
+            );
+          } else if (state.errorMessage != null) {
+            return Center(
+              child: Text(state.errorMessage!),
             );
           } else {
             final _now = DateTime.now();

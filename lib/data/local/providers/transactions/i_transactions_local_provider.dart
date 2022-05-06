@@ -1,12 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/core/utils/result.dart';
+import 'package:my_expenses_planner/data/models/transaction.dart';
 import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
 
-abstract class ITransactionsCase {
+abstract class ITransactionsLocalProvider {
   Future<Result<FetchFailure, List<Transaction>>> getTransactions({
     int? limit,
     int? offset,
@@ -14,8 +11,6 @@ abstract class ITransactionsCase {
     String? categoryUuid,
     TransactionType? type,
   });
-
-  Future<Result<FetchFailure, List<Transaction>>> getLastWeekExpenses();
 
   Future<Result<FetchFailure, void>> save({
     required Transaction transaction,
@@ -33,8 +28,4 @@ abstract class ITransactionsCase {
     required String transactionId,
   });
   Future<Result<FetchFailure, void>> deleteAll();
-
-  Future<Result<FetchFailure, void>> fillWithMockTransactions();
-
-  Stream<Result<FetchFailure, TransactionsChangeData>> get stream;
 }

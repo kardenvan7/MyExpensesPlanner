@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/domain/use_cases/categories/mock_categories_case_impl.dart';
-import 'package:my_expenses_planner/domain/use_cases/transactions/mock_transactions_case_impl.dart';
+import 'package:my_expenses_planner/domain/use_cases/categories/fake_categories_case_impl.dart';
+import 'package:my_expenses_planner/domain/use_cases/transactions/fake_transactions_case_impl.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/ui/main/components/transactions_list.dart';
@@ -16,7 +16,7 @@ void main() {
       await tester.runAsync(
         () async {
           final _cubit = TransactionListCubit(
-            transactionsCaseImpl: MockTransactionsCaseImpl(),
+            transactionsCaseImpl: FakeTransactionsCaseImpl(),
           );
 
           final _transaction = Transaction(
@@ -35,7 +35,7 @@ void main() {
             TesterWidgetWrapper(
               child: BlocProvider<CategoryListCubit>(
                 create: (context) => CategoryListCubit(
-                  categoriesCaseImpl: MockCategoriesCaseImpl(),
+                  categoriesCaseImpl: FakeCategoriesCaseImpl(),
                 ),
                 child: TransactionsList(
                   transactionsListState: _cubit.state,

@@ -4,8 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:my_expenses_planner/core/extensions/locale_extensions.dart';
-import 'package:my_expenses_planner/data/local_storage/hive_facade.dart';
-import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
+import 'package:my_expenses_planner/data/local/local_storage/hive/hive_facade.dart';
+import 'package:my_expenses_planner/data/local/local_storage/i_local_storage.dart';
 
 class HiveLocalStorage implements ILocalStorage {
   HiveLocalStorage(this._hiveFacade);

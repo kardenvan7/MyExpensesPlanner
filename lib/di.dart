@@ -1,14 +1,20 @@
 import 'package:get_it/get_it.dart';
-import 'package:my_expenses_planner/data/local_db/i_local_db.dart';
-import 'package:my_expenses_planner/data/local_db/sqflite/sqflite_database_facade.dart';
-import 'package:my_expenses_planner/data/local_db/sqflite/sqflite_db_provider.dart';
-import 'package:my_expenses_planner/data/local_db/sqflite_local_db.dart';
-import 'package:my_expenses_planner/data/local_storage/hive_facade.dart';
-import 'package:my_expenses_planner/data/local_storage/hive_local_storage.dart';
-import 'package:my_expenses_planner/data/local_storage/i_local_storage.dart';
+import 'package:my_expenses_planner/data/local/local_db/i_local_db.dart';
+import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_database_facade.dart';
+import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_db_provider.dart';
+import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_local_db.dart';
+import 'package:my_expenses_planner/data/local/local_storage/hive/hive_facade.dart';
+import 'package:my_expenses_planner/data/local/local_storage/hive/hive_local_storage.dart';
+import 'package:my_expenses_planner/data/local/local_storage/i_local_storage.dart';
+import 'package:my_expenses_planner/data/local/providers/categories/i_categories_local_provider.dart';
+import 'package:my_expenses_planner/data/local/providers/categories/local_db_categories_local_provider.dart';
+import 'package:my_expenses_planner/data/local/providers/transactions/i_transactions_local_provider.dart';
+import 'package:my_expenses_planner/data/local/providers/transactions/local_db_transactions_local_provider.dart';
 import 'package:my_expenses_planner/data/repositories/app_settings/app_settings_repository.dart';
-import 'package:my_expenses_planner/data/repositories/categories/local_db_categories_repository.dart';
-import 'package:my_expenses_planner/data/repositories/transactions/local_db_transactions_repository.dart';
+import 'package:my_expenses_planner/data/repositories/categories/categories_repository.dart';
+import 'package:my_expenses_planner/data/repositories/transactions/transactions_repository.dart';
+import 'package:my_expenses_planner/domain/core/export/data_export_handler.dart';
+import 'package:my_expenses_planner/domain/core/import/data_import_handler.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_app_settings_repository.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_categories_repository.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_transactions_repository.dart';
@@ -30,7 +36,7 @@ final GetIt getIt = GetIt.instance;
 Future<void> configureDependencies() async {
   getIt
 
-    /// dbs, storages and repos
+    /// Databases and storages
     ..registerSingleton<ILocalStorage>(
       HiveLocalStorage(HiveFacade()),
     )
@@ -41,12 +47,26 @@ Future<void> configureDependencies() async {
         ),
       ),
     )
+
+    /// Local providers
+    ..registerSingleton<ITransactionsLocalProvider>(
+      LocalDbTransactionLocalProvider(database: getIt<ILocalDatabase>()),
+    )
+    ..registerSingleton<ICategoriesLocalProvider>(
+      LocalDbCategoriesLocalProvider(database: getIt<ILocalDatabase>()),
+    )
+
+    /// Remote providers
+
+    /// Repositories
     ..registerSingleton<ICategoriesRepository>(
-      SqfliteCategoriesRepository(getIt<ILocalDatabase>()),
+      CategoriesRepository(
+        localProvider: getIt<ICategoriesLocalProvider>(),
+      ),
     )
     ..registerLazySingleton<ITransactionsRepository>(
-      () => LocalDbTransactionsRepository(
-        localDatabase: getIt<ILocalDatabase>(),
+      () => TransactionsRepository(
+        localProvider: getIt<ITransactionsLocalProvider>(),
       ),
     )
     ..registerLazySingleton<IAppSettingsRepository>(
@@ -71,16 +91,30 @@ Future<void> configureDependencies() async {
         getIt<IAppSettingsRepository>(),
       ),
     )
+
+    /// Services
+    ..registerSingleton<DataExportHandler>(
+      DataExportHandler(
+        transactionsRepository: getIt<ITransactionsRepository>(),
+        categoriesRepository: getIt<ICategoriesRepository>(),
+      ),
+    )
+    ..registerSingleton<DataImportHandler>(
+      DataImportHandler(
+        transactionsCase: getIt<ITransactionsCase>(),
+        categoriesCase: getIt<ICategoriesCase>(),
+      ),
+    )
+
+    /// Cubits
     ..registerFactory<ExportCubit>(
       () => ExportCubit(
-        getIt<ITransactionsCase>(),
-        getIt<ICategoriesCase>(),
+        getIt<DataExportHandler>(),
       ),
     )
     ..registerFactory<ImportCubit>(
       () => ImportCubit(
-        getIt<ITransactionsCase>(),
-        getIt<ICategoriesCase>(),
+        getIt<DataImportHandler>(),
       ),
     )
 

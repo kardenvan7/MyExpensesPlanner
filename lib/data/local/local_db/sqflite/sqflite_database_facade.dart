@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:my_expenses_planner/data/local_db/sqflite/sqflite_db_provider.dart';
+import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_db_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SqfliteDatabaseFacade {
@@ -61,7 +61,7 @@ class SqfliteDatabaseFacade {
     List<Object?>? whereArgs,
     ConflictAlgorithm? conflictAlgorithm,
   }) async {
-    final int _status = await _database.update(
+    final int _rowsChangedCount = await _database.update(
       table,
       values,
       where: where,
@@ -69,7 +69,7 @@ class SqfliteDatabaseFacade {
       conflictAlgorithm: conflictAlgorithm,
     );
 
-    return _status;
+    return _rowsChangedCount;
   }
 
   Future<int> delete(
