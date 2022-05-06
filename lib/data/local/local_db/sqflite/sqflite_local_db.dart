@@ -91,9 +91,12 @@ class SqfliteLocalDatabase implements ILocalDatabase {
     Transaction transaction,
   ) async {
     try {
+      final Map<String, dynamic> _transactionMap =
+          _getTransactionMapForDb(transaction);
+
       final int id = await _databaseFacade.insert(
         _transactionsTableName,
-        _getTransactionMapForDb(transaction),
+        _transactionMap,
       );
 
       if (id == 0) {
@@ -209,6 +212,7 @@ class SqfliteLocalDatabase implements ILocalDatabase {
     return <String, dynamic>{
       SqfliteTransactionsTableColumns.uuid.code: transaction.uuid,
       SqfliteTransactionsTableColumns.title.code: transaction.title,
+      SqfliteTransactionsTableColumns.amount.code: transaction.amount,
       SqfliteTransactionsTableColumns.date.code:
           transaction.date.millisecondsSinceEpoch,
       SqfliteTransactionsTableColumns.type.code: transaction.type.name,

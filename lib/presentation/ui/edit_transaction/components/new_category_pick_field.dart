@@ -126,6 +126,9 @@ class PickCategoryModalSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 padding: const EdgeInsets.symmetric(
                   vertical: 5,
                   horizontal: 10,

@@ -164,6 +164,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
       onFailure: (_) {},
       onSuccess: (newData) {
         final List<Transaction> _transactions = _copyCurrentTransactions();
+        final DateTimeRange? _pickedDateTimeRange = state.dateTimeRange;
 
         if (!newData.deletedAll) {
           _transactions.removeWhere(
@@ -176,7 +177,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
                     null,
           );
 
-          if (state.dateTimeRange == null) {
+          if (_pickedDateTimeRange == null) {
             _transactions.addAll(
               newData.addedTransactions.followedBy(
                 newData.editedTransactions,
@@ -187,14 +188,14 @@ class TransactionListCubit extends Cubit<TransactionListState> {
               newData.addedTransactions
                   .where(
                     (element) =>
-                        element.date.isAfter(state.dateTimeRange!.start) &&
-                        element.date.isBefore(state.dateTimeRange!.end),
+                        element.date.isAfter(_pickedDateTimeRange.start) &&
+                        element.date.isBefore(_pickedDateTimeRange.end),
                   )
                   .followedBy(
                     newData.editedTransactions.where(
                       (element) =>
-                          element.date.isAfter(state.dateTimeRange!.start) &&
-                          element.date.isBefore(state.dateTimeRange!.end),
+                          element.date.isAfter(_pickedDateTimeRange.start) &&
+                          element.date.isBefore(_pickedDateTimeRange.end),
                     ),
                   ),
             );
@@ -278,14 +279,14 @@ class TransactionListCubit extends Cubit<TransactionListState> {
   }
 
   Future<void> onDateTimeRangeChange(DateTimeRange? range) async {
+    emitEmptyState(triggerBuilder: false);
+
     emit(
       state.copyWith(
         dateTimeRange: ValueWrapper(value: range),
         triggerBuilder: false,
       ),
     );
-
-    emitEmptyState(triggerBuilder: false);
 
     fetchTransactions();
   }
