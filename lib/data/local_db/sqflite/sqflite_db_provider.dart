@@ -29,110 +29,123 @@ class SqfliteDatabaseProvider {
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
         if (oldVersion == 1 && newVersion == 2) {
-          await db.execute(
-            'ALTER TABLE ${SqfliteDbConfig.transactionsTableName} '
-            'ADD COLUMN ${SqfliteTransactionsTableColumns.type.code} TEXT DEFAULT '
-            '"${SqfliteTransactionType.expense.name}"'
-            ';',
-          );
+          await _version1To2Migration(db);
         }
 
         if (oldVersion == 2 && newVersion == 3) {
-          await db.execute(
-            'CREATE TABLE transactions_replacement ('
-            'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-            '${SqfliteTransactionsTableColumns.uuid.code} TEXT, '
-            '${SqfliteTransactionsTableColumns.title.code} TEXT, '
-            '${SqfliteTransactionsTableColumns.amount.code} REAL, '
-            '${SqfliteTransactionsTableColumns.date.code} INT, '
-            '${SqfliteTransactionsTableColumns.type.code} TEXT, '
-            '${SqfliteTransactionsTableColumns.categoryUuid.code} TEXT'
-            ' REFERENCES ${SqfliteDbConfig.categoriesTableName}'
-            '(${SqfliteCategoriesTableColumns.uuid.code})'
-            ');',
-          );
-
-          await db.execute(
-            'INSERT INTO transactions_replacement('
-            '${SqfliteTransactionsTableColumns.uuid.code},'
-            '${SqfliteTransactionsTableColumns.title.code},'
-            '${SqfliteTransactionsTableColumns.amount.code},'
-            '${SqfliteTransactionsTableColumns.date.code},'
-            '${SqfliteTransactionsTableColumns.type.code}, '
-            '${SqfliteTransactionsTableColumns.categoryUuid.code}'
-            ')'
-            ' SELECT '
-            '${SqfliteTransactionsTableColumns.uuid.code},'
-            '${SqfliteTransactionsTableColumns.title.code},'
-            '${SqfliteTransactionsTableColumns.amount.code},'
-            '${SqfliteTransactionsTableColumns.date.code},'
-            '${SqfliteTransactionsTableColumns.type.code}, '
-            '${SqfliteTransactionsTableColumns.categoryUuid.code}'
-            ' FROM transactions;',
-          );
-
-          await db.execute(
-            'DROP TABLE IF EXISTS ${SqfliteDbConfig.transactionsTableName};',
-          );
-
-          await db.execute(
-            'CREATE TABLE ${SqfliteDbConfig.transactionsTableName} ('
-            '${SqfliteTransactionsTableColumns.uuid.code} TEXT PRIMARY KEY, '
-            '${SqfliteTransactionsTableColumns.title.code} TEXT, '
-            '${SqfliteTransactionsTableColumns.amount.code} REAL, '
-            '${SqfliteTransactionsTableColumns.date.code} INT, '
-            '${SqfliteTransactionsTableColumns.type.code} TEXT, '
-            '${SqfliteTransactionsTableColumns.categoryUuid.code} TEXT'
-            ' REFERENCES ${SqfliteDbConfig.categoriesTableName}'
-            '(${SqfliteCategoriesTableColumns.uuid.code})'
-            ');',
-          );
-
-          await db.execute(
-            'INSERT INTO ${SqfliteDbConfig.transactionsTableName}('
-            '${SqfliteTransactionsTableColumns.uuid.code},'
-            '${SqfliteTransactionsTableColumns.title.code},'
-            '${SqfliteTransactionsTableColumns.amount.code},'
-            '${SqfliteTransactionsTableColumns.date.code},'
-            '${SqfliteTransactionsTableColumns.type.code}, '
-            '${SqfliteTransactionsTableColumns.categoryUuid.code}'
-            ')'
-            ' SELECT '
-            '${SqfliteTransactionsTableColumns.uuid.code},'
-            '${SqfliteTransactionsTableColumns.title.code},'
-            '${SqfliteTransactionsTableColumns.amount.code},'
-            '${SqfliteTransactionsTableColumns.date.code},'
-            '${SqfliteTransactionsTableColumns.type.code}, '
-            '${SqfliteTransactionsTableColumns.categoryUuid.code}'
-            ' FROM transactions_replacement;',
-          );
-
-          await db.execute(
-            'DROP TABLE IF EXISTS transactions_replacement;',
-          );
+          await _version2To3Migration(db);
         }
       },
       onCreate: (Database db, int version) async {
-        await db.execute(
-          'CREATE TABLE ${SqfliteDbConfig.categoriesTableName} ('
-          '${SqfliteCategoriesTableColumns.uuid.code} TEXT PRIMARY KEY, '
-          '${SqfliteCategoriesTableColumns.name.code} TEXT, '
-          '${SqfliteCategoriesTableColumns.color.code} TEXT'
-          ')',
-        );
-
-        await db.execute(
-          'CREATE TABLE ${SqfliteDbConfig.transactionsTableName} ('
-          '${SqfliteTransactionsTableColumns.uuid.code} TEXT PRIMARY KEY, '
-          '${SqfliteTransactionsTableColumns.title.code} TEXT, '
-          '${SqfliteTransactionsTableColumns.amount.code} REAL, '
-          '${SqfliteTransactionsTableColumns.date.code} INT, '
-          '${SqfliteTransactionsTableColumns.type.code} TEXT, '
-          '${SqfliteTransactionsTableColumns.categoryUuid.code} TEXT REFERENCES '
-          '${SqfliteDbConfig.categoriesTableName}(${SqfliteCategoriesTableColumns.uuid.code})'
-          ');',
-        );
+        _onCreate(db);
       },
+    );
+  }
+
+  Future<void> _onCreate(Database db) async {
+    await db.execute(
+      'CREATE TABLE ${SqfliteDbConfig.categoriesTableName} ('
+      '${SqfliteCategoriesTableColumns.uuid.code} TEXT PRIMARY KEY, '
+      '${SqfliteCategoriesTableColumns.name.code} TEXT, '
+      '${SqfliteCategoriesTableColumns.color.code} TEXT'
+      ')',
+    );
+
+    await db.execute(
+      'CREATE TABLE ${SqfliteDbConfig.transactionsTableName} ('
+      '${SqfliteTransactionsTableColumns.uuid.code} TEXT PRIMARY KEY, '
+      '${SqfliteTransactionsTableColumns.title.code} TEXT, '
+      '${SqfliteTransactionsTableColumns.amount.code} REAL, '
+      '${SqfliteTransactionsTableColumns.date.code} INT, '
+      '${SqfliteTransactionsTableColumns.type.code} TEXT, '
+      '${SqfliteTransactionsTableColumns.categoryUuid.code} TEXT'
+      ' REFERENCES ${SqfliteDbConfig.categoriesTableName}'
+      '(${SqfliteCategoriesTableColumns.uuid.code})'
+      ');',
+    );
+  }
+
+  Future<void> _version1To2Migration(Database db) async {
+    await db.execute(
+      'ALTER TABLE ${SqfliteDbConfig.transactionsTableName} '
+      'ADD COLUMN ${SqfliteTransactionsTableColumns.type.code} TEXT DEFAULT '
+      '"${SqfliteTransactionType.expense.name}"'
+      ';',
+    );
+  }
+
+  Future<void> _version2To3Migration(Database db) async {
+    await db.execute(
+      'CREATE TABLE transactions_replacement ('
+      'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+      '${SqfliteTransactionsTableColumns.uuid.code} TEXT, '
+      '${SqfliteTransactionsTableColumns.title.code} TEXT, '
+      '${SqfliteTransactionsTableColumns.amount.code} REAL, '
+      '${SqfliteTransactionsTableColumns.date.code} INT, '
+      '${SqfliteTransactionsTableColumns.type.code} TEXT, '
+      '${SqfliteTransactionsTableColumns.categoryUuid.code} TEXT'
+      ' REFERENCES ${SqfliteDbConfig.categoriesTableName}'
+      '(${SqfliteCategoriesTableColumns.uuid.code})'
+      ');',
+    );
+
+    await db.execute(
+      'INSERT INTO transactions_replacement('
+      '${SqfliteTransactionsTableColumns.uuid.code},'
+      '${SqfliteTransactionsTableColumns.title.code},'
+      '${SqfliteTransactionsTableColumns.amount.code},'
+      '${SqfliteTransactionsTableColumns.date.code},'
+      '${SqfliteTransactionsTableColumns.type.code}, '
+      '${SqfliteTransactionsTableColumns.categoryUuid.code}'
+      ')'
+      ' SELECT '
+      '${SqfliteTransactionsTableColumns.uuid.code},'
+      '${SqfliteTransactionsTableColumns.title.code},'
+      '${SqfliteTransactionsTableColumns.amount.code},'
+      '${SqfliteTransactionsTableColumns.date.code},'
+      '${SqfliteTransactionsTableColumns.type.code}, '
+      '${SqfliteTransactionsTableColumns.categoryUuid.code}'
+      ' FROM transactions;',
+    );
+
+    await db.execute(
+      'DROP TABLE IF EXISTS ${SqfliteDbConfig.transactionsTableName};',
+    );
+
+    await db.execute(
+      'CREATE TABLE ${SqfliteDbConfig.transactionsTableName} ('
+      '${SqfliteTransactionsTableColumns.uuid.code} TEXT PRIMARY KEY, '
+      '${SqfliteTransactionsTableColumns.title.code} TEXT, '
+      '${SqfliteTransactionsTableColumns.amount.code} REAL, '
+      '${SqfliteTransactionsTableColumns.date.code} INT, '
+      '${SqfliteTransactionsTableColumns.type.code} TEXT, '
+      '${SqfliteTransactionsTableColumns.categoryUuid.code} TEXT'
+      ' REFERENCES ${SqfliteDbConfig.categoriesTableName}'
+      '(${SqfliteCategoriesTableColumns.uuid.code})'
+      ');',
+    );
+
+    await db.execute(
+      'INSERT INTO ${SqfliteDbConfig.transactionsTableName}('
+      '${SqfliteTransactionsTableColumns.uuid.code},'
+      '${SqfliteTransactionsTableColumns.title.code},'
+      '${SqfliteTransactionsTableColumns.amount.code},'
+      '${SqfliteTransactionsTableColumns.date.code},'
+      '${SqfliteTransactionsTableColumns.type.code}, '
+      '${SqfliteTransactionsTableColumns.categoryUuid.code}'
+      ')'
+      ' SELECT '
+      '${SqfliteTransactionsTableColumns.uuid.code},'
+      '${SqfliteTransactionsTableColumns.title.code},'
+      '${SqfliteTransactionsTableColumns.amount.code},'
+      '${SqfliteTransactionsTableColumns.date.code},'
+      '${SqfliteTransactionsTableColumns.type.code}, '
+      '${SqfliteTransactionsTableColumns.categoryUuid.code}'
+      ' FROM transactions_replacement;',
+    );
+
+    await db.execute(
+      'DROP TABLE IF EXISTS transactions_replacement;',
     );
   }
 
