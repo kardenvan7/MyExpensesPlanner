@@ -6,7 +6,7 @@ class DataExportTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ExportCubit>(
-      create: (context) => getIt<ExportCubit>(),
+      create: (context) => DI.instance<ExportCubit>(),
       child: Builder(
         builder: (context) {
           final _cubit = BlocProvider.of<ExportCubit>(context);
@@ -23,7 +23,7 @@ class DataExportTile extends StatelessWidget {
               }
 
               if (state.closeDialog) {
-                getIt<AppRouter>().pop();
+                DI.instance<AppRouter>().pop();
               }
             },
             builder: (context, state) {
@@ -103,7 +103,7 @@ class ExportStatusDialog extends StatelessWidget {
                   ? [
                       TextButton(
                         onPressed: () {
-                          getIt<AppRouter>().pop();
+                          DI.instance<AppRouter>().pop();
                         },
                         child: Text(
                           AppLocalizationsFacade.of(context).close,

@@ -81,7 +81,7 @@ class TransactionsList extends StatelessWidget {
           end: date.endOfDay,
         ),
       );
-      // getIt<AppRouter>().push(
+      // DI.instance<AppRouter>().push(
       //   PeriodStatisticsRoute(
       //     dateTimeRange: DateTimeRange(
       //       start: date.startOfDay,
@@ -136,7 +136,7 @@ class TransactionsList extends StatelessWidget {
   }
 
   void _onTransactionEditTap(Transaction transaction) {
-    getIt<AppRouter>().push(
+    DI.instance<AppRouter>().push(
       EditTransactionRoute(transaction: transaction),
     );
   }
@@ -148,10 +148,10 @@ class TransactionsList extends StatelessWidget {
     BlocProvider.of<TransactionListCubit>(contextWithCubit)
         .deleteTransaction(uuid);
 
-    getIt<AppRouter>().pop();
+    DI.instance<AppRouter>().pop();
   }
 
   void _onDeleteDenied() {
-    getIt<AppRouter>().pop();
+    DI.instance<AppRouter>().pop();
   }
 }

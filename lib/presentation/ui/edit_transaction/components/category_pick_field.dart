@@ -145,7 +145,7 @@ class PickCategoryModalSheet extends StatelessWidget {
                     AppLocalizationsFacade.of(context).add_category,
                   ),
                   onPressed: () {
-                    getIt<AppRouter>().pushNamed(EditCategoryScreen.routeName);
+                    DI.instance<AppRouter>().pushNamed(EditCategoryScreen.routeName);
                   },
                 ),
               ),
@@ -236,14 +236,14 @@ class PickCategoryModalSheet extends StatelessWidget {
 
   void _onCategoryTap(BuildContext context, String? categoryUuid) {
     onCategoryUuidPicked(ValueWrapper(value: categoryUuid));
-    getIt<AppRouter>().pop();
+    DI.instance<AppRouter>().pop();
   }
 
   void _onCategoryEditTap({
     required BuildContext context,
     TransactionCategory? category,
   }) {
-    getIt<AppRouter>().push(EditCategoryRoute(category: category));
+    DI.instance<AppRouter>().push(EditCategoryRoute(category: category));
   }
 
   void _onCategoryDeleteTap(BuildContext context, String categoryUuid) {
@@ -257,7 +257,7 @@ class PickCategoryModalSheet extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              onPressed: getIt<AppRouter>().pop,
+              onPressed: DI.instance<AppRouter>().pop,
               child: Text(AppLocalizationsFacade.of(context).no),
             ),
             TextButton(
@@ -269,7 +269,7 @@ class PickCategoryModalSheet extends StatelessWidget {
                   onCategoryUuidPicked(ValueWrapper(value: null));
                 }
 
-                getIt<AppRouter>().pop();
+                DI.instance<AppRouter>().pop();
               },
               child: Text(AppLocalizationsFacade.of(context).yes),
             ),

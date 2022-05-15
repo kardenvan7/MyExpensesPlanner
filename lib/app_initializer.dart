@@ -16,10 +16,10 @@ class AppInitializer {
         try {
           WidgetsFlutterBinding.ensureInitialized();
           SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-          await configureDependencies();
-          await getIt<ILocalDatabase>().initialize();
-          await getIt<ILocalStorage>().initialize();
-          await getIt<AppSettingsCubit>().initialize();
+          await DI.configureDependencies();
+          await DI.instance<ILocalDatabase>().initialize();
+          await DI.instance<ILocalStorage>().initialize();
+          await DI.instance<AppSettingsCubit>().initialize();
         } catch (e) {
           exit(1);
         }

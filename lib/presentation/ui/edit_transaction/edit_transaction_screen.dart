@@ -28,7 +28,7 @@ class EditTransactionScreen extends StatelessWidget {
       child: BlocProvider<EditTransactionCubit>(
         create: (context) => EditTransactionCubit(
           transaction: transaction,
-          transactionsCase: getIt<ITransactionsCase>(),
+          transactionsCase: DI.instance<ITransactionsCase>(),
         ),
         child: BlocConsumer<EditTransactionCubit, EditTransactionState>(
           listener: (context, state) {
@@ -43,7 +43,7 @@ class EditTransactionScreen extends StatelessWidget {
             }
 
             if (state.popScreen) {
-              getIt<AppRouter>().pop();
+              DI.instance<AppRouter>().pop();
             }
           },
           buildWhen: (oldState, newState) {

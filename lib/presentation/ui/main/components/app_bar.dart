@@ -27,14 +27,14 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (ConfigConstants.isTest)
           IconButton(
             onPressed: () {
-              getIt<ITransactionsCase>().deleteAll();
+              DI.instance<ITransactionsCase>().deleteAll();
             },
             icon: const Icon(Icons.delete),
           ),
         if (ConfigConstants.isTest)
           IconButton(
             onPressed: () {
-              getIt<ITransactionsCase>().fillWithMockTransactions();
+              DI.instance<ITransactionsCase>().fillWithMockTransactions();
             },
             icon: const Icon(Icons.add),
           ),

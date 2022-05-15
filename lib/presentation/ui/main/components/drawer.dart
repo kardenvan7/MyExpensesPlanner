@@ -34,7 +34,7 @@ class MainScreenDrawer extends StatelessWidget {
                 //               AppLocalizationsWrapper.of(context).statistics,
                 //             ),
                 //             onTap: () {
-                //               getIt<AppRouter>().push(
+                //               DI.instance<AppRouter>().push(
                 //                 PeriodStatisticsRoute(),
                 //               );
                 //             },
@@ -54,7 +54,7 @@ class MainScreenDrawer extends StatelessWidget {
                     leading: const Icon(Icons.settings),
                     title: Text(AppLocalizationsFacade.of(context).settings),
                     onTap: () {
-                      getIt<AppRouter>().pushNamed(SettingsScreen.routeName);
+                      DI.instance<AppRouter>().pushNamed(SettingsScreen.routeName);
                     },
                   ),
                 ],

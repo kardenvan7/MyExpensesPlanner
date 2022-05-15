@@ -17,10 +17,10 @@ class MyExpensesPlanner extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<CategoryListCubit>.value(
-          value: getIt<CategoryListCubit>()..initialize(),
+          value: DI.instance<CategoryListCubit>()..initialize(),
         ),
         BlocProvider<AppSettingsCubit>.value(
-          value: getIt<AppSettingsCubit>()..initialize(),
+          value: DI.instance<AppSettingsCubit>()..initialize(),
         ),
       ],
       child: BlocBuilder<AppSettingsCubit, AppSettingsState>(
@@ -48,8 +48,8 @@ class MyExpensesPlanner extends StatelessWidget {
             ],
             locale: appState.locale,
             debugShowCheckedModeBanner: false,
-            routerDelegate: getIt<AppRouter>().delegate(),
-            routeInformationParser: getIt<AppRouter>().defaultRouteParser(),
+            routerDelegate: DI.instance<AppRouter>().delegate(),
+            routeInformationParser: DI.instance<AppRouter>().defaultRouteParser(),
             // home: const MainScreen(),
             // onGenerateRoute: _onGenerateRoute,
           );

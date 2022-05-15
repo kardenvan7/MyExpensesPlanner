@@ -30,108 +30,111 @@ import 'package:my_expenses_planner/presentation/cubit/export/export_cubit.dart'
 import 'package:my_expenses_planner/presentation/cubit/import/import_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 
-/// Syntax sugar. A shorter way for accessing [GetIt.instance].
-final GetIt getIt = GetIt.instance;
 
-Future<void> configureDependencies() async {
-  getIt
+class DI {
+  static GetIt instance = GetIt.instance;
+
+  static Future<void> configureDependencies() async {
+    final GetIt getIt = GetIt.instance;
+    getIt
 
     /// Databases and storages
-    ..registerSingleton<ILocalStorage>(
-      HiveLocalStorage(HiveFacade()),
-    )
-    ..registerSingleton<ILocalDatabase>(
-      SqfliteLocalDatabase(
-        SqfliteDatabaseFacade(
-          SqfliteDatabaseProvider(),
+      ..registerSingleton<ILocalStorage>(
+        HiveLocalStorage(HiveFacade()),
+      )
+      ..registerSingleton<ILocalDatabase>(
+        SqfliteLocalDatabase(
+          SqfliteDatabaseFacade(
+            SqfliteDatabaseProvider(),
+          ),
         ),
-      ),
-    )
+      )
 
     /// Local providers
-    ..registerSingleton<ITransactionsLocalProvider>(
-      LocalDbTransactionLocalProvider(database: getIt<ILocalDatabase>()),
-    )
-    ..registerSingleton<ICategoriesLocalProvider>(
-      LocalDbCategoriesLocalProvider(database: getIt<ILocalDatabase>()),
-    )
+      ..registerSingleton<ITransactionsLocalProvider>(
+        LocalDbTransactionLocalProvider(database: getIt<ILocalDatabase>()),
+      )
+      ..registerSingleton<ICategoriesLocalProvider>(
+        LocalDbCategoriesLocalProvider(database: getIt<ILocalDatabase>()),
+      )
 
     /// Remote providers
 
     /// Repositories
-    ..registerSingleton<ICategoriesRepository>(
-      CategoriesRepository(
-        localProvider: getIt<ICategoriesLocalProvider>(),
-      ),
-    )
-    ..registerLazySingleton<ITransactionsRepository>(
-      () => TransactionsRepository(
-        localProvider: getIt<ITransactionsLocalProvider>(),
-      ),
-    )
-    ..registerLazySingleton<IAppSettingsRepository>(
-      () => AppSettingsRepository(
-        getIt<ILocalStorage>(),
-      ),
-    )
+      ..registerSingleton<ICategoriesRepository>(
+        CategoriesRepository(
+          localProvider: getIt<ICategoriesLocalProvider>(),
+        ),
+      )
+      ..registerLazySingleton<ITransactionsRepository>(
+            () => TransactionsRepository(
+          localProvider: getIt<ITransactionsLocalProvider>(),
+        ),
+      )
+      ..registerLazySingleton<IAppSettingsRepository>(
+            () => AppSettingsRepository(
+          getIt<ILocalStorage>(),
+        ),
+      )
 
     /// Use cases
-    ..registerLazySingleton<ITransactionsCase>(
-      () => TransactionsCaseImpl(
-        transactionsRepository: getIt<ITransactionsRepository>(),
-      ),
-    )
-    ..registerLazySingleton<ICategoriesCase>(
-      () => CategoriesCaseImpl(
-        categoriesRepository: getIt<ICategoriesRepository>(),
-      ),
-    )
-    ..registerLazySingleton<IAppSettingsCase>(
-      () => AppSettingsCaseImpl(
-        getIt<IAppSettingsRepository>(),
-      ),
-    )
+      ..registerLazySingleton<ITransactionsCase>(
+            () => TransactionsCaseImpl(
+          transactionsRepository: getIt<ITransactionsRepository>(),
+        ),
+      )
+      ..registerLazySingleton<ICategoriesCase>(
+            () => CategoriesCaseImpl(
+          categoriesRepository: getIt<ICategoriesRepository>(),
+        ),
+      )
+      ..registerLazySingleton<IAppSettingsCase>(
+            () => AppSettingsCaseImpl(
+          getIt<IAppSettingsRepository>(),
+        ),
+      )
 
     /// Services
-    ..registerSingleton<DataExportHandler>(
-      DataExportHandler(
-        transactionsRepository: getIt<ITransactionsRepository>(),
-        categoriesRepository: getIt<ICategoriesRepository>(),
-      ),
-    )
-    ..registerSingleton<DataImportHandler>(
-      DataImportHandler(
-        transactionsCase: getIt<ITransactionsCase>(),
-        categoriesCase: getIt<ICategoriesCase>(),
-      ),
-    )
+      ..registerSingleton<DataExportHandler>(
+        DataExportHandler(
+          transactionsRepository: getIt<ITransactionsRepository>(),
+          categoriesRepository: getIt<ICategoriesRepository>(),
+        ),
+      )
+      ..registerSingleton<DataImportHandler>(
+        DataImportHandler(
+          transactionsCase: getIt<ITransactionsCase>(),
+          categoriesCase: getIt<ICategoriesCase>(),
+        ),
+      )
 
     /// Cubits
-    ..registerFactory<ExportCubit>(
-      () => ExportCubit(
-        getIt<DataExportHandler>(),
-      ),
-    )
-    ..registerFactory<ImportCubit>(
-      () => ImportCubit(
-        getIt<DataImportHandler>(),
-      ),
-    )
+      ..registerFactory<ExportCubit>(
+            () => ExportCubit(
+          getIt<DataExportHandler>(),
+        ),
+      )
+      ..registerFactory<ImportCubit>(
+            () => ImportCubit(
+          getIt<DataImportHandler>(),
+        ),
+      )
 
     /// Global singletons
-    ..registerSingleton<AppRouter>(
-      AppRouter(),
-    )
-    ..registerLazySingleton<CategoryListCubit>(
-      () => CategoryListCubit(
-        categoriesCaseImpl: getIt<ICategoriesCase>(),
-      ),
-    )
-    ..registerLazySingleton<AppSettingsCubit>(
-      () => AppSettingsCubit(
-        appSettingsCase: getIt<IAppSettingsCase>(),
-      ),
-    );
+      ..registerSingleton<AppRouter>(
+        AppRouter(),
+      )
+      ..registerLazySingleton<CategoryListCubit>(
+            () => CategoryListCubit(
+          categoriesCaseImpl: getIt<ICategoriesCase>(),
+        ),
+      )
+      ..registerLazySingleton<AppSettingsCubit>(
+            () => AppSettingsCubit(
+          appSettingsCase: getIt<IAppSettingsCase>(),
+        ),
+      );
 
-  await getIt.allReady();
+    await getIt.allReady();
+  }
 }

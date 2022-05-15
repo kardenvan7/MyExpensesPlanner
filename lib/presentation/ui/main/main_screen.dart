@@ -22,7 +22,7 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<TransactionListCubit>(
       create: (context) => TransactionListCubit(
-        transactionsCaseImpl: getIt<ITransactionsCase>(),
+        transactionsCaseImpl: DI.instance<ITransactionsCase>(),
         loadLimit: 40,
       )..initialize(),
       child: Scaffold(
@@ -31,7 +31,7 @@ class MainScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () {
-            getIt<AppRouter>().pushNamed(EditTransactionScreen.routeName);
+            DI.instance<AppRouter>().pushNamed(EditTransactionScreen.routeName);
           },
         ),
         body: BlocBuilder<TransactionListCubit, TransactionListState>(

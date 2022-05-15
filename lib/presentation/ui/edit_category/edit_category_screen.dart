@@ -26,14 +26,14 @@ class EditCategoryScreen extends StatelessWidget {
     return BlocProvider<EditCategoryCubit>(
       create: (context) => EditCategoryCubit(
         category: category,
-        categoriesCase: getIt<ICategoriesCase>(),
+        categoriesCase: DI.instance<ICategoriesCase>(),
       ),
       child: BlocConsumer<EditCategoryCubit, EditCategoryState>(
         listener: (context, state) {
           if (state.popScreen) {
             onEditFinish?.call(state.uuid);
 
-            getIt<AppRouter>().pop();
+            DI.instance<AppRouter>().pop();
           }
         },
         buildWhen: (oldState, newState) {

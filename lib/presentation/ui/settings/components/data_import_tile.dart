@@ -6,7 +6,7 @@ class DataImportTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ImportCubit>(
-      create: (context) => getIt<ImportCubit>(),
+      create: (context) => DI.instance<ImportCubit>(),
       child: Builder(builder: (context) {
         final _cubit = BlocProvider.of<ImportCubit>(context);
 
@@ -22,7 +22,7 @@ class DataImportTile extends StatelessWidget {
             }
 
             if (state.closeDialog) {
-              getIt<AppRouter>().pop();
+              DI.instance<AppRouter>().pop();
             }
           },
           builder: (context, state) {
@@ -101,7 +101,7 @@ class ImportStatusDialog extends StatelessWidget {
                   ? [
                       TextButton(
                         onPressed: () {
-                          getIt<AppRouter>().pop();
+                          DI.instance<AppRouter>().pop();
                         },
                         child: Text(
                           AppLocalizationsFacade.of(context).close,

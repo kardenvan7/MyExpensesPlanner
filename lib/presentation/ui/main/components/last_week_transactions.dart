@@ -21,7 +21,7 @@ class LastWeekTransactions extends StatelessWidget {
 
     return BlocProvider<LastWeekGraphsCubit>(
       create: (context) => LastWeekGraphsCubit(
-        getIt<ITransactionsCase>(),
+        DI.instance<ITransactionsCase>(),
       )..initialize(),
       child: BlocBuilder<LastWeekGraphsCubit, LastWeekGraphsState>(
         builder: (context, state) {
