@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.kardenvan.my_expenses_planner">
+    package="com.kardenvan.my_expenses_planner_new">
    <application
         android:label="My Expenses Planner"
         android:icon="@mipmap/launcher_icon"

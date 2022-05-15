@@ -14,14 +14,24 @@ class SqfliteDatabaseProvider {
 
   static final SqfliteDatabaseProvider _instance = SqfliteDatabaseProvider._();
 
-  late final Database database;
-  late final String _myDbPath;
+  Database? _database;
+  Database get database {
+    if (_database == null) {
+      throw const FormatException(
+        'SqfliteDatabaseProvider was not initialized',
+      );
+    }
+
+    return _database!;
+  }
+
+  late String _myDbPath;
 
   Future<void> initDatabase() async {
-    final String _databasesPath = await getDatabasesPath();
-    _myDbPath = join(_databasesPath, _dbFileName);
+    final String databasesPath = await getDatabasesPath();
+    _myDbPath = join(databasesPath, _dbFileName);
 
-    database = await openDatabase(
+    _database = await openDatabase(
       _myDbPath,
       version: _version,
       onOpen: (Database db) async {

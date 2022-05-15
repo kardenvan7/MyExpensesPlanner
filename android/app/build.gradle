@@ -58,7 +58,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.kardenvan.my_expenses_planner"
+        applicationId "com.kardenvan.my_expenses_planner_new"
         minSdkVersion 21
         targetSdkVersion 32
         versionCode flutterVersionCode.toInteger()

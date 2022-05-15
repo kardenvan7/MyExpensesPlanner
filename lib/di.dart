@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:get_it/get_it.dart';
 import 'package:my_expenses_planner/data/local/local_db/i_local_db.dart';
 import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_database_facade.dart';
@@ -87,63 +89,73 @@ class DI {
       /// Remote providers
 
       /// Repositories
-      ..registerSingleton<ICategoriesRepository>(
-        CategoriesRepository(
+      ..registerSingletonWithDependencies<ICategoriesRepository>(
+        () => CategoriesRepository(
           localProvider: getIt<ICategoriesLocalProvider>(),
         ),
+        dependsOn: [ICategoriesLocalProvider],
       )
-      ..registerSingleton<ITransactionsRepository>(
-        TransactionsRepository(
+      ..registerSingletonWithDependencies<ITransactionsRepository>(
+        () => TransactionsRepository(
           localProvider: getIt<ITransactionsLocalProvider>(),
         ),
+        dependsOn: [ITransactionsLocalProvider],
       )
-      ..registerSingleton<IAppSettingsRepository>(
-        AppSettingsRepository(
+      ..registerSingletonWithDependencies<IAppSettingsRepository>(
+        () => AppSettingsRepository(
           getIt<IAppSettingsLocalProvider>(),
         ),
+        dependsOn: [IAppSettingsLocalProvider],
       )
 
       /// Use cases
-      ..registerSingleton<ITransactionsCase>(
-        TransactionsCaseImpl(
+      ..registerSingletonWithDependencies<ITransactionsCase>(
+        () => TransactionsCaseImpl(
           transactionsRepository: getIt<ITransactionsRepository>(),
         ),
+        dependsOn: [ITransactionsRepository],
       )
-      ..registerSingleton<ICategoriesCase>(
-        CategoriesCaseImpl(
+      ..registerSingletonWithDependencies<ICategoriesCase>(
+        () => CategoriesCaseImpl(
           categoriesRepository: getIt<ICategoriesRepository>(),
         ),
+        dependsOn: [ICategoriesRepository],
       )
-      ..registerSingleton<IAppSettingsCase>(
-        AppSettingsCaseImpl(
+      ..registerSingletonWithDependencies<IAppSettingsCase>(
+        () => AppSettingsCaseImpl(
           getIt<IAppSettingsRepository>(),
         ),
+        dependsOn: [IAppSettingsRepository],
       )
 
       /// Services
-      ..registerSingleton<DataExportHandler>(
-        DataExportHandler(
+      ..registerSingletonWithDependencies<DataExportHandler>(
+        () => DataExportHandler(
           transactionsRepository: getIt<ITransactionsRepository>(),
           categoriesRepository: getIt<ICategoriesRepository>(),
         ),
+        dependsOn: [ITransactionsRepository, ICategoriesRepository],
       )
-      ..registerSingleton<DataImportHandler>(
-        DataImportHandler(
+      ..registerSingletonWithDependencies<DataImportHandler>(
+        () => DataImportHandler(
           transactionsCase: getIt<ITransactionsCase>(),
           categoriesCase: getIt<ICategoriesCase>(),
         ),
+        dependsOn: [ITransactionsRepository, ICategoriesRepository],
       )
 
       /// Cubits
-      ..registerSingleton<CategoryListCubit>(
-        CategoryListCubit(
+      ..registerSingletonWithDependencies<CategoryListCubit>(
+        () => CategoryListCubit(
           categoriesCaseImpl: getIt<ICategoriesCase>(),
         ),
+        dependsOn: [ICategoriesCase],
       )
-      ..registerSingleton<AppSettingsCubit>(
-        AppSettingsCubit(
+      ..registerSingletonWithDependencies<AppSettingsCubit>(
+        () => AppSettingsCubit(
           appSettingsCase: getIt<IAppSettingsCase>(),
         ),
+        dependsOn: [IAppSettingsCase],
       )
       ..registerFactory<ExportCubit>(
         () => ExportCubit(
