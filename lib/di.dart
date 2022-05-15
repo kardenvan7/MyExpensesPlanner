@@ -4,8 +4,8 @@ import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_database
 import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_db_provider.dart';
 import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_local_db.dart';
 import 'package:my_expenses_planner/data/local/local_storage/hive/hive_facade.dart';
-import 'package:my_expenses_planner/data/local/local_storage/hive/hive_local_storage.dart';
-import 'package:my_expenses_planner/data/local/local_storage/i_local_storage.dart';
+import 'package:my_expenses_planner/data/local/providers/app_settings/i_app_settings_local_provider.dart';
+import 'package:my_expenses_planner/data/local/providers/app_settings/local_storage_app_settings_local_provider.dart';
 import 'package:my_expenses_planner/data/local/providers/categories/i_categories_local_provider.dart';
 import 'package:my_expenses_planner/data/local/providers/categories/local_db_categories_local_provider.dart';
 import 'package:my_expenses_planner/data/local/providers/transactions/i_transactions_local_provider.dart';
@@ -30,7 +30,6 @@ import 'package:my_expenses_planner/presentation/cubit/export/export_cubit.dart'
 import 'package:my_expenses_planner/presentation/cubit/import/import_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 
-
 class DI {
   static GetIt instance = GetIt.instance;
 
@@ -38,63 +37,90 @@ class DI {
     final GetIt getIt = GetIt.instance;
     getIt
 
-    /// Databases and storages
-      ..registerSingleton<ILocalStorage>(
-        HiveLocalStorage(HiveFacade()),
+      /// Global singletons
+      ..registerSingletonAsync<HiveFacade>(
+        () async {
+          final HiveFacade _facade = HiveFacade();
+
+          await _facade.initHive();
+
+          return _facade;
+        },
       )
-      ..registerSingleton<ILocalDatabase>(
-        SqfliteLocalDatabase(
+      ..registerSingleton<AppRouter>(
+        AppRouter(),
+      )
+
+      /// Databases and storages
+      ..registerSingletonAsync<ILocalDatabase>(() async {
+        final _db = SqfliteLocalDatabase(
           SqfliteDatabaseFacade(
             SqfliteDatabaseProvider(),
           ),
+        );
+
+        await _db.initialize();
+
+        return _db;
+      })
+
+      /// Local providers
+      ..registerSingletonWithDependencies<ITransactionsLocalProvider>(
+        () => LocalDbTransactionLocalProvider(
+          database: getIt<ILocalDatabase>(),
         ),
+        dependsOn: [ILocalDatabase],
+      )
+      ..registerSingletonWithDependencies<ICategoriesLocalProvider>(
+        () => LocalDbCategoriesLocalProvider(
+          database: getIt<ILocalDatabase>(),
+        ),
+        dependsOn: [ILocalDatabase],
+      )
+      ..registerSingletonWithDependencies<IAppSettingsLocalProvider>(
+        () => HiveAppSettingsLocalProvider(
+          getIt<HiveFacade>(),
+        ),
+        dependsOn: [HiveFacade],
       )
 
-    /// Local providers
-      ..registerSingleton<ITransactionsLocalProvider>(
-        LocalDbTransactionLocalProvider(database: getIt<ILocalDatabase>()),
-      )
-      ..registerSingleton<ICategoriesLocalProvider>(
-        LocalDbCategoriesLocalProvider(database: getIt<ILocalDatabase>()),
-      )
+      /// Remote providers
 
-    /// Remote providers
-
-    /// Repositories
+      /// Repositories
       ..registerSingleton<ICategoriesRepository>(
         CategoriesRepository(
           localProvider: getIt<ICategoriesLocalProvider>(),
         ),
       )
-      ..registerLazySingleton<ITransactionsRepository>(
-            () => TransactionsRepository(
+      ..registerSingleton<ITransactionsRepository>(
+        TransactionsRepository(
           localProvider: getIt<ITransactionsLocalProvider>(),
         ),
       )
-      ..registerLazySingleton<IAppSettingsRepository>(
-            () => AppSettingsRepository(
-          getIt<ILocalStorage>(),
+      ..registerSingleton<IAppSettingsRepository>(
+        AppSettingsRepository(
+          getIt<IAppSettingsLocalProvider>(),
         ),
       )
 
-    /// Use cases
-      ..registerLazySingleton<ITransactionsCase>(
-            () => TransactionsCaseImpl(
+      /// Use cases
+      ..registerSingleton<ITransactionsCase>(
+        TransactionsCaseImpl(
           transactionsRepository: getIt<ITransactionsRepository>(),
         ),
       )
-      ..registerLazySingleton<ICategoriesCase>(
-            () => CategoriesCaseImpl(
+      ..registerSingleton<ICategoriesCase>(
+        CategoriesCaseImpl(
           categoriesRepository: getIt<ICategoriesRepository>(),
         ),
       )
-      ..registerLazySingleton<IAppSettingsCase>(
-            () => AppSettingsCaseImpl(
+      ..registerSingleton<IAppSettingsCase>(
+        AppSettingsCaseImpl(
           getIt<IAppSettingsRepository>(),
         ),
       )
 
-    /// Services
+      /// Services
       ..registerSingleton<DataExportHandler>(
         DataExportHandler(
           transactionsRepository: getIt<ITransactionsRepository>(),
@@ -108,30 +134,25 @@ class DI {
         ),
       )
 
-    /// Cubits
+      /// Cubits
+      ..registerSingleton<CategoryListCubit>(
+        CategoryListCubit(
+          categoriesCaseImpl: getIt<ICategoriesCase>(),
+        ),
+      )
+      ..registerSingleton<AppSettingsCubit>(
+        AppSettingsCubit(
+          appSettingsCase: getIt<IAppSettingsCase>(),
+        ),
+      )
       ..registerFactory<ExportCubit>(
-            () => ExportCubit(
+        () => ExportCubit(
           getIt<DataExportHandler>(),
         ),
       )
       ..registerFactory<ImportCubit>(
-            () => ImportCubit(
+        () => ImportCubit(
           getIt<DataImportHandler>(),
-        ),
-      )
-
-    /// Global singletons
-      ..registerSingleton<AppRouter>(
-        AppRouter(),
-      )
-      ..registerLazySingleton<CategoryListCubit>(
-            () => CategoryListCubit(
-          categoriesCaseImpl: getIt<ICategoriesCase>(),
-        ),
-      )
-      ..registerLazySingleton<AppSettingsCubit>(
-            () => AppSettingsCubit(
-          appSettingsCase: getIt<IAppSettingsCase>(),
         ),
       );
 

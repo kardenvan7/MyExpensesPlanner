@@ -23,8 +23,26 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
 
   Future<void> initialize() async {
     if (!initialized) {
-      final _locale = await _appSettingsCase.getAppLanguage();
-      final _theme = await _appSettingsCase.getTheme();
+      Locale? _locale;
+      ThemeMode? _theme;
+
+      final _localeFetchResult = await _appSettingsCase.getAppLanguage();
+
+      _localeFetchResult.fold(
+        onFailure: (_) {},
+        onSuccess: (locale) {
+          _locale = locale;
+        },
+      );
+
+      final _themeFetchResult = await _appSettingsCase.getTheme();
+
+      _themeFetchResult.fold(
+        onFailure: (_) {},
+        onSuccess: (theme) {
+          _theme = theme;
+        },
+      );
 
       emit(
         state.copyWith(
@@ -38,28 +56,16 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
   }
 
   void setLocale(Locale locale) {
-    try {
-      _appSettingsCase.saveAppLanguage(locale);
-    } catch (_) {}
+    _appSettingsCase.saveAppLanguage(locale);
 
     emit(state.copyWith(locale: locale));
-  }
-
-  void switchLanguage() {
-    setLocale(
-      state.locale.isEnglish
-          ? SupportedLocales.russian
-          : SupportedLocales.english,
-    );
   }
 
   void switchTheme() {
     final ThemeMode _newMode =
         state.isLightTheme ? ThemeMode.dark : ThemeMode.light;
 
-    try {
-      _appSettingsCase.saveTheme(_newMode);
-    } catch (_) {}
+    _appSettingsCase.saveTheme(_newMode);
 
     emit(
       state.copyWith(

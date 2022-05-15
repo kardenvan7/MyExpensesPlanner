@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/core/utils/result.dart';
 import 'package:my_expenses_planner/data/local/providers/transactions/i_transactions_local_provider.dart';
 import 'package:my_expenses_planner/data/models/transaction.dart';
-import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart' as domain;
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart' as domain;
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_transactions_repository.dart';
 
 class TransactionsRepository implements ITransactionsRepository {

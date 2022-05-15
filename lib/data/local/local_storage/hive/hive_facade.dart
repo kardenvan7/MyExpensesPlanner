@@ -1,4 +1,6 @@
 import 'package:hive_flutter/adapters.dart';
+import 'package:my_expenses_planner/core/utils/result.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 
 class HiveFacade {
   HiveFacade._();
@@ -33,5 +35,31 @@ class HiveFacade {
 
   void _setInitialized() {
     _initialized = true;
+  }
+
+  Future<Result<FetchFailure, String>> get(String key) async {
+    final dynamic _value = _box.get(key);
+
+    if (_value == null) {
+      return Result.failure(FetchFailure.notFound());
+    }
+
+    if (_value! is String) {
+      return Result.failure(FetchFailure.unknown());
+    }
+
+    return Result.success(_value);
+  }
+
+  Future<Result<FetchFailure, void>> put(
+    String key,
+    String value,
+  ) async {
+    try {
+      await _box.put(key, value);
+      return Result.success(null);
+    } catch (_) {
+      return Result.failure(FetchFailure.unknown());
+    }
   }
 }

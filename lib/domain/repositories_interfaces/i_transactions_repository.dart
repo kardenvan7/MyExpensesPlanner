@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/core/utils/result.dart';
-import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 
 abstract class ITransactionsRepository {
   Future<Result<FetchFailure, List<Transaction>>> getTransactions({

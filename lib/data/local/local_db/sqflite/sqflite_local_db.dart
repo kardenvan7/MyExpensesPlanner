@@ -6,7 +6,7 @@ import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_config.d
 import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_database_facade.dart';
 import 'package:my_expenses_planner/data/models/transaction.dart';
 import 'package:my_expenses_planner/data/models/transaction_category.dart';
-import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 
 class SqfliteLocalDatabase implements ILocalDatabase {
   SqfliteLocalDatabase(this._databaseFacade);

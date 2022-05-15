@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:my_expenses_planner/data/local/local_storage/i_local_storage.dart';
+import 'package:my_expenses_planner/core/utils/result.dart';
+import 'package:my_expenses_planner/data/local/providers/app_settings/i_app_settings_local_provider.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_app_settings_repository.dart';
 
 class AppSettingsRepository implements IAppSettingsRepository {
-  AppSettingsRepository(this._localStorage);
+  AppSettingsRepository(this._localProvider);
 
-  final ILocalStorage _localStorage;
+  final IAppSettingsLocalProvider _localProvider;
 
   @override
-  Future<Locale?> getAppLanguage() async {
-    return _localStorage.getAppLanguage();
+  Future<Result<FetchFailure, Locale>> getAppLanguage() async {
+    return _localProvider.getAppLanguage();
   }
 
   @override
-  Future<ThemeMode?> getTheme() async {
-    return _localStorage.getTheme();
+  Future<Result<FetchFailure, ThemeMode>> getTheme() async {
+    return _localProvider.getTheme();
   }
 
   @override
-  Future<void> saveAppLanguage(Locale locale) async {
-    await _localStorage.saveAppLanguage(locale);
+  Future<Result<FetchFailure, void>> saveAppLanguage(Locale locale) async {
+    return _localProvider.saveAppLanguage(locale);
   }
 
   @override
-  Future<void> saveTheme(ThemeMode theme) async {
-    await _localStorage.saveTheme(theme);
+  Future<Result<FetchFailure, void>> saveTheme(ThemeMode theme) async {
+    return _localProvider.saveTheme(theme);
   }
 }

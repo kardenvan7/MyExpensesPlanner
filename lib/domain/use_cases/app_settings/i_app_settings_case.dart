@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/core/utils/result.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 
 abstract class IAppSettingsCase {
-  Future<void> saveAppLanguage(Locale locale);
-  Future<void> saveTheme(ThemeMode theme);
+  Future<Result<FetchFailure, void>> saveAppLanguage(Locale locale);
+  Future<Result<FetchFailure, void>> saveTheme(ThemeMode theme);
 
-  Future<Locale?> getAppLanguage();
-  Future<ThemeMode?> getTheme();
+  Future<Result<FetchFailure, Locale>> getAppLanguage();
+  Future<Result<FetchFailure, ThemeMode>> getTheme();
 }

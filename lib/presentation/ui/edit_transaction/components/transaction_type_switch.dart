@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart';
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 
 class TransactionTypeSwitch extends StatelessWidget {
   const TransactionTypeSwitch({

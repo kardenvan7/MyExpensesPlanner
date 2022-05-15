@@ -13,8 +13,8 @@
 import 'package:auto_route/auto_route.dart' as _i6;
 import 'package:flutter/material.dart' as _i7;
 
-import '../../domain/models/transaction.dart' as _i8;
-import '../../domain/models/transaction_category.dart' as _i9;
+import '../../domain/models/transactions/transaction.dart' as _i8;
+import '../../domain/models/categories/transaction_category.dart' as _i9;
 import '../ui/core/widgets/color_picker_screen.dart' as _i5;
 import '../ui/edit_category/edit_category_screen.dart' as _i3;
 import '../ui/edit_transaction/edit_transaction_screen.dart' as _i2;

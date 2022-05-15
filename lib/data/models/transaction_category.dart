@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
-import 'package:my_expenses_planner/domain/models/transaction_category.dart'
+import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart'
     as domain;
 
 class TransactionCategory {

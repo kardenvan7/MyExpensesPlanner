@@ -1,4 +1,4 @@
-import 'package:my_expenses_planner/domain/models/transaction_category.dart';
+import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
 
 class CategoriesChangeData {
   CategoriesChangeData({

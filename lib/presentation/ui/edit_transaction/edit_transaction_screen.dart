@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/di.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart';
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 import 'package:my_expenses_planner/presentation/cubit/edit_transaction/edit_transaction_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';

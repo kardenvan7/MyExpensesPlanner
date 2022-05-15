@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_expenses_planner/core/utils/result.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_app_settings_repository.dart';
 
 class MockAppSettingsRepository implements IAppSettingsRepository {
@@ -6,22 +8,36 @@ class MockAppSettingsRepository implements IAppSettingsRepository {
   ThemeMode? _themeMode;
 
   @override
-  Future<Locale?> getAppLanguage() async {
-    return Future.value(_locale);
+  Future<Result<FetchFailure, Locale>> getAppLanguage() async {
+    return Future.value(
+      _locale == null
+          ? Result.success(_locale!)
+          : Result.failure(
+              FetchFailure.notFound(),
+            ),
+    );
   }
 
   @override
-  Future<ThemeMode?> getTheme() async {
-    return Future.value(_themeMode);
+  Future<Result<FetchFailure, ThemeMode>> getTheme() async {
+    return Future.value(
+      _themeMode == null
+          ? Result.success(_themeMode!)
+          : Result.failure(
+              FetchFailure.notFound(),
+            ),
+    );
   }
 
   @override
-  Future<void> saveAppLanguage(Locale locale) async {
+  Future<Result<FetchFailure, void>> saveAppLanguage(Locale locale) async {
     await Future.sync(() => _locale = locale);
+    return Result.success(null);
   }
 
   @override
-  Future<void> saveTheme(ThemeMode theme) async {
+  Future<Result<FetchFailure, void>> saveTheme(ThemeMode theme) async {
     await Future.sync(() => _themeMode = theme);
+    return Result.success(null);
   }
 }

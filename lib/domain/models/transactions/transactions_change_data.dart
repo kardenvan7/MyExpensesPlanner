@@ -1,4 +1,4 @@
-import 'package:my_expenses_planner/domain/models/transaction.dart';
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 
 class TransactionsChangeData {
   TransactionsChangeData({

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/core/utils/result.dart';
 import 'package:my_expenses_planner/data/models/transaction.dart';
 import 'package:my_expenses_planner/data/models/transaction_category.dart';
-import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 
 abstract class ILocalDatabase {
   Future<void> initialize();

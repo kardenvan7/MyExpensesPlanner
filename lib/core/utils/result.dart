@@ -26,6 +26,12 @@ abstract class Result<F extends Object?, V extends Object?> extends Object {
   factory Result.success(V value) => _Success(value);
   factory Result.failure(F failure) => _Failure(failure);
 
+  bool get isFailure => this is F;
+  bool get isSuccess => this is V;
+
+  F get asFailure => this as F;
+  V get asSuccess => this as V;
+
   TResult fold<TResult>({
     required TResult Function(F failure) onFailure,
     required TResult Function(V value) onSuccess,

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:my_expenses_planner/core/utils/result.dart';
-import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 
-import '../../models/categories_change_data.dart';
-import '../../models/transaction_category.dart';
+import '../../models/categories/categories_change_data.dart';
+import '../../models/categories/transaction_category.dart';
 import '../../repositories_interfaces/i_categories_repository.dart';
 import '../categories/i_categories_case.dart';
 

@@ -1,5 +1,5 @@
 import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart' as domain;
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart' as domain;
 
 class Transaction {
   Transaction({

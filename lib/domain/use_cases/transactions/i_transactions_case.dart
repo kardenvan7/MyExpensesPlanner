@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/core/utils/result.dart';
-import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/domain/models/transactions_change_data.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
+import 'package:my_expenses_planner/domain/models/transactions/transactions_change_data.dart';
 
 abstract class ITransactionsCase {
   Future<Result<FetchFailure, List<Transaction>>> getTransactions({

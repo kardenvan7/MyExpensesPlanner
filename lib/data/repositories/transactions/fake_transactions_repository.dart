@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_extensions.dart';
 import 'package:my_expenses_planner/core/utils/result.dart';
-import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_transactions_repository.dart';
 
 class FakeTransactionsRepository implements ITransactionsRepository {

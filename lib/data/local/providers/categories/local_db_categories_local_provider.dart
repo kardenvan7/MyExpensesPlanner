@@ -2,7 +2,7 @@ import 'package:my_expenses_planner/core/utils/result.dart';
 import 'package:my_expenses_planner/data/local/local_db/i_local_db.dart';
 import 'package:my_expenses_planner/data/local/providers/categories/i_categories_local_provider.dart';
 import 'package:my_expenses_planner/data/models/transaction_category.dart';
-import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 
 class LocalDbCategoriesLocalProvider implements ICategoriesLocalProvider {
   LocalDbCategoriesLocalProvider({

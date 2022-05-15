@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/di.dart';
-import 'package:my_expenses_planner/domain/models/transaction_category.dart';
+import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 import 'package:my_expenses_planner/presentation/cubit/edit_category/edit_category_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
@@ -29,6 +29,7 @@ class EditCategoryScreen extends StatelessWidget {
         categoriesCase: DI.instance<ICategoriesCase>(),
       ),
       child: BlocConsumer<EditCategoryCubit, EditCategoryState>(
+        listenWhen: (_, newState) => newState.popScreen,
         listener: (context, state) {
           if (state.popScreen) {
             onEditFinish?.call(state.uuid);
@@ -36,9 +37,7 @@ class EditCategoryScreen extends StatelessWidget {
             DI.instance<AppRouter>().pop();
           }
         },
-        buildWhen: (oldState, newState) {
-          return newState.triggerBuilder;
-        },
+        buildWhen: (_, newState) => newState.triggerBuilder,
         builder: (context, state) {
           final _cubit = BlocProvider.of<EditCategoryCubit>(context);
 

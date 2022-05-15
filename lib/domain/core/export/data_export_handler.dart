@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:my_expenses_planner/core/utils/result.dart';
-import 'package:my_expenses_planner/domain/models/export_failure.dart';
-import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
+import 'package:my_expenses_planner/domain/models/export/export_failure.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_categories_repository.dart';
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_transactions_repository.dart';
 import 'package:permission_handler/permission_handler.dart';

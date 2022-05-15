@@ -1,7 +1,7 @@
 import 'package:my_expenses_planner/core/utils/result.dart';
-import 'package:my_expenses_planner/domain/models/categories_change_data.dart';
-import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
-import 'package:my_expenses_planner/domain/models/transaction_category.dart';
+import 'package:my_expenses_planner/domain/models/categories/categories_change_data.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
+import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
 
 abstract class ICategoriesCase {
   Future<Result<FetchFailure, List<TransactionCategory>>> getCategories();

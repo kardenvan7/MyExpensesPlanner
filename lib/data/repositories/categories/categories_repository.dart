@@ -1,8 +1,8 @@
 import 'package:my_expenses_planner/core/utils/result.dart';
 import 'package:my_expenses_planner/data/local/providers/categories/i_categories_local_provider.dart';
 import 'package:my_expenses_planner/data/models/transaction_category.dart';
-import 'package:my_expenses_planner/domain/models/fetch_failure.dart';
-import 'package:my_expenses_planner/domain/models/transaction_category.dart'
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
+import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart'
     as domain;
 import 'package:my_expenses_planner/domain/repositories_interfaces/i_categories_repository.dart';
 

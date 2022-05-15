@@ -7,8 +7,8 @@ import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/double_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/string_extensions.dart';
-import 'package:my_expenses_planner/domain/models/transaction.dart';
-import 'package:my_expenses_planner/domain/models/transaction_category.dart';
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
+import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
 
 import '../../../cubit/category_list/category_list_cubit.dart';
 
