@@ -13,6 +13,7 @@ class TransactionListState {
     this.loadLimit,
     this.categoryUuid,
     this.errorMessage,
+    required this.onlyIncome,
   });
 
   final bool isLazyLoading;
@@ -26,6 +27,7 @@ class TransactionListState {
   final int? loadLimit;
   final String? categoryUuid;
   final String? errorMessage;
+  final bool onlyIncome;
 
   bool get hasError => errorMessage != null;
 
@@ -43,6 +45,7 @@ class TransactionListState {
     String? errorMessage,
     ValueWrapper<DateTimeRange>? dateTimeRange,
     ValueWrapper<String>? categoryUuid,
+    bool? onlyIncome,
   }) {
     return TransactionListState(
       isLazyLoading: isLazyLoading ?? false,
@@ -58,6 +61,7 @@ class TransactionListState {
           dateTimeRange != null ? dateTimeRange.value : this.dateTimeRange,
       categoryUuid:
           categoryUuid != null ? categoryUuid.value : this.categoryUuid,
+      onlyIncome: onlyIncome ?? this.onlyIncome,
     );
   }
 }

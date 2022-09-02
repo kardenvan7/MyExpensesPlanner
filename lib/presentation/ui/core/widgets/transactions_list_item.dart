@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -7,8 +6,8 @@ import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/double_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/string_extensions.dart';
-import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 
 import '../../../cubit/category_list/category_list_cubit.dart';
 
@@ -17,12 +16,16 @@ class TransactionsListItem extends StatelessWidget {
     required this.transaction,
     required this.onEditTap,
     required this.onDeleteTap,
+    required this.onCategoryTap,
+    this.onIncomeTap,
     Key? key,
   }) : super(key: key);
 
   final Transaction transaction;
   final void Function(Transaction transaction) onEditTap;
   final void Function(String id) onDeleteTap;
+  final void Function(String uuid) onCategoryTap;
+  final void Function()? onIncomeTap;
 
   @override
   Widget build(BuildContext context) {
@@ -65,52 +68,61 @@ class TransactionsListItem extends StatelessWidget {
           child: Row(
             children: [
               if (transaction.isIncome)
-                Container(
-                  width: 90,
-                  height: 50,
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Center(
-                    child: AutoSizeText(
-                      AppLocalizationsFacade.of(context).income,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                            fontSize: 14,
-                            color: Colors.green,
-                          ),
-                      minFontSize: 11,
-                      maxFontSize: 16,
-                      textAlign: TextAlign.center,
+                InkWell(
+                  onTap: () => onIncomeTap?.call(),
+                  child: Container(
+                    width: 90,
+                    height: 50,
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Center(
+                      child: AutoSizeText(
+                        AppLocalizationsFacade.of(context).income,
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                              fontSize: 14,
+                              color: Colors.green,
+                            ),
+                        minFontSize: 11,
+                        maxFontSize: 16,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 )
               else
                 BlocBuilder<CategoryListCubit, CategoryListState>(
                   builder: (context, state) {
-                    final TransactionCategory? _category =
-                        state.categories.firstWhereOrNull(
+                    final TransactionCategory category =
+                        state.categories.firstWhere(
                       (element) => element.uuid == transaction.categoryUuid,
                     );
 
-                    return Container(
-                      width: 90,
-                      height: 50,
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      color: _category?.color,
-                      child: Center(
-                        child: AutoSizeText(
-                          _category?.name ??
-                              AppLocalizationsFacade.of(context)
-                                  .without_category,
-                          style:
-                              Theme.of(context).textTheme.bodyText1?.copyWith(
-                                    fontSize: 14,
-                                    color: _category?.color.isBright ?? true
-                                        ? Colors.black
-                                        : Colors.white,
-                                  ),
-                          minFontSize: 11,
-                          maxFontSize: 16,
-                          textAlign: TextAlign.center,
-                          maxLines: _category?.name.wordCount,
+                    return InkWell(
+                      onTap: () {
+                        onCategoryTap(category.uuid);
+                      },
+                      child: Container(
+                        width: 90,
+                        height: 50,
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        color: category.color,
+                        child: Center(
+                          child: AutoSizeText(
+                            category.uuid == TransactionCategory.empty().uuid
+                                ? AppLocalizationsFacade.of(context)
+                                    .without_category
+                                : category.name,
+                            style:
+                                Theme.of(context).textTheme.bodyText1?.copyWith(
+                                      fontSize: 14,
+                                      color: category.color.isBright
+                                          ? Colors.black
+                                          : Colors.white,
+                                    ),
+                            minFontSize: 11,
+                            maxFontSize: 16,
+                            textAlign: TextAlign.center,
+                            maxLines: category.name.wordCount,
+                          ),
                         ),
                       ),
                     );
@@ -154,9 +166,9 @@ class TransactionsListItem extends StatelessWidget {
   }
 
   String _getAmountText({required Transaction transaction}) {
-    final _sign = _getSignByType(type: transaction.type);
+    final sign = _getSignByType(type: transaction.type);
 
-    return '$_sign '
+    return '$sign '
         '${transaction.amount.toAmountString()}';
   }
 

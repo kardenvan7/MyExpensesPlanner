@@ -12,6 +12,7 @@ class TransactionListClear extends StatefulWidget {
     required this.transactions,
     required this.onTransactionEditTap,
     required this.onTransactionDeleteTap,
+    required this.onCategoryTap,
     this.errorMessage,
     this.onDateChipTap,
     this.showDateChips = true,
@@ -19,12 +20,14 @@ class TransactionListClear extends StatefulWidget {
     this.isLazyLoading = false,
     this.scrollController,
     this.scrollPhysics,
+    this.onIncomeTap,
     Key? key,
   }) : super(key: key);
 
   final List<Transaction> transactions;
   final void Function(Transaction transaction) onTransactionEditTap;
   final void Function(String id) onTransactionDeleteTap;
+  final void Function(String uuid) onCategoryTap;
   final bool showLoadingIndicator;
   final bool isLazyLoading;
   final bool showDateChips;
@@ -32,6 +35,7 @@ class TransactionListClear extends StatefulWidget {
   final String? errorMessage;
   final ScrollController? scrollController;
   final ScrollPhysics? scrollPhysics;
+  final void Function()? onIncomeTap;
 
   @override
   State<TransactionListClear> createState() => _TransactionListClearState();
@@ -149,6 +153,8 @@ class _TransactionListClearState extends State<TransactionListClear> {
                         transaction: _currentDateTransactions[index],
                         onDeleteTap: widget.onTransactionDeleteTap,
                         onEditTap: widget.onTransactionEditTap,
+                        onCategoryTap: widget.onCategoryTap,
+                        onIncomeTap: widget.onIncomeTap,
                       );
                     },
                     separatorBuilder: (_, __) {

@@ -1,5 +1,5 @@
-import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
-import 'package:my_expenses_planner/domain/models/transactions/transaction.dart' as domain;
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart'
+    as domain;
 
 class Transaction {
   Transaction({
@@ -8,7 +8,7 @@ class Transaction {
     required this.title,
     required this.date,
     required this.type,
-    this.categoryUuid,
+    required this.categoryUuid,
   });
 
   factory Transaction.fromMap(Map<String, dynamic> map) {
@@ -22,7 +22,7 @@ class Transaction {
       type: TransactionTypeFactory.fromName(
         map['type'] as String?,
       ),
-      categoryUuid: map['category_uuid'] as String?,
+      categoryUuid: map['category_uuid'] as String,
     );
   }
 
@@ -42,7 +42,7 @@ class Transaction {
   final String title;
   final double amount;
   final TransactionType type;
-  final String? categoryUuid;
+  final String categoryUuid;
 
   Transaction copyWith({
     required String uuid,
@@ -50,7 +50,7 @@ class Transaction {
     double? amount,
     DateTime? date,
     TransactionType? type,
-    ValueWrapper<String>? categoryUuid,
+    String? categoryUuid,
   }) {
     return Transaction(
       uuid: uuid,
@@ -58,8 +58,7 @@ class Transaction {
       title: title ?? this.title,
       date: date ?? this.date,
       type: type ?? this.type,
-      categoryUuid:
-          categoryUuid == null ? this.categoryUuid : categoryUuid.value,
+      categoryUuid: categoryUuid ?? this.categoryUuid,
     );
   }
 

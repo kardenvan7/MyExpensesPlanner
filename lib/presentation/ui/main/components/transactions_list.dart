@@ -52,6 +52,14 @@ class TransactionsList extends StatelessWidget {
             },
             showDateChips:
                 !(transactionsListState.dateTimeRange?.isWithinOneDay ?? false),
+            onCategoryTap: (uuid) => transactionsListState.categoryUuid == uuid
+                ? null
+                : BlocProvider.of<TransactionListCubit>(context)
+                    .setCategoryUuid(uuid),
+            onIncomeTap: () => transactionsListState.onlyIncome
+                ? null
+                : BlocProvider.of<TransactionListCubit>(context)
+                    .setOnlyIncome(true),
           )
         : Container(
             margin: const EdgeInsets.only(top: 150),
@@ -137,8 +145,8 @@ class TransactionsList extends StatelessWidget {
 
   void _onTransactionEditTap(Transaction transaction) {
     DI.instance<AppRouter>().push(
-      EditTransactionRoute(transaction: transaction),
-    );
+          EditTransactionRoute(transaction: transaction),
+        );
   }
 
   void _onDeleteConfirmed({

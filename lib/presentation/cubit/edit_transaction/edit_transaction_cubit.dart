@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
-import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
+import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
 import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
 
@@ -25,14 +25,14 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
     String? titleErrorText;
     String? amountErrorText;
 
-    final String? _amount = state.amount;
-    final String? _title = state.title;
+    final String? amount = state.amount;
+    final String? title = state.title;
 
-    if (_amount == null || _amount == '') {
+    if (amount == null || amount == '') {
       amountErrorText = 'Field must be filled';
     } else {
       final double? parsedAmount = double.tryParse(
-        _amount.replaceFirst(',', '.'),
+        amount.replaceFirst(',', '.'),
       );
 
       if (parsedAmount == null) {
@@ -40,7 +40,7 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
       }
     }
 
-    if (_title == null || _title == '') {
+    if (title == null || title == '') {
       titleErrorText = 'Field must be filled';
     }
 
@@ -79,8 +79,9 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
         amount: amount,
         date: state.date!,
         type: state.type!,
-        categoryUuid:
-            state.type == TransactionType.income ? null : state.categoryUuid,
+        categoryUuid: state.type == TransactionType.income
+            ? TransactionCategory.empty().uuid
+            : state.categoryUuid,
       );
 
       if (isAdding) {
@@ -154,12 +155,10 @@ class EditTransactionCubit extends Cubit<EditTransactionState> {
     );
   }
 
-  void setCategoryUuid(String? categoryUuid) {
+  void setCategoryUuid(String categoryUuid) {
     emit(
       state.copyWith(
-        categoryUuid: ValueWrapper(
-          value: categoryUuid,
-        ),
+        categoryUuid: categoryUuid,
         triggerBuilder: false,
       ),
     );

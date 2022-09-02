@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/double_extensions.dart';
-import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
+import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:pie_chart/pie_chart.dart';
 
@@ -21,8 +21,9 @@ class PieChartSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String?, double> _expensesByCategories =
+    final Map<String, double> _expensesByCategories =
         _getExpensesByCategory(transactions);
+
     final double income = transactions
         .where((element) => element.type == TransactionType.income)
         .fold<double>(
@@ -187,11 +188,11 @@ class PieChartSection extends StatelessWidget {
     );
   }
 
-  Map<String?, double> _getExpensesByCategory(List<Transaction> transactions) {
-    final Map<String?, double> _map = {};
+  Map<String, double> _getExpensesByCategory(List<Transaction> transactions) {
+    final Map<String, double> _map = {};
     final _expensesByCategories = _getExpensesByCategories(transactions);
 
-    for (final String? categoryUuid in _expensesByCategories.keys.toList()) {
+    for (final String categoryUuid in _expensesByCategories.keys.toList()) {
       final double _amountByCategory =
           _expensesByCategories[categoryUuid]!.fold<double>(
         0,
@@ -201,13 +202,20 @@ class PieChartSection extends StatelessWidget {
       _map[categoryUuid] = _amountByCategory;
     }
 
-    return _map;
+    final sortedKeys = _map.keys.toList()
+      ..sort(
+        (a, b) => _map[b]!.compareTo(
+          _map[a]!,
+        ),
+      );
+
+    return {for (var k in sortedKeys) k: _map[k]!};
   }
 
-  Map<String?, List<Transaction>> _getExpensesByCategories(
+  Map<String, List<Transaction>> _getExpensesByCategories(
     List<Transaction> transactions,
   ) {
-    final Map<String?, List<Transaction>> _map = {};
+    final Map<String, List<Transaction>> _map = {};
     final List<Transaction> expenses = transactions
         .where(
           (element) => element.type == TransactionType.expense,
@@ -215,7 +223,7 @@ class PieChartSection extends StatelessWidget {
         .toList();
 
     for (final Transaction _tr in expenses) {
-      final String? _categoryUuid = _tr.categoryUuid;
+      final String _categoryUuid = _tr.categoryUuid;
 
       if (_map.containsKey(_categoryUuid)) {
         _map[_categoryUuid]!.add(_tr);
@@ -295,11 +303,12 @@ class PieChartCustomLegend extends StatelessWidget {
   }) : super(key: key);
 
   final List<TransactionCategory> categories;
-  final Map<String?, double> expensesByCategories;
+  final Map<String, double> expensesByCategories;
 
   @override
   Widget build(BuildContext context) {
-    final List<String?> _categoryUuids = expensesByCategories.keys.toList();
+    final List<String> _categoryUuids = expensesByCategories.keys.toList();
+
     return Wrap(
       spacing: 10,
       children: List.generate(

@@ -2,8 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/core/utils/result.dart';
 import 'package:my_expenses_planner/domain/models/categories/categories_change_data.dart';
-import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
+import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/use_cases/categories/i_categories_case.dart';
 
 part './category_list_state.dart';
@@ -66,10 +66,17 @@ class CategoryListCubit extends Cubit<CategoryListState> {
         },
       ),
       onSuccess: (categoriesList) {
+        final copyList = [...categoriesList];
+        final emptyCategory = TransactionCategory.empty();
+
+        copyList.removeWhere((element) => element.uuid == emptyCategory.uuid);
+
+        final resultList = [emptyCategory, ...copyList];
+
         emit(
           CategoryListState(
             isLoading: false,
-            categories: categoriesList,
+            categories: resultList,
           ),
         );
       },

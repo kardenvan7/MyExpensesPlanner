@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
-import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
 import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
@@ -17,7 +16,7 @@ class NewCategoryPickField extends StatefulWidget {
   }) : super(key: key);
 
   final String? initialCategoryUuid;
-  final void Function(String? categoryUuid) onCategoryPicked;
+  final void Function(String categoryUuid) onCategoryPicked;
 
   @override
   State<NewCategoryPickField> createState() => _NewCategoryPickFieldState();
@@ -44,7 +43,8 @@ class _NewCategoryPickFieldState extends State<NewCategoryPickField> {
           return Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (_category != null)
+              if (_category != null &&
+                  _category.uuid != TransactionCategory.empty().uuid)
                 Container(
                   height: 20,
                   width: 20,
@@ -92,10 +92,10 @@ class _NewCategoryPickFieldState extends State<NewCategoryPickField> {
         contentPadding: EdgeInsets.zero,
         content: PickCategoryModalSheet(
           pickedCategoryUuid: _pickedCategoryUuid,
-          onCategoryUuidPicked: (ValueWrapper<String> _newCategoryUuid) {
+          onCategoryUuidPicked: (String _newCategoryUuid) {
             setState(() {
-              _pickedCategoryUuid = _newCategoryUuid.value;
-              widget.onCategoryPicked(_newCategoryUuid.value);
+              _pickedCategoryUuid = _newCategoryUuid;
+              widget.onCategoryPicked(_newCategoryUuid);
             });
           },
         ),
@@ -112,7 +112,7 @@ class PickCategoryModalSheet extends StatelessWidget {
   }) : super(key: key);
 
   final String? pickedCategoryUuid;
-  final void Function(ValueWrapper<String> categoryUuid) onCategoryUuidPicked;
+  final void Function(String categoryUuid) onCategoryUuidPicked;
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +139,9 @@ class PickCategoryModalSheet extends StatelessWidget {
                     AppLocalizationsFacade.of(context).add_category,
                   ),
                   onPressed: () {
-                    DI.instance<AppRouter>().pushNamed(EditCategoryScreen.routeName);
+                    DI
+                        .instance<AppRouter>()
+                        .pushNamed(EditCategoryScreen.routeName);
                   },
                 ),
               ),
@@ -153,61 +155,52 @@ class PickCategoryModalSheet extends StatelessWidget {
                 child: ListView.separated(
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    final _index = index - 1;
-
-                    if (_index == -1) {
-                      return InkWell(
-                        child: ListTile(
-                          title: Text(
-                            AppLocalizationsFacade.of(context).without_category,
-                          ),
-                          onTap: () {
-                            _onCategoryTap(context, null);
-                          },
-                        ),
-                      );
-                    }
-
                     return InkWell(
                       child: ListTile(
                         horizontalTitleGap: 0,
                         title: Text(
-                          _categoryList[_index].name,
+                          _categoryList[index].name,
                         ),
-                        leading: Container(
-                          width: 25,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: _categoryList[_index].color,
-                          ),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                _onCategoryEditTap(
-                                  context: context,
-                                  category: _categoryList[_index],
-                                );
-                              },
-                              icon: const Icon(Icons.edit),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                _onCategoryDeleteTap(
-                                  context,
-                                  _categoryList[_index].uuid,
-                                );
-                              },
-                              icon: const Icon(Icons.delete),
-                            ),
-                          ],
-                        ),
+                        leading: _categoryList[index].uuid ==
+                                TransactionCategory.empty().uuid
+                            ? null
+                            : Container(
+                                width: 25,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _categoryList[index].color,
+                                ),
+                              ),
+                        trailing: _categoryList[index].uuid ==
+                                TransactionCategory.empty().uuid
+                            ? null
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      _onCategoryEditTap(
+                                        context: context,
+                                        category: _categoryList[index],
+                                      );
+                                    },
+                                    icon: const Icon(Icons.edit),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      _onCategoryDeleteTap(
+                                        context,
+                                        _categoryList[index].uuid,
+                                      );
+                                    },
+                                    icon: const Icon(Icons.delete),
+                                  ),
+                                ],
+                              ),
                         onTap: () {
                           _onCategoryTap(
                             context,
-                            _categoryList[_index].uuid,
+                            _categoryList[index].uuid,
                           );
                         },
                       ),
@@ -218,7 +211,7 @@ class PickCategoryModalSheet extends StatelessWidget {
                       height: 0,
                     );
                   },
-                  itemCount: _categoryList.length + 1,
+                  itemCount: _categoryList.length,
                 ),
               ),
             ],
@@ -228,8 +221,8 @@ class PickCategoryModalSheet extends StatelessWidget {
     );
   }
 
-  void _onCategoryTap(BuildContext context, String? categoryUuid) {
-    onCategoryUuidPicked(ValueWrapper(value: categoryUuid));
+  void _onCategoryTap(BuildContext context, String categoryUuid) {
+    onCategoryUuidPicked(categoryUuid);
     DI.instance<AppRouter>().pop();
   }
 
@@ -260,7 +253,7 @@ class PickCategoryModalSheet extends StatelessWidget {
                     .deleteCategory(categoryUuid);
 
                 if (pickedCategoryUuid == categoryUuid) {
-                  onCategoryUuidPicked(ValueWrapper(value: null));
+                  onCategoryUuidPicked(TransactionCategory.empty().uuid);
                 }
 
                 DI.instance<AppRouter>().pop();

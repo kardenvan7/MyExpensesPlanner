@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_range_extensions.dart';
 import 'package:my_expenses_planner/core/utils/result.dart';
 import 'package:my_expenses_planner/data/repositories/transactions/fake_transactions_repository.dart';
+import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
 import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions/transactions_change_data.dart';
@@ -122,7 +123,7 @@ class FakeTransactionsCaseImpl implements ITransactionsCase {
 
   @override
   Future<Result<FetchFailure, void>> fillWithMockTransactions() async {
-    final List<Transaction> _transactions = [];
+    final List<Transaction> transactions = [];
 
     for (int i = 0; i < 40; i++) {
       await Future.delayed(
@@ -132,7 +133,7 @@ class FakeTransactionsCaseImpl implements ITransactionsCase {
             Duration(hours: 12 * i),
           );
 
-          _transactions.add(
+          transactions.add(
             Transaction(
               uuid: _date.millisecondsSinceEpoch.toString(),
               amount: (i + 1) * 10,
@@ -140,6 +141,7 @@ class FakeTransactionsCaseImpl implements ITransactionsCase {
               date: _date,
               type:
                   i % 2 == 0 ? TransactionType.expense : TransactionType.income,
+              categoryUuid: TransactionCategory.empty().uuid,
             ),
           );
         },
@@ -149,11 +151,11 @@ class FakeTransactionsCaseImpl implements ITransactionsCase {
     streamController.add(
       Result.success(
         TransactionsChangeData(
-          addedTransactions: _transactions,
+          addedTransactions: transactions,
         ),
       ),
     );
 
-    return _repository.saveMultiple(transactions: _transactions);
+    return _repository.saveMultiple(transactions: transactions);
   }
 }

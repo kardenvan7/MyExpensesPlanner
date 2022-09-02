@@ -81,7 +81,9 @@ class SqfliteLocalDatabase implements ILocalDatabase {
       }
 
       return Result.success(transactions);
-    } catch (_) {
+    } catch (_, st) {
+      print(_);
+      print(st);
       return Result.failure(FetchFailure.unknown());
     }
   }

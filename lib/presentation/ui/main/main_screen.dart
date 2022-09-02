@@ -1,9 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_range_extensions.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
+import 'package:my_expenses_planner/presentation/cubit/category_list/category_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/cubit/transaction_list/transaction_list_cubit.dart';
 import 'package:my_expenses_planner/presentation/navigation/auto_router.gr.dart';
 import 'package:my_expenses_planner/presentation/ui/core/widgets/pie_chart_section.dart';
@@ -40,6 +42,13 @@ class MainScreen extends StatelessWidget {
           },
           builder: (context, state) {
             final _cubit = BlocProvider.of<TransactionListCubit>(context);
+            final pickedCategory = context
+                .read<CategoryListCubit>()
+                .state
+                .categories
+                .firstWhereOrNull(
+                  (element) => element.uuid == state.categoryUuid,
+                );
 
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
@@ -83,6 +92,80 @@ class MainScreen extends StatelessWidget {
                         ],
                       ),
                     ),
+                  if (pickedCategory != null)
+                    Container(
+                      padding: const EdgeInsets.only(left: 16),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: pickedCategory.color,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              pickedCategory.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  ?.copyWith(
+                                    fontSize: 16,
+                                  ),
+                            ),
+                          ),
+                          IconButton(
+                            alignment: Alignment.center,
+                            onPressed: () {
+                              _cubit.setCategoryUuid(null);
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (state.onlyIncome)
+                    Container(
+                      padding: const EdgeInsets.only(left: 16),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              AppLocalizationsFacade.of(context).income,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  ?.copyWith(
+                                    fontSize: 16,
+                                  ),
+                            ),
+                          ),
+                          IconButton(
+                            alignment: Alignment.center,
+                            onPressed: () {
+                              _cubit.setOnlyIncome(false);
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   if (state.transactions.isEmpty && state.dateTimeRange != null)
                     Container(
                       alignment: Alignment.center,
@@ -98,7 +181,9 @@ class MainScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        if (state.dateTimeRange == null)
+                        if (state.dateTimeRange == null &&
+                            state.categoryUuid == null &&
+                            !state.onlyIncome)
                           const SizedBox(
                             height: 250,
                             child: LastWeekTransactions(),

@@ -12,6 +12,14 @@ class TransactionCategory {
     required this.name,
   });
 
+  factory TransactionCategory.empty() {
+    return TransactionCategory(
+      uuid: '0',
+      color: const Color(0xFFB8B8B8),
+      name: 'No category',
+    );
+  }
+
   factory TransactionCategory.fromMap(Map map) {
     return TransactionCategory(
       uuid: map['uuid'],

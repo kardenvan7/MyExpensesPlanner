@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_extensions.dart';
 import 'package:my_expenses_planner/core/utils/result.dart';
+import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
 import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions/transactions_change_data.dart';
@@ -215,6 +216,7 @@ class TransactionsCaseImpl implements ITransactionsCase {
               date: _date,
               type:
                   i % 2 == 0 ? TransactionType.expense : TransactionType.income,
+              categoryUuid: TransactionCategory.empty().uuid,
             ),
           );
         },

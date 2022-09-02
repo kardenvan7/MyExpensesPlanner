@@ -14,6 +14,12 @@ class TransactionCategory {
     required this.name,
   });
 
+  factory TransactionCategory.empty() {
+    return TransactionCategory.fromDomainCategory(
+      domain.TransactionCategory.empty(),
+    );
+  }
+
   factory TransactionCategory.fromMap(Map map) {
     return TransactionCategory(
       uuid: map['uuid'],

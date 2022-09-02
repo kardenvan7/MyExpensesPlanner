@@ -1,5 +1,3 @@
-import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
-
 class Transaction {
   Transaction({
     required this.uuid,
@@ -7,7 +5,7 @@ class Transaction {
     required this.title,
     required this.date,
     required this.type,
-    this.categoryUuid,
+    required this.categoryUuid,
   });
 
   factory Transaction.fromMap(Map<String, dynamic> map) {
@@ -19,7 +17,7 @@ class Transaction {
         map['date'] as int,
       ),
       type: TransactionTypeFactory.fromCode(map['type'] as String?),
-      categoryUuid: map['category_uuid'] as String?,
+      categoryUuid: map['category_uuid'] as String,
     );
   }
 
@@ -28,7 +26,7 @@ class Transaction {
   final String title;
   final double amount;
   final TransactionType type;
-  final String? categoryUuid;
+  final String categoryUuid;
 
   bool get isIncome => type == TransactionType.income;
 
@@ -39,7 +37,7 @@ class Transaction {
       'amount': amount,
       'date': date.millisecondsSinceEpoch,
       'type': type.name,
-      'category_uuid': isIncome ? null : categoryUuid,
+      'category_uuid': categoryUuid,
     };
   }
 
@@ -49,7 +47,7 @@ class Transaction {
     double? amount,
     DateTime? date,
     TransactionType? type,
-    ValueWrapper<String>? categoryUuid,
+    String? categoryUuid,
   }) {
     return Transaction(
       uuid: uuid ?? this.uuid,
@@ -57,8 +55,7 @@ class Transaction {
       title: title ?? this.title,
       date: date ?? this.date,
       type: type ?? this.type,
-      categoryUuid:
-          categoryUuid == null ? this.categoryUuid : categoryUuid.value,
+      categoryUuid: categoryUuid ?? this.categoryUuid,
     );
   }
 

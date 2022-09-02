@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
 import 'package:my_expenses_planner/core/utils/result.dart';
 import 'package:my_expenses_planner/core/utils/value_wrapper.dart';
+import 'package:my_expenses_planner/domain/models/categories/transaction_category.dart';
 import 'package:my_expenses_planner/domain/models/core/fetch_failure/fetch_failure.dart';
 import 'package:my_expenses_planner/domain/models/transactions/transaction.dart';
 import 'package:my_expenses_planner/domain/models/transactions/transactions_change_data.dart';
@@ -27,6 +28,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
             offset: 0,
             initialized: false,
             showLoadingIndicator: true,
+            onlyIncome: false,
           ),
         );
 
@@ -95,10 +97,12 @@ class TransactionListCubit extends Cubit<TransactionListState> {
       offset: state.dateTimeRange != null ? null : state.offset,
       dateTimeRange: state.dateTimeRange,
       categoryUuid: state.categoryUuid,
+      type: state.onlyIncome ? TransactionType.income : null,
     );
 
     _result.fold(
       onFailure: (_) {
+        print(_);
         emit(
           state.copyWith(
             isLazyLoading: false,
@@ -109,6 +113,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
         );
       },
       onSuccess: (_fetchedTransactions) {
+        print(_fetchedTransactions.length);
         _currentTransactions.addAll(_fetchedTransactions);
 
         emit(
@@ -254,6 +259,7 @@ class TransactionListCubit extends Cubit<TransactionListState> {
                 type: i % 2 == 0
                     ? TransactionType.expense
                     : TransactionType.income,
+                categoryUuid: TransactionCategory.empty().uuid,
               ),
             );
           },
@@ -278,13 +284,38 @@ class TransactionListCubit extends Cubit<TransactionListState> {
     }
   }
 
+  Future<void> setOnlyIncome(bool value) async {
+    emitEmptyState(triggerBuilder: false);
+
+    emit(
+      state.copyWith(
+        onlyIncome: value,
+        categoryUuid: value ? ValueWrapper(value: null) : null,
+      ),
+    );
+
+    await fetchTransactions();
+  }
+
+  Future<void> setCategoryUuid(String? categoryUuid) async {
+    emitEmptyState(triggerBuilder: false);
+
+    emit(
+      state.copyWith(
+        categoryUuid: ValueWrapper(value: categoryUuid),
+        onlyIncome: categoryUuid != null ? false : null,
+      ),
+    );
+
+    fetchTransactions();
+  }
+
   Future<void> onDateTimeRangeChange(DateTimeRange? range) async {
     emitEmptyState(triggerBuilder: false);
 
     emit(
       state.copyWith(
         dateTimeRange: ValueWrapper(value: range),
-        triggerBuilder: false,
       ),
     );
 

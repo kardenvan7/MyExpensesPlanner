@@ -1,4 +1,6 @@
+import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
 import 'package:my_expenses_planner/data/local/local_db/sqflite/sqflite_config.dart';
+import 'package:my_expenses_planner/data/models/transaction_category.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -10,7 +12,7 @@ class SqfliteDatabaseProvider {
   SqfliteDatabaseProvider._();
 
   static const String _dbFileName = 'myExpensesPlanner.db';
-  static const int _version = 3;
+  static const int _version = 4;
 
   static final SqfliteDatabaseProvider _instance = SqfliteDatabaseProvider._();
 
@@ -45,6 +47,10 @@ class SqfliteDatabaseProvider {
         if (oldVersion == 2 && newVersion == 3) {
           await _version2To3Migration(db);
         }
+
+        if (oldVersion == 7 && newVersion == 4) {
+          await _version3To6Migration(db);
+        }
       },
       onCreate: (Database db, int version) async {
         _onCreate(db);
@@ -59,6 +65,20 @@ class SqfliteDatabaseProvider {
       '${SqfliteCategoriesTableColumns.name.code} TEXT, '
       '${SqfliteCategoriesTableColumns.color.code} TEXT'
       ')',
+    );
+
+    final emptyCategory = TransactionCategory.empty();
+
+    await db.execute(
+      'INSERT OR IGNORE INTO ${SqfliteDbConfig.categoriesTableName}('
+      '${SqfliteCategoriesTableColumns.uuid.code},'
+      '${SqfliteCategoriesTableColumns.name.code},'
+      '${SqfliteCategoriesTableColumns.color.code}'
+      ') VALUES('
+      '"${emptyCategory.uuid}",'
+      '"${emptyCategory.name}",'
+      '"${emptyCategory.color.toHexString()}"'
+      ');',
     );
 
     await db.execute(
@@ -156,6 +176,28 @@ class SqfliteDatabaseProvider {
 
     await db.execute(
       'DROP TABLE IF EXISTS transactions_replacement;',
+    );
+  }
+
+  Future<void> _version3To6Migration(Database db) async {
+    final emptyCategory = TransactionCategory.empty();
+
+    await db.execute(
+      'INSERT OR IGNORE INTO ${SqfliteDbConfig.categoriesTableName}('
+      '${SqfliteCategoriesTableColumns.uuid.code},'
+      '${SqfliteCategoriesTableColumns.name.code},'
+      '${SqfliteCategoriesTableColumns.color.code}'
+      ') VALUES('
+      '"${emptyCategory.uuid}",'
+      '"${emptyCategory.name}",'
+      '"${emptyCategory.color.toHexString()}"'
+      ');',
+    );
+
+    await db.execute(
+      'UPDATE ${SqfliteDbConfig.transactionsTableName} '
+      'SET ${SqfliteTransactionsTableColumns.categoryUuid.code} = "${emptyCategory.uuid}" '
+      'WHERE ${SqfliteTransactionsTableColumns.categoryUuid.code} = null;',
     );
   }
 
