@@ -88,7 +88,7 @@ class _AmountInputState extends State<AmountInput> {
                   double? value,
                   String? expression,
                 ) {
-                  _controller.text = value?.toString() ?? '';
+                  _controller.text = value?.toStringAsFixed(1) ?? '';
                 },
                 initialValue: double.tryParse(_controller.text),
               );

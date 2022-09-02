@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_expenses_planner/config/l10n/localization.dart';
+import 'package:my_expenses_planner/core/extensions/color_extensions.dart';
 import 'package:my_expenses_planner/core/extensions/date_time_range_extensions.dart';
 import 'package:my_expenses_planner/di.dart';
 import 'package:my_expenses_planner/domain/use_cases/transactions/i_transactions_case.dart';
@@ -36,7 +37,20 @@ class MainScreen extends StatelessWidget {
             DI.instance<AppRouter>().pushNamed(EditTransactionScreen.routeName);
           },
         ),
-        body: BlocBuilder<TransactionListCubit, TransactionListState>(
+        body: BlocConsumer<TransactionListCubit, TransactionListState>(
+          listenWhen: (oldState, newState) =>
+              oldState.categoryUuid != newState.categoryUuid ||
+              oldState.dateTimeRange != newState.dateTimeRange ||
+              oldState.onlyIncome != newState.onlyIncome,
+          listener: (context, __) {
+            BlocProvider.of<TransactionListCubit>(context)
+                .scrollController
+                .animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.bounceOut,
+                );
+          },
           buildWhen: (oldState, newState) {
             return newState.triggerBuilder;
           },
@@ -114,6 +128,9 @@ class MainScreen extends StatelessWidget {
                                   .bodyText1
                                   ?.copyWith(
                                     fontSize: 16,
+                                    color: pickedCategory.color.isBright
+                                        ? Colors.black
+                                        : Colors.white,
                                   ),
                             ),
                           ),
@@ -122,8 +139,11 @@ class MainScreen extends StatelessWidget {
                             onPressed: () {
                               _cubit.setCategoryUuid(null);
                             },
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.close,
+                              color: pickedCategory.color.isBright
+                                  ? Colors.black
+                                  : Colors.white,
                             ),
                           ),
                         ],
