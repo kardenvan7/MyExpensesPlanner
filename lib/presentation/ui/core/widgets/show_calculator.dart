@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
-import 'package:intl/intl.dart';
 import 'package:my_expenses_planner/presentation/cubit/app_settings/app_settings_cubit.dart';
 
 showCalculator({
@@ -22,7 +21,6 @@ showCalculator({
           final theme = Theme.of(context);
 
           return SimpleCalculator(
-            numberFormat: NumberFormat.compact(),
             value: initialValue ?? 0,
             hideSurroundingBorder: true,
             onChanged: onChanged,
